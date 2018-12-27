@@ -97,7 +97,7 @@ jobs:
       REPLICAS: 1
       NODE_ENV: prod
       GROUP: service
-      SERVICENAME: rent-boot
+      SERVICENAME: rent-bot
       HEALTHCHECK: /healthcheck
       PORT: 3000
 
@@ -113,21 +113,21 @@ workflows:
   build_and_deploy:
     jobs:
       - install:
-          context: rent-boot
+          context: rent-bot
       - patch_version:
-          context: rent-boot
+          context: rent-bot
           requires:
             - install
           filters:
             <<: *only_master
       - docker_build:
-          context: rent-boot
+          context: rent-bot
           requires:
             - patch_version
           filters:
             <<: *only_master
       - deploy:
-          context: rent-boot
+          context: rent-bot
           requires:
             - docker_build
           filters:
