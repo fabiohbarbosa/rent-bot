@@ -15,6 +15,6 @@ const adapt = async(url, binary = false) => {
   } catch (err) {
     throw err;
   }
-}
+};
 
 export { adapt };

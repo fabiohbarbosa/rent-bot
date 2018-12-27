@@ -15,7 +15,7 @@ class ImovirtualProvider {
       let $ = await adapt(this.url);
 
       if ($('.search-location-extended-warning').length > 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`)
+        Log.warn(`${this.logPrefix}: Not found elements`);
         return [];
       }
 
@@ -27,7 +27,7 @@ class ImovirtualProvider {
         const totalPages = totalElement[0].firstChild.data;
 
         for (let page = 2; page <= totalPages; page++) {
-          $ = await adapt(`${url}&page=${page}`);
+          $ = await adapt(`${this.url}&page=${page}`);
           elements.push(...this.getElements($, page));
         }
       }
@@ -44,7 +44,7 @@ class ImovirtualProvider {
     const elements = [];
     $('div.col-md-content > article.offer-item').each((i, e) => {
       elements.push({
-        id: $(e).attr('data-tracking-id'),
+        providerId: $(e).attr('data-tracking-id'),
         title: $(e).find('div.offer-item-details > header > h3 span.offer-item-title').text(),
         subtitle: $(e).find('div.offer-item-details > header > p').text(),
         url: e.attribs['data-url'],
@@ -68,5 +68,5 @@ class ImovirtualProvider {
 
 }
 
-export { filters }
+export { filters };
 export default ImovirtualProvider;

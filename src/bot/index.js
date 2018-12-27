@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('mongodb').Db} MongoDb
+ */
+
 import CustoJustoProvider, { filters as custoJustoFilters } from '../crawdler/custojusto';
 import IdealistaProvider, { filters as idealistaFilters } from '../crawdler/idealista';
 import ImovirtualProvider, { filters as imovirtualFilters } from '../crawdler/imovirtual';
@@ -12,16 +16,39 @@ import Crawdler from '../crawdler';
 import Log from '../../config/logger';
 
 class Bot {
-  static crawlers() {
+  /**
+   *
+   * @param {MongoDb} db - mongo connection
+   */
+  static crawlers(db) {
     Log.info('Initialising crawlers');
-    Bot._crawle(CustoJustoProvider, custoJustoFilters);
-    Bot._crawle(IdealistaProvider, idealistaFilters);
-    Bot._crawle(ImovirtualProvider, imovirtualFilters);
-    Bot._crawle(OlxProvider, olxFilters);
+    const initEachThirtySeconds = () => {
+      Bot._crawle(db, CustoJustoProvider, custoJustoFilters);
+      Bot._crawle(db, ImovirtualProvider, imovirtualFilters);
+      Bot._crawle(db, OlxProvider, olxFilters);
+    };
+
+    const initEachMinute = () => {
+      Bot._crawle(db, IdealistaProvider, idealistaFilters);
+    };
+
+    initEachMinute();
+    initEachThirtySeconds();
+
+    setInterval(initEachMinute, 60000);
+    setInterval(initEachThirtySeconds, 30000);
   }
 
-  static _crawle(Provider, rawFilters) {
-    Log.info(`Initialising crawle for ${Provider.name}...`);
+  /**
+   *
+   * @param {MongoDb} db - mongo connection
+   * @param {*} provider - provider to fetch properties
+   * @param {*} rawFilters - searchs filters
+   */
+  static _crawle(db, Provider, rawFilters) {
+    const providerName = Provider.name.toLowerCase().replace('provider', '');
+    Log.info(`Initialising crawle for ${providerName}...`);
+
     const filters = rawFilters.filter(filter => {
       if (!filter.enabled)
         Log.warn(`${filter.logPrefix} Skipping search...`);
@@ -30,24 +57,52 @@ class Bot {
 
     for (let i = 0; i < filters.length; i++) {
       const filter = filters[i];
-      new Crawdler(Provider, filter).crawl().then(elements => {
-        // save element
-        Log.debug(elements);
-      }).catch(err => {
-        Log.error(err.stack);
-      });
+      const insertCallback = (err, result) => {
+        if (err)
+          Log.error(`${filter.logPrefix} Error to insert or update property`);
+        Log.debug(`${filter.logPrefix} Success to insert or update property: ${result}`);
+      };
+
+      new Crawdler(Provider, filter)
+        .crawl()
+        .then(elements => {
+          if (!elements) return;
+          // save element
+          elements.forEach(e => {
+            db.collection('properties').updateOne(
+              { providerId: e.providerId },
+              {
+                $set: { ...e, provider: providerName, status: 'PENDING' },
+                $setOnInsert: { createAt: new Date() }
+              },
+              { upsert: true },
+              insertCallback
+            );
+          });
+        }).catch(err => {
+          Log.error(err.stack);
+        });
     }
   }
 
-  static dataMining() {
+  /**
+   *
+   * @param {MongoDb} db - mongo connection
+   */
+  static dataMining(db) {
     Log.info('Initialising data minings');
-    Bot._mine(CustoJustoMiner);
-    Bot._mine(IdealistaMiner);
-    Bot._mine(ImovirtualMiner);
-    Bot._mine(OlxMiner);
+    Bot._mine(db, CustoJustoMiner);
+    Bot._mine(db, IdealistaMiner);
+    Bot._mine(db, ImovirtualMiner);
+    Bot._mine(db, OlxMiner);
   }
 
-  static _mine(Miner) {
+  /**
+   *
+   * @param {MongoDb} db - mongo connection
+   * @param {*} Minder - data miner of provider data
+   */
+  static _mine(db, Miner) {
     Log.info(`Initialising data mining for ${Miner.name}...`);
   }
 }

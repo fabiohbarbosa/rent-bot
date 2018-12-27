@@ -15,7 +15,7 @@ class OlxProvider {
       let $ = await adapt(this.url);
 
       if ($('h1.c41').length > 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`)
+        Log.warn(`${this.logPrefix}: Not found elements`);
         return [];
       }
 
@@ -27,7 +27,7 @@ class OlxProvider {
         const totalPages = parseInt(totalElement[totalElement.length - 1].lastChild.data, 10);
 
         for (let page = 2; page <= totalPages; page++) {
-          $ = await adapt(`${url}&page=${page}`);
+          $ = await adapt(`${this.url}&page=${page}`);
           elements.push(...this.getElements($, page));
         }
       }
@@ -44,7 +44,7 @@ class OlxProvider {
     const elements = [];
     $('table#offers_table > tbody > tr.wrap > td > div.offer-wrapper > table > tbody').each((i, e) => {
       elements.push({
-        id: $(e)[0].parent.attribs['data-id'],
+        providerId: $(e)[0].parent.attribs['data-id'],
         title: $(e).find('td.title-cell > div > h3').text().trim(),
         subtitle: $(e).find('td.bottom-cell > div > p > small').text().trim().split(' ')[0],
         url: $(e).find('td.title-cell > div > h3 > a').attr('href'),
@@ -66,5 +66,5 @@ class OlxProvider {
   }
 }
 
-export { filters }
+export { filters };
 export default OlxProvider;

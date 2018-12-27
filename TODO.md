@@ -3,18 +3,24 @@
 ## Rent Bot
 - Salvar na base de dados
 
-## Crawler
+## Data Mining
 
-Custo Justo
+**Custo Justo**
 - Certificação energética dentro das páginas
 - Freguesias
 
-Idealista
+**Idealista**
 - Certificação energética dentro das páginas
 - Freguesias
 
-Imovirtual
+**Imovirtual**
 - Freguesias
 
-Olx
+**Olx**
 - Freguesias
+
+---
+
+db.properties.find().sort({createAt: -1}).pretty()
+db.properties.count()
+db.properties.drop()

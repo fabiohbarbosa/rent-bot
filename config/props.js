@@ -12,6 +12,10 @@ const localVars = {
     ...defaultVars.server,
     port: 3000
   },
+  db: {
+    url: 'mongodb://localhost:27017',
+    dbName: 'rent-bot'
+  },
   logLevel: 'info'
 };
 
@@ -20,6 +24,9 @@ const envVars = {
   server: {
     ...defaultVars.server,
     port: process.env.PORT
+  },
+  db: {
+    url: process.env.DB_URL
   },
   logLevel: process.env.LOG_LEVEL,
 };

@@ -3,6 +3,7 @@ import http from 'http';
 
 import Log from '../config/logger';
 import props from '../config/props';
+import Db from '../config/db';
 
 import healthcheck from './api/healthcheck-api';
 import Bot from './bot';
@@ -26,11 +27,11 @@ server.maxConnections = props.server.maxConnections;
 const port = props.server.port;
 const serverName = props.server.name;
 
-server.listen(port, () => {
+server.listen(port, async() => {
   Log.info(`${serverName} now listening on ${port}`);
+  const db = await Db.createConnection(props.db.url, props.db.dbName);
 
   Log.info('Initialising rent bot');
-  // Bot.crawlers();
-  Bot.dataMining();
+  Bot.crawlers(db);
+  // Bot.dataMining(db);
 });
-

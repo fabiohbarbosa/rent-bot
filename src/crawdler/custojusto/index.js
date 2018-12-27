@@ -18,7 +18,7 @@ class CustoJustoProvider {
       const totalPages = Math.ceil(totalEntries / itemsPage);
 
       if (!totalPages || totalPages === 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`)
+        Log.warn(`${this.logPrefix}: Not found elements`);
         return [];
       }
 
@@ -46,7 +46,7 @@ class CustoJustoProvider {
       if (this.isMetadataInvalid(title, price)) return;
 
       elements.push({
-        id: e.attribs['id'],
+        providerId: e.attribs['id'],
         title,
         subtitle: this.parseSubtitle($, e),
         url: e.attribs['href'],
@@ -88,5 +88,5 @@ class CustoJustoProvider {
 
 }
 
-export { filters }
+export { filters };
 export default CustoJustoProvider;

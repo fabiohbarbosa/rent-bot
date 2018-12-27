@@ -6,7 +6,7 @@ const regexes = [
 const types = {
   house: false,
   apartment: true,
-}
+};
 
 const topologies = [
   { name: 't2', code: 5, enabled: false },
@@ -45,11 +45,11 @@ const buildFilters = () => {
     });
   });
   return filters;
-}
+};
 
 const filters = buildFilters();
 
 const itemsPage = 40;
 const maxPrice = 850;
 
-export { filters, itemsPage, regexes, maxPrice }
+export { filters, itemsPage, regexes, maxPrice };

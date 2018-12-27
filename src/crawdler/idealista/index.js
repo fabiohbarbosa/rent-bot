@@ -7,7 +7,7 @@ class IdealistaProvider {
     this.logPrefix = logPrefix;
     this.type = type;
     this.topology = topology;
-    this.url = url;
+    this.url = `${url}&${Math.random()}=${Math.random()}`; // busting URL to prevent future access block
   }
 
   async parse() {
@@ -25,6 +25,8 @@ class IdealistaProvider {
 
       const totalPages = Math.ceil(parseInt(mainTitle.children[0].data, 10) / itemsPage);
       for (let page = 2; page <= totalPages; page++) {
+        if (page > 2 && page % 2 === 0) await this.sleep(2000); // sleep to prevent future access block
+
         $ = await adapt(this.url.replace('?', `pagina-${page}?`));
         elements.push(...this.getElements($, page));
       }
@@ -46,7 +48,7 @@ class IdealistaProvider {
       if ($(e).attr('class') === 'adv noHover') return;
 
       elements.push({
-        id: $(e).find('div.item').attr('data-adid'),
+        providerId: $(e).find('div.item').attr('data-adid'),
         title: $(e).find('div.item-info-container > a.item-link').text().trim(),
         subtitle: this.parseSubtitle($, e),
         url: this.parseUrl($, e),
@@ -77,7 +79,7 @@ class IdealistaProvider {
   parseUrl($, e) {
     const prefix = 'https://www.idealista.pt';
     const href = $(e).find('div.item-info-container > a.item-link').attr('href');
-    return prefix+href;
+    return prefix + href;
   }
 
   parsePhotos($, e) {
@@ -88,7 +90,11 @@ class IdealistaProvider {
     return [];
   }
 
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 }
 
-export { filters }
+export { filters };
 export default IdealistaProvider;
