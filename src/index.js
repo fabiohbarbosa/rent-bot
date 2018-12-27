@@ -29,6 +29,8 @@ const serverName = props.server.name;
 server.listen(port, () => {
   Log.info(`${serverName} now listening on ${port}`);
 
-  Bot.initialize();
+  Log.info('Initialising rent bot');
+  // Bot.crawlers();
+  Bot.dataMining();
 });
 

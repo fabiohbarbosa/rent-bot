@@ -3,20 +3,25 @@ import IdealistaProvider, { filters as idealistaFilters } from '../crawdler/idea
 import ImovirtualProvider, { filters as imovirtualFilters } from '../crawdler/imovirtual';
 import OlxProvider, { filters as olxFilters } from '../crawdler/olx';
 
+import CustoJustoMiner from '../miners/custojusto';
+import IdealistaMiner from '../miners/idealista';
+import ImovirtualMiner from '../miners/imovirtual';
+import OlxMiner from '../miners/olx';
+
 import Crawdler from '../crawdler';
 import Log from '../../config/logger';
 
 class Bot {
-  static initialize() {
-    Log.info('Initialising rent bot');
-    Bot.rentBot(CustoJustoProvider, custoJustoFilters);
-    Bot.rentBot(IdealistaProvider, idealistaFilters);
-    Bot.rentBot(ImovirtualProvider, imovirtualFilters);
-    Bot.rentBot(OlxProvider, olxFilters);
+  static crawlers() {
+    Log.info('Initialising crawlers');
+    Bot._crawle(CustoJustoProvider, custoJustoFilters);
+    Bot._crawle(IdealistaProvider, idealistaFilters);
+    Bot._crawle(ImovirtualProvider, imovirtualFilters);
+    Bot._crawle(OlxProvider, olxFilters);
   }
 
-  static rentBot(Provider, rawFilters) {
-    Log.info(`Initialising crawl for ${Provider.name}...`);
+  static _crawle(Provider, rawFilters) {
+    Log.info(`Initialising crawle for ${Provider.name}...`);
     const filters = rawFilters.filter(filter => {
       if (!filter.enabled)
         Log.warn(`${filter.logPrefix} Skipping search...`);
@@ -32,6 +37,18 @@ class Bot {
         Log.error(err.stack);
       });
     }
+  }
+
+  static dataMining() {
+    Log.info('Initialising data minings');
+    Bot._mine(CustoJustoMiner);
+    Bot._mine(IdealistaMiner);
+    Bot._mine(ImovirtualMiner);
+    Bot._mine(OlxMiner);
+  }
+
+  static _mine(Miner) {
+    Log.info(`Initialising data mining for ${Miner.name}...`);
   }
 }
 
