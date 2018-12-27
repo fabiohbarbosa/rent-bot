@@ -1,10 +1,12 @@
 import { adapt } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
-import urls from './config';
+import filters from './config';
 
 class OlxProvider {
-  constructor(logPrefix, url) {
+  constructor(logPrefix, type, topology, url) {
     this.logPrefix = logPrefix;
+    this.type = type;
+    this.topology = topology;
     this.url = url;
   }
 
@@ -48,7 +50,9 @@ class OlxProvider {
         subtitle: $(e).find('td.bottom-cell > div > p > small').text().trim().split(' ')[0],
         url: $(e).find('td.title-cell > div > h3 > a').attr('href'),
         price: parseInt($(e).find('td.td-price > div > p').text().trim().split(' ')[0], 10),
-        photos: this.parsePhotos($, e)
+        photos: this.parsePhotos($, e),
+        type: this.type,
+        topology: this.topology
       });
     });
     return elements;
@@ -63,5 +67,5 @@ class OlxProvider {
   }
 }
 
-export { urls }
+export { filters }
 export default OlxProvider;
