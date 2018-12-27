@@ -1,4 +1,4 @@
 // master filter
 const maxPrice = 800;
-const onlyPhoto = false;
+const onlyPhoto = true;
 export { maxPrice, onlyPhoto };

@@ -23,29 +23,33 @@ const counties = [
   { name: 'vila-nova-de-gaia', enabled: true }
 ];
 
-const buildUrls = () => {
-  const urls = [];
+const buildFilters = () => {
+  const filters = [];
   counties.filter(c => c.enabled).forEach(c => {
     topologies.filter(t => t.enabled).forEach(t => {
-      urls.push({
+      filters.push({
         enabled: types.house,
-        name: `house:${c.name}:${t.name}`,
+        type: 'house',
+        topology: t.name,
+        logPrefix: `[custojusto:${c.name}:house:${t.name}]`,
         url: `https://www.custojusto.pt/porto/${c.name}/moradias-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
       });
 
-      urls.push({
+      filters.push({
         enabled: types.apartment,
-        name: `apartment:${c.name}:${t.name}`,
+        type: 'apartment',
+        topology: t.name,
+        logPrefix: `[custojusto:${c.name}:apartment:${t.name}]`,
         url: `https://www.custojusto.pt/porto/${c.name}/apartamentos-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
       });
     });
   });
-  return urls;
+  return filters;
 }
 
-const urls = buildUrls();
+const filters = buildFilters();
 
 const itemsPage = 40;
 const maxPrice = 850;
 
-export { urls, itemsPage, regexes, maxPrice }
+export { filters, itemsPage, regexes, maxPrice }

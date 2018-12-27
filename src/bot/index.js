@@ -1,7 +1,7 @@
-// import ImovirtualProvider, { urls as imovirtualUrls } from '../crawdler/imovirtual';
+import CustoJustoProvider, { filters as custoJustoFilters } from '../crawdler/custojusto';
+import IdealistaProvider, { filters as idealistaFilters } from '../crawdler/idealista';
+import ImovirtualProvider, { filters as imovirtualFilters } from '../crawdler/imovirtual';
 import OlxProvider, { filters as olxFilters } from '../crawdler/olx';
-// import IdealistaProvider, { urls as idealistaUrls } from '../crawdler/idealista';
-// import CustoJustoProvider, { urls as custoJustoUrls } from '../crawdler/custojusto';
 
 import Crawdler from '../crawdler';
 import Log from '../../config/logger';
@@ -9,22 +9,30 @@ import Log from '../../config/logger';
 class Bot {
   static initialize() {
     Log.info('Initialising rent bot');
-    // Bot.setupProvider(ImovirtualProvider, imovirtualUrls);
-    Bot.setupProvider(OlxProvider, olxFilters);
-    // Bot.setupProvider(IdealistaProvider, idealistaUrls);
-    // Bot.setupProvider(CustoJustoProvider, custoJustoUrls);
+    Bot.rentBot(CustoJustoProvider, custoJustoFilters);
+    Bot.rentBot(IdealistaProvider, idealistaFilters);
+    Bot.rentBot(ImovirtualProvider, imovirtualFilters);
+    Bot.rentBot(OlxProvider, olxFilters);
   }
 
-  static setupProvider(Provider, filters) {
-    const providerName = Provider.name.replace('Provider', '');
-    const logPrefix = `[${providerName.toLowerCase()}]`;
+  static async rentBot(Provider, rawFilters) {
+    Log.info(`Initialising crawl for ${Provider.name}...`);
+    const filters = rawFilters.filter(filter => {
+      if (!filter.enabled)
+        Log.warn(`${filter.logPrefix} Skipping search...`);
+      return filter.enabled;
+    });
 
-    Log.info(`${logPrefix} Initialising...`);
-    filters.filter(c => {
-      if (!c.enabled)
-        Log.warn(`${logPrefix} Search skipped...`);
-      return c.enabled;
-    }).forEach(c => new Crawdler().crawl(Provider, c.type, c.topology, c.url));
+    for (let i = 0; i < filters.length; i++) {
+      const filter = filters[i];
+      new Crawdler(Provider, filter).crawl().then(elements => {
+        // save elements
+        console.log(elements.length);
+      }).catch(err => {
+        Log.error(err.stack);
+        process.exit(1);
+      });
+    }
   }
 }
 

@@ -1,10 +1,12 @@
 import { adapt } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
-import urls from './config';
+import filters from './config';
 
 class ImovirtualProvider {
-  constructor(logPrefix, url) {
+  constructor(logPrefix, type, topology, url) {
     this.logPrefix = logPrefix;
+    this.type = type;
+    this.topology = topology;
     this.url = url;
   }
 
@@ -48,7 +50,9 @@ class ImovirtualProvider {
         subtitle: $(e).find('div.offer-item-details > header > p').text(),
         url: e.attribs['data-url'],
         price: parseInt($(e).find('div.offer-item-details li.offer-item-price').text().split('€')[0].trim(), 10),
-        photos: this.parsePhotos($, e)
+        photos: this.parsePhotos($, e),
+        type: this.type,
+        topology: this.topology
       });
     });
     return elements;
@@ -65,5 +69,5 @@ class ImovirtualProvider {
 
 }
 
-export { urls }
+export { filters }
 export default ImovirtualProvider;

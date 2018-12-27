@@ -1,10 +1,12 @@
 import { adapt } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
-import { urls, itemsPage } from './config';
+import { filters, itemsPage } from './config';
 
 class IdealistaProvider {
-  constructor(logPrefix, url) {
+  constructor(logPrefix, type, topology, url) {
     this.logPrefix = logPrefix;
+    this.type = type;
+    this.topology = topology;
     this.url = url;
   }
 
@@ -50,7 +52,9 @@ class IdealistaProvider {
         subtitle: this.parseSubtitle($, e),
         url: this.parseUrl($, e),
         price: parseInt($(e).find('span.item-price')[0].firstChild.data, 10),
-        photos: this.parsePhotos($, e)
+        photos: this.parsePhotos($, e),
+        type: this.type,
+        topology: this.topology
       });
     });
     return elements;
@@ -87,5 +91,5 @@ class IdealistaProvider {
 
 }
 
-export { urls }
+export { filters }
 export default IdealistaProvider;

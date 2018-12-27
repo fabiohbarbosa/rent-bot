@@ -1,16 +1,18 @@
 import { adapt } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
-import { urls, itemsPage, regexes, maxPrice } from './config';
+import { filters, itemsPage, regexes, maxPrice } from './config';
 
 class CustoJustoProvider {
-  constructor(logPrefix, url) {
+  constructor(logPrefix, type, topology, url) {
     this.logPrefix = logPrefix;
+    this.type = type;
+    this.topology = topology;
     this.url = url;
   }
 
   async parse() {
     try {
-      let $ = await adapt(this.url);
+      let $ = await adapt(this.url, true);
 
       const totalEntries = parseInt($('.list-result-tabs > li > a.active > small').text().trim(), 10);
       const totalPages = Math.ceil(totalEntries / itemsPage);
@@ -24,7 +26,7 @@ class CustoJustoProvider {
       elements.push(...this.getElements($));
 
       for (let page = 2; page <= totalPages; page++) {
-        $ = await adapt(this.url.replace('?', `?o=${page}?`));
+        $ = await adapt(this.url.replace('?', `?o=${page}?`, true));
         elements.push(...this.getElements($, page));
       }
 
@@ -51,7 +53,9 @@ class CustoJustoProvider {
         subtitle: this.parseSubtitle($, e),
         url: e.attribs['href'],
         price,
-        photos: this.parsePhotos($, e)
+        photos: this.parsePhotos($, e),
+        type: this.type,
+        topology: this.topology
       });
     });
     return elements;
@@ -86,5 +90,5 @@ class CustoJustoProvider {
 
 }
 
-export { urls }
+export { filters }
 export default CustoJustoProvider;
