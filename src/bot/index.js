@@ -15,7 +15,7 @@ class Bot {
     Bot.rentBot(OlxProvider, olxFilters);
   }
 
-  static async rentBot(Provider, rawFilters) {
+  static rentBot(Provider, rawFilters) {
     Log.info(`Initialising crawl for ${Provider.name}...`);
     const filters = rawFilters.filter(filter => {
       if (!filter.enabled)
@@ -26,11 +26,10 @@ class Bot {
     for (let i = 0; i < filters.length; i++) {
       const filter = filters[i];
       new Crawdler(Provider, filter).crawl().then(elements => {
-        // save elements
-        console.log(elements.length);
+        // save element
+        Log.debug(elements);
       }).catch(err => {
         Log.error(err.stack);
-        process.exit(1);
       });
     }
   }

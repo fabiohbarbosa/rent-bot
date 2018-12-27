@@ -32,7 +32,6 @@ class OlxProvider {
         }
       }
 
-      Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
       return elements;
     } catch (err) {
       throw err;

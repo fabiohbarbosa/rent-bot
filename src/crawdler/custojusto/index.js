@@ -29,8 +29,6 @@ class CustoJustoProvider {
         $ = await adapt(this.url.replace('?', `?o=${page}?`, true));
         elements.push(...this.getElements($, page));
       }
-
-      Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
       return elements;
     } catch (err) {
       throw err;

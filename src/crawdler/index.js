@@ -17,7 +17,7 @@ class Crawler {
         return true;
       });
 
-      Log.debug(`${this.logPrefix} ${JSON.stringify(elements)}`);
+      Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
       return elements;
     } catch (err) {
       Log.error(`${this.logPrefix} Error to crawl : ${err.message}`);
