@@ -1,0 +1,134 @@
+version: 2
+
+working_directory: &working_directory
+  working_directory: ~/repo
+
+persist_to_workspace: &persist_to_workspace
+  persist_to_workspace:
+    root: ~/repo
+    paths: ./**
+
+default_image: &default_image
+  docker:
+    - image: node:11.1.0
+
+gcp_image: &gcp_image
+  docker:
+    - image: google/cloud-sdk
+
+attach_workspace: &attach_workspace
+  attach_workspace:
+    at: ~/repo
+
+only_master: &only_master
+  branches:
+    only:
+      - master
+
+jobs:
+  install:
+    <<: *working_directory
+    <<: *default_image
+    timeout: 1000
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install dependencies
+          command: bash .circleci/scripts/install.sh
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - <<: *persist_to_workspace
+
+  patch_version:
+    <<: *working_directory
+    <<: *default_image
+    environment:
+      GITHUB_REPONAME: rent-bot
+    steps:
+      - <<: *attach_workspace
+
+      - run:
+          name: Patching version
+          command: bash .circleci/scripts/patch_version.sh
+
+      # Persist VERSION and package.json files on CircleCI context to relay version number for next steps
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - package.json
+            - VERSION
+
+  docker_build:
+    <<: *working_directory
+    <<: *gcp_image
+    environment:
+      CLOUD: rent-bot-226823
+      GROUP: service
+      SERVICENAME: rent-bot
+    steps:
+      - <<: *attach_workspace
+
+      # Enabling DIND support
+      - setup_remote_docker:
+         docker_layer_caching: true
+
+      - run:
+          name: Building application docker image
+          command: bash .circleci/scripts/build.sh
+
+  deploy:
+    <<: *working_directory
+    <<: *gcp_image
+    environment:
+      CLOUD: rent-bot-226823
+      CLUSTER: rent-bot
+      CLUSTER_REGION: europe-west1
+      CLUSTER_ZONE: europe-west1-d
+      REPLICAS: 1
+      NODE_ENV: prod
+      GROUP: service
+      SERVICENAME: rent-boot
+      HEALTHCHECK: /healthcheck
+      PORT: 3000
+
+    steps:
+      - <<: *attach_workspace
+      - run:
+          name: Deploy
+          command: |
+            bash .circleci/scripts/deploy.sh
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - install:
+          context: rent-boot
+      - patch_version:
+          context: rent-boot
+          requires:
+            - install
+          filters:
+            <<: *only_master
+      - docker_build:
+          context: rent-boot
+          requires:
+            - patch_version
+          filters:
+            <<: *only_master
+      - deploy:
+          context: rent-boot
+          requires:
+            - docker_build
+          filters:
+            <<: *only_master
