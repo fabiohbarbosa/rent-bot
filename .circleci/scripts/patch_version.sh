@@ -7,13 +7,13 @@ rm -rf ${HOME}/.gitconfig
 git config --global push.default simple
 git config --global user.name "CircleCI - ${GITHUB_USER}"
 git config --global user.email ${GITHUB_USER}
-git remote add circleci https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/fabiohbarbosa/rent-bot.git
+git remote add circleci https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${GITHUB_REPONAME}.git
 
 echo "Ensure there isn't changes package json files"
 git checkout package.json package-lock.json
 
 echo "Patch version"
-npm version patch -m "[skip ci] prepare release ${BITBUCKET_REPONAME}-%s"
+npm version patch -m "[skip ci] prepare release ${GITHUB_REPONAME}-%s"
 
 echo "Sync master changes"
 git pull circleci master
