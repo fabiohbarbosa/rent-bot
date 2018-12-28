@@ -49,6 +49,16 @@ jobs:
 
       - <<: *persist_to_workspace
 
+  lint:
+    <<: *working_directory
+    <<: *default_image
+    steps:
+      - <<: *attach_workspace
+
+      - run:
+          name: Patching version
+          command: bash .circleci/scripts/lint.sh
+
   patch_version:
     <<: *working_directory
     <<: *default_image
@@ -115,10 +125,14 @@ workflows:
     jobs:
       - install:
           context: rent-bot
-      - patch_version:
+      - lint:
           context: rent-bot
           requires:
             - install
+      - patch_version:
+          context: rent-bot
+          requires:
+            - lint
           filters:
             <<: *only_master
       - docker_build:
