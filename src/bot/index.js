@@ -14,7 +14,6 @@ import OlxMiner from '../miners/olx';
 
 import Crawdler from '../crawdler';
 import Log from '../../config/logger';
-import { start } from 'repl';
 
 class Bot {
   /**
