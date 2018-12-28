@@ -11,14 +11,14 @@ const filters = [
     url: `https://www.idealista.pt/areas/arrendar-casas/com-preco-max_${maxPrice},moradias,t2/?shape=${shape}`
   },
   {
-    enabled: false,
+    enabled: true,
     type: 'house',
     topology: 't3',
     logPrefix: '[idealista:house:t3]',
     url: `https://www.idealista.pt/areas/arrendar-casas/com-preco-max_${maxPrice},moradias,t3/?shape=${shape}`
   },
   {
-    enabled: false,
+    enabled: true,
     type: 'house',
     topology: 't4',
     logPrefix: '[idealista:house:t4]',
@@ -26,21 +26,21 @@ const filters = [
   },
 
   {
-    enabled: true,
+    enabled: false,
     type: 'apartment',
     topology: 't2',
     logPrefix: '[idealista:apartment:t2]',
     url: `https://www.idealista.pt/areas/arrendar-casas/com-preco-max_${maxPrice},apartamentos,duplex,recuados,t2/?shape=${shape}`
   },
   {
-    enabled: false,
+    enabled: true,
     type: 'apartment',
     topology: 't3',
     logPrefix: '[idealista:apartment:t3]',
     url: `https://www.idealista.pt/areas/arrendar-casas/com-preco-max_${maxPrice},apartamentos,duplex,recuados,t3/?shape=${shape}`
   },
   {
-    enabled: false,
+    enabled: true,
     type: 'apartment',
     topology: 't4',
     logPrefix: '[idealista:apartment:t4]',

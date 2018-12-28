@@ -14,6 +14,7 @@ import OlxMiner from '../miners/olx';
 
 import Crawdler from '../crawdler';
 import Log from '../../config/logger';
+import { start } from 'repl';
 
 class Bot {
   /**
@@ -22,21 +23,16 @@ class Bot {
    */
   static crawlers(db) {
     Log.info('Initialising crawlers');
-    const initEachThirtySeconds = () => {
+    const start = (fct, milliseconds) => {
+      setInterval(fct, milliseconds);
+    };
+
+    start(() => {
       Bot._crawle(db, CustoJustoProvider, custoJustoFilters);
       Bot._crawle(db, ImovirtualProvider, imovirtualFilters);
       Bot._crawle(db, OlxProvider, olxFilters);
-    };
-
-    const initEachMinute = () => {
       Bot._crawle(db, IdealistaProvider, idealistaFilters);
-    };
-
-    // initEachThirtySeconds();
-    // setInterval(initEachThirtySeconds, 30000);
-
-    initEachMinute();
-    setInterval(initEachMinute, 300000);
+    }, 30000);
   }
 
   /**
