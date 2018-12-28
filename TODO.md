@@ -20,7 +20,3 @@
 - Freguesias
 
 ---
-
-db.properties.find().sort({createAt: -1}).pretty()
-db.properties.count()
-db.properties.drop()

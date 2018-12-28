@@ -52,11 +52,14 @@ class IdealistaProvider {
       // adversings
       if ($(e).attr('class') === 'adv noHover') return;
 
+      const { url, realUrl } = this.parseUrl($, e);
+
       elements.push({
         providerId: $(e).find('div.item').attr('data-adid'),
         title: $(e).find('div.item-info-container > a.item-link').text().trim(),
         subtitle: this.parseSubtitle($, e),
-        url: this.parseUrl($, e),
+        url,
+        realUrl,
         price: parseInt($(e).find('span.item-price')[0].firstChild.data, 10),
         photos: this.parsePhotos($, e),
         type: this.type,
@@ -82,9 +85,13 @@ class IdealistaProvider {
   }
 
   parseUrl($, e) {
-    const prefix = 'https://www.idealista.pt';
-    const href = $(e).find('div.item-info-container > a.item-link').attr('href');
-    return prefix + href;
+    const url = $(e).find('div.item-info-container > a.item-link').attr('href');
+    const pieceUrl = url.split('/');
+    const realUrl = Buffer.from(pieceUrl[pieceUrl.length - 1], 'base64').toString('ascii');
+    return {
+      url,
+      realUrl
+    };
   }
 
   parsePhotos($, e) {

@@ -14,8 +14,14 @@ import OlxMiner from '../miners/olx';
 
 import Crawdler from '../crawdler';
 import Log from '../../config/logger';
+import rq from '../lib/rq';
 
 class Bot {
+
+  //--------------------------------
+  // Crawler
+  //--------------------------------
+
   /**
    *
    * @param {MongoDb} db - mongo connection
@@ -80,6 +86,10 @@ class Bot {
     }
   }
 
+  //--------------------------------
+  // Data mining
+  //--------------------------------
+
   /**
    *
    * @param {MongoDb} db - mongo connection
@@ -99,6 +109,48 @@ class Bot {
    */
   static _mine(db, Miner) {
     Log.info(`Initialising data mining for ${Miner.name}...`);
+  }
+
+  //--------------------------------
+  // Available check
+  //--------------------------------
+
+  /**
+   *
+   * @param {MongoDb} db - mongo connection
+   */
+  static availableCheck(db) {
+    const callback = (err, properties) => {
+      if (err) {
+        Log.error(`Error to fetch properties from database: ${err}`);
+        return;
+      }
+      properties.forEach(p => {
+        rq(p.url)
+        .then(() => {
+          Log.debug(`Url ${p.url} by provider ${p._id} is valid`)
+        })
+        .catch(err => {
+          if (err.statusCode && err.statusCode === 404) {
+            // update
+            Log.info(`Disabling ${p.url} by provider ${p._id}`);
+            return;
+          }
+          Log.error(`Error to access ${p.url} by provider ${p._id}`);
+        });
+      });
+    };
+
+    db.collection('properties').aggregate([
+      {
+        $group: {
+          _id: "$provider",
+          url: { $min: "$url" }
+        }
+      },
+      { $sort: { createAt : -1 } }
+    ], callback);
+
   }
 }
 
