@@ -32,7 +32,7 @@ class Bot {
       Bot._crawle(db, ImovirtualProvider, imovirtualFilters);
       Bot._crawle(db, OlxProvider, olxFilters);
       Bot._crawle(db, IdealistaProvider, idealistaFilters);
-    }, 30000);
+    }, 60000);
   }
 
   /**
