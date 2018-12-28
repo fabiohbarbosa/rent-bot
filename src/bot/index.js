@@ -33,6 +33,8 @@ class Bot {
       Bot._crawle(db, OlxProvider, olxFilters);
       Bot._crawle(db, IdealistaProvider, idealistaFilters);
     }, 60000);
+
+    start();
   }
 
   /**

@@ -12,7 +12,7 @@ class IdealistaProvider {
 
   async parse() {
     try {
-      let $ = await adapt(this.url, true);
+      let $ = await adapt(this.url);
       const mainTitle = $('div#h1-container > span.h1-simulated')[0];
 
       if (mainTitle.children.length === 0) {
@@ -27,7 +27,7 @@ class IdealistaProvider {
       for (let page = 2; page <= totalPages; page++) {
         if (page > 2 && page % 2 === 0) await this.sleep(2000); // sleep to prevent future access block
 
-        $ = await adapt(this.url.replace('?', `pagina-${page}?`, true));
+        $ = await adapt(this.url.replace('?', `pagina-${page}?`));
         elements.push(...this.getElements($, page));
       }
 
