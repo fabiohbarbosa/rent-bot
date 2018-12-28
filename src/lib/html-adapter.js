@@ -1,5 +1,6 @@
 import rq from 'request-promise';
 import cheerio from 'cheerio';
+import Log from '../../config/logger';
 
 const adapt = async(url, binary = false) => {
   try {
