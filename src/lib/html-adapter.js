@@ -16,6 +16,7 @@ const adapt = async(url, binary = false) => {
     });
     return cheerio.load(page);
   } catch (err) {
+    Log.error(JSON.stringify(err.options));
     throw err;
   }
 };
