@@ -20,7 +20,7 @@ class Crawler {
       Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawl : ${err.statusCode}`);
+      Log.error(`${this.logPrefix} Error to crawl : ${err.message}`);
       Log.error(err.stack);
     }
   }

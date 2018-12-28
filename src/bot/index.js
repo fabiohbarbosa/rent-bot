@@ -32,11 +32,11 @@ class Bot {
       Bot._crawle(db, IdealistaProvider, idealistaFilters);
     };
 
-    initEachMinute();
-    initEachThirtySeconds();
+    // initEachThirtySeconds();
+    // setInterval(initEachThirtySeconds, 30000);
 
+    initEachMinute();
     setInterval(initEachMinute, 60000);
-    setInterval(initEachThirtySeconds, 30000);
   }
 
   /**
