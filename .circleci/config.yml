@@ -99,6 +99,7 @@ jobs:
       GROUP: service
       SERVICENAME: rent-bot
       HEALTHCHECK: /healthcheck
+      LOG_LEVEL: info
       PORT: 3000
 
     steps:
