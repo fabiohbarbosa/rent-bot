@@ -7,7 +7,7 @@ class IdealistaProvider {
     this.logPrefix = logPrefix;
     this.type = type;
     this.topology = topology;
-    this.url = `${url}&${Math.random()}=${Math.random()}`; // busting URL to prevent future access block
+    this.url = this.proxyUrl(url); // busting URL and proxying the request to prevent future access block
   }
 
   async parse() {
@@ -27,7 +27,7 @@ class IdealistaProvider {
       for (let page = 2; page <= totalPages; page++) {
         if (page > 2 && page % 2 === 0) await this.sleep(2000); // sleep to prevent future access block
 
-        $ = await adapt(this.url.replace('?', `pagina-${page}?`), true);
+        $ = await adapt(this.url.replace('?', `pagina-${page}?`, true));
         elements.push(...this.getElements($, page));
       }
 
@@ -35,6 +35,11 @@ class IdealistaProvider {
     } catch (err) {
       throw err;
     }
+  }
+
+  proxyUrl(url) {
+    const base64 = Buffer.from(url).toString('base64').replace('=', '');
+    return `https://www.hidemyass-freeproxy.com/proxy/en-ww/${base64.replace('=', '')}`;
   }
 
   getElements($, page = 1) {
