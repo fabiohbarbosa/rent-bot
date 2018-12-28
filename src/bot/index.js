@@ -36,7 +36,7 @@ class Bot {
     // setInterval(initEachThirtySeconds, 30000);
 
     initEachMinute();
-    setInterval(initEachMinute, 60000);
+    setInterval(initEachMinute, 300000);
   }
 
   /**
