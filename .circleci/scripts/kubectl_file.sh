@@ -42,6 +42,10 @@ spec:
             value: $NODE_ENV
           - name: PORT
             value: '$PORT'
+          - name: LOG_LEVEL
+            value: $LOG_LEVEL
+          - name: DB_URL
+            value: $DB_URL
         ports:
           - containerPort: $PORT
         readinessProbe:

@@ -1,7 +1,7 @@
 const defaultVars = {
   env: process.env.NODE_ENV || 'local',
   server: {
-    name: 'Rent Bot Crawler',
+    name: 'Rent Bot',
     maxConnections: 256
   }
 };
@@ -26,7 +26,8 @@ const envVars = {
     port: process.env.PORT
   },
   db: {
-    url: process.env.DB_URL
+    url: process.env.DB_URL,
+    dbName: 'rent-bot'
   },
   logLevel: process.env.LOG_LEVEL,
 };
