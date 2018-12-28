@@ -23,18 +23,16 @@ class Bot {
    */
   static crawlers(db) {
     Log.info('Initialising crawlers');
-    const start = (fct, milliseconds) => {
-      setInterval(fct, milliseconds);
-    };
 
-    start(() => {
+    const start = () => {
       Bot._crawle(db, CustoJustoProvider, custoJustoFilters);
       Bot._crawle(db, ImovirtualProvider, imovirtualFilters);
       Bot._crawle(db, OlxProvider, olxFilters);
       Bot._crawle(db, IdealistaProvider, idealistaFilters);
-    }, 60000);
+    };
 
     start();
+    setInterval(start, 60000);
   }
 
   /**

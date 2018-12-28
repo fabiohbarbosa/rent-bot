@@ -40,7 +40,7 @@ class CustoJustoProvider {
 
     const elements = [];
     $('div#dalist > a').each((i, e) => {
-      const price = parseInt($(e).find('h5')[0].lastChild.data.trim().split(' ')[0], 10);
+      const price = this.parsePrice($, e);
       const title = $(e).find('h2').text().trim();
 
       if (this.isMetadataInvalid(title, price)) return;
@@ -69,6 +69,14 @@ class CustoJustoProvider {
       if (isInvalid === true) return true;
     }
     return false;
+  }
+
+  parsePrice($, e) {
+    const h5 = $(e).find('h5')[0].lastChild.data.trim().split(' ');
+    if (h5.length === 2) {
+      return parseInt(h5[0], 10);
+    }
+    return parseInt(`${h5[0]}${h5[1]}`, 10);
   }
 
   parseSubtitle($, e) {
