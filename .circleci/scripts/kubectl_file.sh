@@ -32,7 +32,7 @@ spec:
   template:
     metadata:
       labels:
-        version: '$VERSION'
+        app: $GROUP-$SERVICENAME
     spec:
       containers:
       - name: $GROUP-$SERVICENAME
