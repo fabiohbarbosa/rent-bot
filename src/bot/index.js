@@ -18,9 +18,9 @@ import rq from '../lib/rq';
 
 class Bot {
 
-  //--------------------------------
+  // --------------------------------
   // Crawler
-  //--------------------------------
+  // --------------------------------
 
   /**
    *
@@ -86,9 +86,9 @@ class Bot {
     }
   }
 
-  //--------------------------------
+  // --------------------------------
   // Data mining
-  //--------------------------------
+  // --------------------------------
 
   /**
    *
@@ -111,9 +111,9 @@ class Bot {
     Log.info(`Initialising data mining for ${Miner.name}...`);
   }
 
-  //--------------------------------
+  // --------------------------------
   // Available check
-  //--------------------------------
+  // --------------------------------
 
   /**
    *
@@ -126,29 +126,29 @@ class Bot {
         return;
       }
       properties.forEach(p => {
-        rq(p.url)
-        .then(() => {
-          Log.debug(`Url ${p.url} by provider ${p._id} is valid`)
-        })
-        .catch(err => {
-          if (err.statusCode && err.statusCode === 404) {
+        rq(p.url, true)
+          .then(() => {
+            Log.info(`Url ${p.url} by provider ${p._id} is valid`);
+          })
+          .catch(err => {
+            if (err.statusCode && err.statusCode === 404) {
             // update
-            Log.info(`Disabling ${p.url} by provider ${p._id}`);
-            return;
-          }
-          Log.error(`Error to access ${p.url} by provider ${p._id}`);
-        });
+              Log.info(`Disabling ${p.url} by provider ${p._id}`);
+              return;
+            }
+            Log.error(`Error to access ${p.url} by provider ${p._id}`);
+          });
       });
     };
 
     db.collection('properties').aggregate([
       {
         $group: {
-          _id: "$provider",
-          url: { $min: "$url" }
+          _id: '$provider',
+          url: { $min: '$url' }
         }
       },
-      { $sort: { createAt : -1 } }
+      { $sort: { createAt: -1 } }
     ], callback);
 
   }
