@@ -16,12 +16,8 @@ import IdealistaMiner from '../miners/idealista';
 import ImovirtualMiner from '../miners/imovirtual';
 import OlxMiner from '../miners/olx';
 
-import props from '../../config/props';
 import Log from '../../config/logger';
-
-const crawlerInterval = 1 * 60 * 1000; // 1 minute
-const availableInterval = 1 * 60 * 1000; // 30 minutes
-const dataMiningInterval = 1 * 60 * 1000; // 1 minute
+import props, { crawlerInterval, availableInterval, dataMiningInterval } from '../../config/props';
 
 class Bot {
 
