@@ -40,7 +40,7 @@ class CrawlerBot {
               { providerId: e.providerId },
               {
                 $set: { ...e, provider: providerName },
-                $setOnInsert: { createAt: new Date(), status: 'PENDING' }
+                $setOnInsert: { createAt: new Date(), status: 'PENDING', notificated: false }
               },
               { upsert: true },
               updateOneCallback
