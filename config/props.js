@@ -43,7 +43,7 @@ const envVars = {
 };
 
 const crawlerInterval = 1 * 60 * 1000; // 1 minute
-const availableInterval = 5.5 * 60 * 1000; // 5 1/2 minutes
+const availableInterval = 2.5 * 60 * 1000; // 2 1/2 minutes
 const dataMiningInterval = 1 * 60 * 1000; // 1 minute
 
 export { crawlerInterval, availableInterval, dataMiningInterval };

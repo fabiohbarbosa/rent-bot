@@ -34,6 +34,7 @@ class AvailabilityBot {
     // Evaluate availability
     // ----------------------
     const cursor = db.collection('properties').aggregate([
+      { $match: { status: { $ne: 'UNVAILABLE' } } },
       {
         $group: {
           _id: { provider: '$provider', url: '$url' },
