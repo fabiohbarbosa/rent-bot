@@ -33,6 +33,6 @@ server.listen(port, async() => {
 
   Log.info('Initialising rent bot');
   Bot.crawlers(db);
-  // Bot.availableCheck(db);
-  // Bot.dataMining(db);
+  Bot.evaluateAvailability(db);
+  Bot.dataMining(db);
 });

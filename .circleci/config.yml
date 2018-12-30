@@ -105,12 +105,17 @@ jobs:
       CLUSTER_REGION: europe-west1
       CLUSTER_ZONE: europe-west1-d
       REPLICAS: 1
-      NODE_ENV: prod
       GROUP: service
       SERVICENAME: rent-bot
       HEALTHCHECK: /healthcheck
-      LOG_LEVEL: info
+
+      NODE_ENV: prod
       PORT: 3000
+      LOG_LEVEL: info
+
+      CRAWLER_BOT: true
+      AVAILABILITY_BOT: true
+      DATA_MINING_BOT: false
 
     steps:
       - <<: *attach_workspace

@@ -16,6 +16,11 @@ const localVars = {
     url: 'mongodb://localhost:27017',
     dbName: 'rent-bot'
   },
+  bots: {
+    crawler: false,
+    availability: true,
+    dataMining: false
+  },
   logLevel: 'info'
 };
 
@@ -28,6 +33,11 @@ const envVars = {
   db: {
     url: process.env.DB_URL,
     dbName: 'rent-bot'
+  },
+  bots: {
+    crawler: process.env.CRAWLER_BOT,
+    availability: process.env.AVAILABILITY_BOT,
+    dataMining: process.env.DATA_MINING_BOT
   },
   logLevel: process.env.LOG_LEVEL,
 };

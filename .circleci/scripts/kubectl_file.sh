@@ -46,6 +46,13 @@ spec:
             value: $LOG_LEVEL
           - name: DB_URL
             value: $DB_URL
+
+          - name: CRAWLER_BOT
+            value: $CRAWLER_BOT
+          - name: AVAILABILITY_BOT
+            value: $AVAILABILITY_BOT
+          - name: DATA_MINING_BOT
+            value: $DATA_MINING_BOT
         ports:
           - containerPort: $PORT
         readinessProbe:
