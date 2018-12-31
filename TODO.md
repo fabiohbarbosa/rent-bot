@@ -6,23 +6,19 @@
 ## Data Mining
 
 **Custo Justo**
-- Certificação energética dentro das páginas - OK
-- Habilitar moradias (bug de tipologia) ******
 - Freguesias
-- Imóveis antigos ******
+- Habilitar moradias (bug de tipologia) ******
+- Remover imóveis com data antiga
 
 **Idealista**
-- Certificação energética dentro das páginas - OK
 - Freguesias
-- Imóveis antigos
+- Remover imóveis com data antiga
 - 
 **Imovirtual**
-- Certificação energética dentro das páginas
 - Freguesias
-- Imóveis antigos
+- Remover imóveis com data antiga
 - 
 **Olx**
-- Certificação energética dentro das páginas
 - Freguesias
 - Remover duplicados do imovirtual (ou excluir de vez imovirtual vindo do OLX)
-- Imóveis antigos
+- Remover imóveis com data antiga
