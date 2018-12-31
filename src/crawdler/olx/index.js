@@ -43,11 +43,14 @@ class OlxProvider {
 
     const elements = [];
     $('table#offers_table > tbody > tr.wrap > td > div.offer-wrapper > table > tbody').each((i, e) => {
+      const url = $(e).find('td.title-cell > div > h3 > a').attr('href');
+      if (url.includes('https://www.imovirtual.com')) return;
+
       elements.push({
         providerId: $(e)[0].parent.attribs['data-id'],
         title: $(e).find('td.title-cell > div > h3').text().trim(),
         subtitle: $(e).find('td.bottom-cell > div > p > small').text().trim().split(' ')[0],
-        url: $(e).find('td.title-cell > div > h3 > a').attr('href'),
+        url,
         price: parseInt($(e).find('td.td-price > div > p').text().trim().split(' ')[0], 10),
         photos: this.parsePhotos($, e),
         type: this.type,
