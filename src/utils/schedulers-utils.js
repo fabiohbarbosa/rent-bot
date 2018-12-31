@@ -9,17 +9,20 @@
  */
 const batchProperties = (db, sortField) => {
   const sort = {};
+  sort[`is${capitalizeFirstLetter(sortField)}`] = 1;
   sort[sortField] = 1;
 
   const filter = {
     _id: false, url: true, provider: true
   };
+  filter[`is${capitalizeFirstLetter(sortField)}`] = true;
+  filter[sortField] = true;
 
   return db.collection('properties')
-    .find({ status: { $ne: 'UNVAILABLE' } })
+    .find({})
     .project(filter)
     .sort(sort)
-    .limit(8)
+    .limit(4)
     .toArray();
 };
 
@@ -31,8 +34,12 @@ const batchProperties = (db, sortField) => {
  */
 const updateDateBatch = (db, callback, vars) => {
   const { url, sortField, status } = vars;
+  let { set } = vars;
 
-  const set = {};
+  if (!set) {
+    set = {};
+  }
+
   set[sortField] = new Date();
   set[`is${capitalizeFirstLetter(sortField)}`] = true;
 

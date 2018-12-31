@@ -18,8 +18,8 @@ const localVars = {
   },
   bots: {
     crawler: true,
-    availability: true,
-    dataMining: true
+    dataMining: true,
+    availability: true
   },
   logLevel: 'info'
 };
@@ -42,9 +42,10 @@ const envVars = {
   logLevel: process.env.LOG_LEVEL,
 };
 
-const crawlerInterval = 1 * 60 * 1000; // 1 minute
-const availableInterval = 2.5 * 60 * 1000; // 2 1/2 minutes
-const dataMiningInterval = 1.5 * 60 * 1000; // 1 1/2 minute
+const crawlerInterval = 0.5 * 60 * 1000;
+const dataMiningInterval = 0.4 * 60 * 1000;
+const availableInterval = 1 * 60 * 1000;
+
 const maxPrice = 850;
 const energeticCertificates = [
   'a+', '+a', 'a-', '-a', 'a',

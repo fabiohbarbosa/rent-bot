@@ -17,11 +17,7 @@ class IdealistaMiner {
     }
 
     const item = $('div.details-property_features > ul > span[class^="icon-energy"]');
-    const isOnFilter = this.ensureEnergeticCertificate(url, item);
-
-    if (isOnFilter === false) {
-      throw new BotError(`The page ${url} is out of filter`, 400);
-    }
+    return this.ensureEnergeticCertificate(url, item);
   }
 
   ensureEnergeticCertificate(url, item) {
@@ -29,12 +25,23 @@ class IdealistaMiner {
       throw new BotError(`The page ${url} is out of filter`, 400);
     }
     const energeticCertificate = item[0].attribs['title'];
+
+    // not found
     if (!energeticCertificate) {
       Log.warn(`${this.logPrefix} Not found energetic certificate for ${url}`);
-      return false; // property without energetic certificate
+      throw new BotError(`The page ${url} is out of filter`, 400);
     }
+
     Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
-    return energeticCertificates.includes(energeticCertificate);
+    const isOnFilter = energeticCertificates.includes(energeticCertificate);
+
+    // found less than minimal expected
+    if (!isOnFilter) {
+      throw new BotError(`The page ${url} is out of filter`, 400, { energeticCertificate });
+    }
+
+    // expected energeetic certificate
+    return energeticCertificate;
   }
 
 }

@@ -17,11 +17,7 @@ class CustoJustoMiner {
     }
 
     const items = $('ul.list-group.gbody > li.list-group-item');
-    const isOnFilter = this.ensureEnergeticCertificate(url, items);
-
-    if (isOnFilter === false) {
-      throw new BotError(`The page ${url} is out of filter`, 400);
-    }
+    return this.ensureEnergeticCertificate(url, items);
   }
 
   ensureEnergeticCertificate(url, items) {
@@ -33,11 +29,21 @@ class CustoJustoMiner {
       if (data.includes('cert') || data.includes('cert.') || data.includes('energética') || data.includes('energetica')) {
         const energeticCertificate = item.children[0].firstChild.data.toLowerCase();
         Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
-        return energeticCertificates.includes(energeticCertificate);
+        const isOnFilter = energeticCertificates.includes(energeticCertificate);
+
+        // found less than minimal expected
+        if (!isOnFilter) {
+          throw new BotError(`The page ${url} is out of filter`, 400, { energeticCertificate });
+        }
+
+        // expected energeetic certificate
+        return energeticCertificate;
       }
     }
+
+    // not found
     Log.warn(`${this.logPrefix} Not found energetic certificate for ${url}`);
-    return false; // property without energetic certificate
+    throw new BotError(`The page ${url} is out of filter`, 400);
   }
 }
 

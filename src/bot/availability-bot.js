@@ -61,7 +61,7 @@ class AvailabilityBot {
       properties.forEach(p =>
         new AvailabilityBot(db, p.provider, p.url).evaluate()
       );
-    } catch(err) {
+    } catch (err) {
       Log.error(`Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }

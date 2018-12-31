@@ -28,21 +28,25 @@ class DataMiningBot {
     const status = this.status;
 
     this.miner.mine(url)
-      .then(() => {
+      .then((energeticCertificate) => {
         Log.info(`${this.logPrefix} Success to mine ${url}`);
         updateDateBatch(this.db, callback, {
-          url, sortField
+          url, sortField, set: { energeticCertificate }
         });
       })
       .catch(err => {
+        // Unknown error
         if (!err.status && !err.status !== 400) {
           Log.error(`${this.logPrefix} Error to mine ${url}: ${err}`);
           Log.error(err.stack);
           return;
         }
+
+        // BotError
+        const { energeticCertificate } = err.fields;
         Log.warn(`${this.logPrefix} ${err.message}`);
         updateDateBatch(this.db, callback, {
-          url, sortField, status
+          url, sortField, status, set: { energeticCertificate }
         });
       });
   };
@@ -61,7 +65,7 @@ class DataMiningBot {
       properties.forEach(p =>
         new DataMiningBot(db, p.provider, p.url).mine()
       );
-    } catch(err) {
+    } catch (err) {
       Log.error(`Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }
