@@ -22,7 +22,7 @@ const batchProperties = (db, sortField) => {
     .find({})
     .project(projection)
     .sort(sort)
-    .limit(4)
+    .limit(1)
     .toArray();
 };
 

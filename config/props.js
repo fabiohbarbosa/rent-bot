@@ -42,9 +42,9 @@ const envVars = {
   logLevel: process.env.LOG_LEVEL,
 };
 
-const crawlerInterval = 0.5 * 60 * 1000;
-const dataMiningInterval = 0.4 * 60 * 1000;
-const availableInterval = 1 * 60 * 1000;
+const crawlerInterval = 1.2 * 60 * 1000;
+const dataMiningInterval = 0.2 * 60 * 1000;
+const availableInterval = 1.5 * 60 * 1000;
 
 const maxPrice = 850;
 const energeticCertificates = [
