@@ -14,7 +14,8 @@ class AvailabilityBot {
     this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.url = url;
     this.logPrefix = this.availability.logPrefix;
-    this.status = 'UNVAILABLE';
+    this.statusAvailability = 'PENDING';
+    this.statusUnvailable = 'UNVAILABLE';
     this.sortField = sortField;
   }
 
@@ -25,13 +26,12 @@ class AvailabilityBot {
     const url = this.url;
     const sortField = this.sortField;
     const callback = this.callback.bind(this);
-    const status = this.status;
 
     this.availability.evaluate(url)
       .then(() => {
         Log.info(`${this.logPrefix} The ${url} is a valid URL`);
         updateDateBatch(this.db, callback, {
-          url, sortField
+          url, sortField, status: this.statusAvailability
         });
       })
       .catch(err => {
@@ -42,7 +42,7 @@ class AvailabilityBot {
         }
         Log.warn(`${this.logPrefix} ${err.message}`);
         updateDateBatch(this.db, callback, {
-          url, sortField, status
+          url, sortField, status: this.statusUnvailable
         });
       });
   };

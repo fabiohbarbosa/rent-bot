@@ -14,7 +14,8 @@ class DataMiningBot {
     this.miner = MinerBotFactory.getInstance(provider, url);
     this.url = url;
     this.logPrefix = this.miner.logPrefix;
-    this.status = 'OUT_OF_FILTER';
+    this.statusInFilter = 'PENDING';
+    this.statusOutOfFilter = 'OUT_OF_FILTER';
     this.sortField = sortField;
   }
 
@@ -25,13 +26,12 @@ class DataMiningBot {
     const url = this.url;
     const sortField = this.sortField;
     const callback = this.callback.bind(this);
-    const status = this.status;
 
     this.miner.mine(url)
       .then((energeticCertificate) => {
         Log.info(`${this.logPrefix} Success to mine ${url}`);
         updateDateBatch(this.db, callback, {
-          url, sortField, set: { energeticCertificate }
+          url, sortField, status: this.statusInFilter, set: { energeticCertificate }
         });
       })
       .catch(err => {
@@ -46,7 +46,7 @@ class DataMiningBot {
         const { energeticCertificate } = err.fields;
         Log.warn(`${this.logPrefix} ${err.message}`);
         updateDateBatch(this.db, callback, {
-          url, sortField, status, set: { energeticCertificate }
+          url, sortField, status: this.statusOutOfFilter, set: { energeticCertificate }
         });
       });
   };

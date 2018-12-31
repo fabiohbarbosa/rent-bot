@@ -12,15 +12,15 @@ const batchProperties = (db, sortField) => {
   sort[`is${capitalizeFirstLetter(sortField)}`] = 1;
   sort[sortField] = 1;
 
-  const filter = {
+  const projection = {
     _id: false, url: true, provider: true
   };
-  filter[`is${capitalizeFirstLetter(sortField)}`] = true;
-  filter[sortField] = true;
+  projection[`is${capitalizeFirstLetter(sortField)}`] = true;
+  projection[sortField] = true;
 
   return db.collection('properties')
     .find({})
-    .project(filter)
+    .project(projection)
     .sort(sort)
     .limit(4)
     .toArray();
