@@ -31,7 +31,7 @@ const buildFilters = () => {
         enabled: types.house,
         type: 'house',
         topology: t.name,
-        logPrefix: `[custojusto:${c.name}:house:${t.name}]`,
+        logPrefix: `[crawler:custojusto:${c.name}:house:${t.name}]`,
         url: `https://www.custojusto.pt/porto/${c.name}/moradias-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
       });
 
@@ -39,7 +39,7 @@ const buildFilters = () => {
         enabled: types.apartment,
         type: 'apartment',
         topology: t.name,
-        logPrefix: `[custojusto:${c.name}:apartment:${t.name}]`,
+        logPrefix: `[crawler:custojusto:${c.name}:apartment:${t.name}]`,
         url: `https://www.custojusto.pt/porto/${c.name}/apartamentos-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
       });
     });
@@ -50,6 +50,5 @@ const buildFilters = () => {
 const filters = buildFilters();
 
 const itemsPage = 40;
-const maxPrice = 850;
 
-export { filters, itemsPage, regexes, maxPrice };
+export { filters, itemsPage, regexes };

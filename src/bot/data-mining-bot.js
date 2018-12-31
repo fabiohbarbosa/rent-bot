@@ -1,14 +1,72 @@
+/**
+ * @typedef {import('mongodb').Db} MongoDb
+ */
+
+import MinerBotFactory from '../miners/factory';
 import Log from '../../config/logger';
+import { batchProperties, updateDateBatch } from '../utils/schedulers-utils';
+
+const sortField = 'dataMiningLastCheck';
 
 class DataMiningBot {
-  /**
-   *
-   * @param {MongoDb} db - mongo connection
-   * @param {*} Minder - data miner of provider data
-   */
-  static mine(db, Miner) {
-    Log.info(`Initialising data mining for ${Miner.name}...`);
+  constructor(db, provider, url) {
+    this.db = db;
+    this.miner = MinerBotFactory.getInstance(provider, url);
+    this.url = url;
+    this.logPrefix = this.miner.logPrefix;
+    this.status = 'OUT_OF_FILTER';
+    this.sortField = sortField;
   }
+
+  /**
+   * @param {MongoDb} db - mongo connection
+   */
+  mine() {
+    const url = this.url;
+    const sortField = this.sortField;
+    const callback = this.callback.bind(this);
+    const status = this.status;
+
+    this.miner.mine(url)
+      .then(() => {
+        Log.info(`${this.logPrefix} Success to mine ${url}`);
+        updateDateBatch(this.db, callback, {
+          url, sortField
+        });
+      })
+      .catch(err => {
+        if (!err.status && !err.status !== 400) {
+          Log.error(`${this.logPrefix} Error to mine ${url}: ${err}`);
+          Log.error(err.stack);
+          return;
+        }
+        Log.warn(`${this.logPrefix} ${err.message}`);
+        updateDateBatch(this.db, callback, {
+          url, sortField, status
+        });
+      });
+  };
+
+  callback(err, result) {
+    if (err) {
+      Log.error(`${this.logPrefix} Error to update availability batch date to ${this.url}`);
+      return;
+    }
+    Log.debug(`${this.logPrefix} Success to update availability batch date: ${result}`);
+  };
+
+  static async initialise(db) {
+    try {
+      const properties = await batchProperties(db, sortField);
+      properties.forEach(p =>
+        new DataMiningBot(db, p.provider, p.url).mine()
+      );
+    } catch(err) {
+      Log.error(`Error to load properties from database: ${err.message}`);
+      Log.error(err.stack);
+    }
+  }
+
 }
 
 export default DataMiningBot;

@@ -1,6 +1,11 @@
 db.properties.update(
-  { },
-  { $set: {availabilityLastCheck: new Date()} },
+  {},
+  {
+    $set: {
+      availabilityLastCheck: new Date(),
+      isAvailabilityLastCheck: false
+    }
+  },
   false,
   true
 );

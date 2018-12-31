@@ -1,8 +1,8 @@
-class AvailabilityError extends Error {
+class BotError extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
   }
 }
 
-export default AvailabilityError;
+export default BotError;

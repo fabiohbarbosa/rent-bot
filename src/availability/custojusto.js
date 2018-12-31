@@ -1,5 +1,5 @@
 import { adapt } from '../lib/html-adapter';
-import AvailabilityError from './availability-error';
+import BorError from '../utils/bot-error';
 
 class CustoJustoAvailability {
   constructor(logPrefix) {
@@ -18,7 +18,7 @@ class CustoJustoAvailability {
     if (title.length > 0) {
       return;
     }
-    throw new AvailabilityError(`The page ${url} is unvailable`, 404);
+    throw new BorError(`The page ${url} is unvailable`, 404);
   }
 }
 

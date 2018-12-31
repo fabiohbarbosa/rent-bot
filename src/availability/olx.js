@@ -1,5 +1,5 @@
 import { adapt } from '../lib/html-adapter';
-import AvailabilityError from './availability-error';
+import BotError from '../utils/bot-error';
 
 class OlxAvailability {
   constructor(logPrefix) {
@@ -18,7 +18,7 @@ class OlxAvailability {
     if (title.length > 0) {
       return;
     }
-    throw new AvailabilityError(`The page ${url} is unvailable`, 404);
+    throw new BotError(`The page ${url} is unvailable`, 404);
   }
 
 }

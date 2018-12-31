@@ -3,7 +3,7 @@ const defaultVars = {
   server: {
     name: 'Rent Bot',
     maxConnections: 256
-  }
+  },
 };
 
 const localVars = {
@@ -17,9 +17,9 @@ const localVars = {
     dbName: 'rent-bot'
   },
   bots: {
-    crawler: false,
+    crawler: true,
     availability: true,
-    dataMining: false
+    dataMining: true
   },
   logLevel: 'info'
 };
@@ -44,7 +44,13 @@ const envVars = {
 
 const crawlerInterval = 1 * 60 * 1000; // 1 minute
 const availableInterval = 2.5 * 60 * 1000; // 2 1/2 minutes
-const dataMiningInterval = 1 * 60 * 1000; // 1 minute
+const dataMiningInterval = 1.5 * 60 * 1000; // 1 1/2 minute
+const maxPrice = 850;
+const energeticCertificates = [
+  'a+', '+a', 'a-', '-a', 'a',
+  'b+', '+b', 'b-', '-b', 'b',
+  'c+', '+c', 'c-', '-c', 'c',
+];
 
-export { crawlerInterval, availableInterval, dataMiningInterval };
+export { crawlerInterval, availableInterval, dataMiningInterval, maxPrice, energeticCertificates };
 export default !process.env.NODE_ENV ? localVars : envVars;

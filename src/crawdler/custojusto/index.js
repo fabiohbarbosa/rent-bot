@@ -1,6 +1,7 @@
 import { adapt } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
-import { filters, itemsPage, regexes, maxPrice } from './config';
+import { filters, itemsPage, regexes } from './config';
+import { maxPrice } from '../../../config/props';
 
 class CustoJustoProvider {
   constructor(logPrefix, type, topology, url) {

@@ -1,5 +1,5 @@
 import rq from '../lib/rq';
-import AvailabilityError from './availability-error';
+import BotError from '../utils/bot-error';
 
 class IdealistaAvailability {
   constructor(logPrefix) {
@@ -11,7 +11,7 @@ class IdealistaAvailability {
       await rq(url);
     } catch (err) {
       if (err.statusCode && err.statusCode === 404) {
-        throw new AvailabilityError(`The page ${url} is unvailable`, 404);
+        throw new BotError(`The page ${url} is unvailable`, 404);
       }
       throw new Error(`Error to access url ${url}`);
     }

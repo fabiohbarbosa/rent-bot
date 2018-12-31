@@ -11,11 +11,6 @@ import IdealistaProvider, { filters as idealistaFilters } from '../crawdler/idea
 import ImovirtualProvider, { filters as imovirtualFilters } from '../crawdler/imovirtual';
 import OlxProvider, { filters as olxFilters } from '../crawdler/olx';
 
-import CustoJustoMiner from '../miners/custojusto';
-import IdealistaMiner from '../miners/idealista';
-import ImovirtualMiner from '../miners/imovirtual';
-import OlxMiner from '../miners/olx';
-
 import Log from '../../config/logger';
 import props, { crawlerInterval, availableInterval, dataMiningInterval } from '../../config/props';
 
@@ -57,13 +52,10 @@ class Bot {
     Log.info('Initialising data minings');
 
     const start = () => {
-      DataMiningBot.mine(db, CustoJustoMiner);
-      DataMiningBot.mine(db, IdealistaMiner);
-      DataMiningBot.mine(db, ImovirtualMiner);
-      DataMiningBot.mine(db, OlxMiner);
+      DataMiningBot.initialise(db);
     };
 
-    start();
+    setTimeout(() => start(), 5000);
     setInterval(start, dataMiningInterval);
   }
 
@@ -80,10 +72,10 @@ class Bot {
     Log.info('Initialising evaluate availability');
 
     const start = () => {
-      AvailabilityBot.evaluate(db);
+      AvailabilityBot.initialise(db);
     };
 
-    start();
+    setTimeout(() => start(), 10000);
     setInterval(start, availableInterval);
   }
 }
