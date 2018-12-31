@@ -115,7 +115,7 @@ jobs:
 
       CRAWLER_BOT: true
       AVAILABILITY_BOT: true
-      DATA_MINING_BOT: false
+      DATA_MINING_BOT: true
 
     steps:
       - <<: *attach_workspace
