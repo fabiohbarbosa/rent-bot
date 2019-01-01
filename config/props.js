@@ -13,7 +13,7 @@ const defaultVars = {
       delay: 0 * 1000
     },
     dataMining: {
-      batchSize: 1,
+      batchSize: 3,
       interval: 0.5 * 60 * 1000,
       delay: 5 * 1000 // 5 seconds
     },
