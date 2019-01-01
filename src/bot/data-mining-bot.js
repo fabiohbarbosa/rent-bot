@@ -63,7 +63,7 @@ class DataMiningBot {
   static async initialise(db) {
     try {
       const query = {
-        status: { $ne: 'UNVAILABLE' }
+        status: { $ne: 'UNVAILABLE' }, provider: 'idealista'
       };
 
       const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };

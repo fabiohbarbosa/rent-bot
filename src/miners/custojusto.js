@@ -57,7 +57,7 @@ class CustoJustoMiner {
 
   isOnFilter(data) {
     if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
-    if (!dataFilters.topology.includes(data.topology)) return false;
+    if (!dataFilters.topologies.includes(data.topology)) return false;
     return true;
   }
 }

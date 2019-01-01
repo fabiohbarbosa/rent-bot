@@ -17,10 +17,9 @@ class IdealistaMiner {
       throw new Error(`Error to access url ${url}`);
     }
 
-    const elements = $('div.details-property_features > ul > span[class^="icon-energy"]');
-
     const data = {
-      energeticCertificate: this.getEnergeticCertificate(elements)
+      energeticCertificate: this.getEnergeticCertificate($),
+      topology: this.getTopology($)
     };
 
     const isOnFilter = this.isOnFilter(data);
@@ -33,13 +32,24 @@ class IdealistaMiner {
     };
   }
 
-  getEnergeticCertificate(elements) {
+  getEnergeticCertificate($) {
+    const elements = $('div.details-property_features > ul > span[class^="icon-energy"]');
     if (!elements || elements.length !== 1) return 'unknown';
 
     const energeticCertificate = elements[0].attribs['title'];
     if (!energeticCertificate) return 'unknown';
 
     return energeticCertificate;
+  }
+
+  getTopology($) {
+    for (let i = 0; i < dataFilters.topologies.length; i++) {
+      const topology = dataFilters.topologies[i];
+
+      if ($(`div.info-features > span:contains("${topology.toUpperCase()}")`)) {
+        return topology;
+      }
+    }
   }
 
   isOnFilter(data) {

@@ -7,13 +7,11 @@
 
 **Custo Justo**
 - Freguesias
-- Habilitar moradias (bug de tipologia) ******
 - Remover imóveis com data antiga
 
 **Idealista**
 - Freguesias
 - Remover imóveis com data antiga
-- Buscar topologia
 
 **Imovirtual**
 - Freguesias

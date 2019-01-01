@@ -48,7 +48,7 @@ const localVars = {
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: false,
+      enabled: true,
       delay: 0
     }
   },
@@ -89,7 +89,7 @@ const dataFilters = {
     'b+', '+b', 'b-', '-b', 'b',
     'c+', '+c', 'c-', '-c', 'c',
   ],
-  topology: ['t3', 't4']
+  topologies: ['t3', 't4']
 };
 
 export { dataFilters };
