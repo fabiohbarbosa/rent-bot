@@ -1,5 +1,5 @@
 import { adapt } from '../lib/html-adapter';
-import { energeticCertificates } from '../../config/props';
+import { dataFilters } from '../../config/props';
 import Log from '../../config/logger';
 
 class CustoJustoMiner {
@@ -16,24 +16,49 @@ class CustoJustoMiner {
       throw new Error(`Error to access url ${url}`);
     }
 
-    const items = $('ul.list-group.gbody > li.list-group-item');
-    return this.ensureEnergeticCertificate(items);
+    const elements = $('ul.list-group.gbody');
+
+    const data = {
+      energeticCertificate: this.getEnergeticCertificate(elements),
+      topology: this.getTopology(elements)
+    };
+
+    const isOnFilter = this.isOnFilter(data);
+
+    Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
+    Log.debug(`${this.logPrefix} Found topology '${data.topology}' to ${url}`);
+
+    return {
+      isOnFilter,
+      data
+    };
   }
 
-  ensureEnergeticCertificate(items) {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (!item.children[0] || !item.children[1] || !item.children[1].data) continue;
+  isInvalidElement(el) {
+    return !el || el.length !== 1 ||
+      !el[0].firstChild ||
+      !el[0].firstChild.firstChild ||
+      !el[0].firstChild.firstChild.data;
+  }
 
-      const data = item.children[1].data.toLowerCase();
-      if (data.includes('cert') || data.includes('cert.') || data.includes('energética') || data.includes('energetica')) {
-        const energeticCertificate = item.children[0].firstChild.data.toLowerCase();
-        const isOnFilter = energeticCertificates.includes(energeticCertificate);
+  getEnergeticCertificate(elements) {
+    const el = elements.find("li:contains('Cert.')");
+    if (this.isInvalidElement(el)) return 'unknown';
 
-        return { isOnFilter, energeticCertificate };
-      }
-    }
-    return { isOnFilter: false, energeticCertificate: 'unknown' };
+    return el[0].firstChild.firstChild.data.toLowerCase();
+  }
+
+  getTopology(elements) {
+    const el = elements.find("li:contains('Tipologia')");
+    if (this.isInvalidElement(el)) return 'unknown';
+
+    return el[0].firstChild.firstChild.data.toLowerCase();
+  }
+
+  isOnFilter(data) {
+    if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
+    if (!dataFilters.topology.includes(data.topology)) return false;
+    return true;
   }
 }
 

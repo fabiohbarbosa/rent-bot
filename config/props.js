@@ -38,12 +38,12 @@ const localVars = {
   bots: {
     crawler: {
       ...defaultVars.bots.crawler,
-      enabled: true,
+      enabled: false,
       delay: 0
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: false,
+      enabled: true,
       delay: 0
     },
     availability: {
@@ -82,12 +82,15 @@ const envVars = {
   logLevel: process.env.LOG_LEVEL,
 };
 
-const maxPrice = 850;
-const energeticCertificates = [
-  'a+', '+a', 'a-', '-a', 'a',
-  'b+', '+b', 'b-', '-b', 'b',
-  'c+', '+c', 'c-', '-c', 'c',
-];
+const dataFilters = {
+  maxPrice: 850,
+  energeticCertificates: [
+    'a+', '+a', 'a-', '-a', 'a',
+    'b+', '+b', 'b-', '-b', 'b',
+    'c+', '+c', 'c-', '-c', 'c',
+  ],
+  topology: ['t3', 't4']
+};
 
-export { maxPrice, energeticCertificates };
+export { dataFilters };
 export default !process.env.NODE_ENV ? localVars : envVars;

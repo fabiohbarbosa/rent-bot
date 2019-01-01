@@ -23,9 +23,7 @@ class DataMiningBot {
     const callback = this.callback.bind(this);
 
     try {
-      const { isOnFilter, energeticCertificate } = await this.miner.mine(url);
-
-      Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
+      const { isOnFilter, data } = await this.miner.mine(url);
 
       let status = 'PENDING';
       if (!isOnFilter) {
@@ -36,7 +34,7 @@ class DataMiningBot {
       }
 
       const set = {
-        energeticCertificate,
+        ...data,
         dataMiningLastCheck: new Date(),
         isDataMiningLastCheck: true,
         status

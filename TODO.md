@@ -21,5 +21,4 @@
 - 
 **Olx**
 - Freguesias
-- Remover duplicados do imovirtual (ou excluir de vez imovirtual vindo do OLX)
 - Remover imóveis com data antiga

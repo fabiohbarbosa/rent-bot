@@ -1,5 +1,5 @@
 import { adapt } from '../lib/html-adapter';
-import { energeticCertificates } from '../../config/props';
+import { dataFilters } from '../../config/props';
 import Log from '../../config/logger';
 
 class ImovirtualMiner {
@@ -16,19 +16,36 @@ class ImovirtualMiner {
       throw new Error(`Error to access url ${url}`);
     }
 
-    const item = $("li:contains('Certificado Energ')");
-    return this.ensureEnergeticCertificate(item);
+    const elements = $('li:contains("Certificado Energ")');
+    const data = {
+      energeticCertificate: this.getEnergeticCertificate(elements)
+    };
+
+    const isOnFilter = this.isOnFilter(data);
+
+    Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
+
+    return {
+      isOnFilter,
+      data
+    };
   }
 
-  ensureEnergeticCertificate(item) {
-    if (!item || item.length !== 1 || !item[0].lastChild || !item[0].lastChild.firstChild || !item[0].lastChild.firstChild.data) {
-      return { isOnFilter: false, energeticCertificate: 'unknown' };
+  getEnergeticCertificate(elements) {
+    if (!elements ||
+        elements.length !== 1 ||
+        !elements[0].lastChild ||
+        !elements[0].lastChild.firstChild ||
+        !elements[0].lastChild.firstChild.data) {
+      return 'unknown';
     }
 
-    const energeticCertificate = item[0].lastChild.firstChild.data.toLowerCase();
-    const isOnFilter = energeticCertificates.includes(energeticCertificate);
+    return elements[0].lastChild.firstChild.data.toLowerCase();
+  }
 
-    return { isOnFilter, energeticCertificate };
+  isOnFilter(data) {
+    if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
+    return true;
   }
 
 }

@@ -1,5 +1,5 @@
 import { adaptRetry } from '../lib/html-adapter';
-import { energeticCertificates } from '../../config/props';
+import { dataFilters } from '../../config/props';
 import Log from '../../config/logger';
 import { proxy } from '../lib/proxy-factory';
 
@@ -17,24 +17,34 @@ class IdealistaMiner {
       throw new Error(`Error to access url ${url}`);
     }
 
-    const item = $('div.details-property_features > ul > span[class^="icon-energy"]');
-    return this.ensureEnergeticCertificate(item);
+    const elements = $('div.details-property_features > ul > span[class^="icon-energy"]');
+
+    const data = {
+      energeticCertificate: this.getEnergeticCertificate(elements)
+    };
+
+    const isOnFilter = this.isOnFilter(data);
+
+    Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
+
+    return {
+      isOnFilter,
+      data
+    };
   }
 
-  ensureEnergeticCertificate(item) {
-    if (!item || item.length !== 1) {
-      return { isOnFilter: false, energeticCertificate: 'unknown' };
-    }
-    const energeticCertificate = item[0].attribs['title'];
+  getEnergeticCertificate(elements) {
+    if (!elements || elements.length !== 1) return 'unknown';
 
-    // not found
-    if (!energeticCertificate) {
-      return { isOnFilter: false, energeticCertificate: 'unknown' };
-    }
+    const energeticCertificate = elements[0].attribs['title'];
+    if (!energeticCertificate) return 'unknown';
 
-    const isOnFilter = energeticCertificates.includes(energeticCertificate);
+    return energeticCertificate;
+  }
 
-    return { isOnFilter, energeticCertificate };
+  isOnFilter(data) {
+    if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
+    return true;
   }
 
 }
