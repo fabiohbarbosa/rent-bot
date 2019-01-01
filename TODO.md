@@ -1,8 +1,5 @@
 # TODO LIST
 
-## Rent Bot
-- Salvar na base de dados
-
 ## Data Mining
 
 **Custo Justo**
