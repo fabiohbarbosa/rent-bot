@@ -14,10 +14,7 @@ class OlxProvider {
     try {
       let $ = await adapt(this.url);
 
-      if ($('h1.c41').length > 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`);
-        return [];
-      }
+      if ($('h1.c41').length > 0) return [];
 
       const elements = [];
       elements.push(...this.getElements($));

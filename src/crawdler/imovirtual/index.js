@@ -14,10 +14,7 @@ class ImovirtualProvider {
     try {
       let $ = await adapt(this.url);
 
-      if ($('.search-location-extended-warning').length > 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`);
-        return [];
-      }
+      if ($('.search-location-extended-warning').length > 0) return [];
 
       const elements = [];
       elements.push(...this.getElements($));

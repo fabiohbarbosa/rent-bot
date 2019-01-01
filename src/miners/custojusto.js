@@ -10,7 +10,7 @@ class CustoJustoMiner {
   async mine(url) {
     let $;
     try {
-      $ = await adapt(url);
+      $ = await adapt(url, true);
     } catch (err) {
       Log.error(err);
       throw new Error(`Error to access url ${url}`);

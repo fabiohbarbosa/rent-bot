@@ -17,10 +17,7 @@ class IdealistaProvider {
     try {
       const mainTitle = $('div#h1-container > span.h1-simulated')[0];
 
-      if (mainTitle.children.length === 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`);
-        return [];
-      }
+      if (mainTitle.children.length === 0) return [];
 
       const elements = [];
       elements.push(...this.getElements($));

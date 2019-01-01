@@ -13,7 +13,7 @@ class OlxAvailability {
       $ = await adapt(url);
     } catch (err) {
       Log.error(err);
-      const status = err.response && err.response.status ? err.response.status : 500;
+      const status = err.statusCode ? err.statusCode : 500;
       throw new BotError(`Error to access url ${url}`, status);
     }
 

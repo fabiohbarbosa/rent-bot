@@ -13,21 +13,18 @@ class CustoJustoProvider {
 
   async parse() {
     try {
-      let $ = await adapt(this.url);
+      let $ = await adapt(this.url, true);
 
       const totalEntries = parseInt($('.list-result-tabs > li > a.active > small').text().trim(), 10);
       const totalPages = Math.ceil(totalEntries / itemsPage);
 
-      if (!totalPages || totalPages === 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`);
-        return [];
-      }
+      if (!totalPages || totalPages === 0) return [];
 
       const elements = [];
       elements.push(...this.getElements($));
 
       for (let page = 2; page <= totalPages; page++) {
-        $ = await adapt(this.url.replace('?', `?o=${page}?`));
+        $ = await adapt(this.url.replace('?', `?o=${page}?`), true);
         elements.push(...this.getElements($, page));
       }
       return elements;

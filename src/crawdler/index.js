@@ -17,10 +17,15 @@ class Crawler {
         return true;
       });
 
-      Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
+      if (elements.length === 0) {
+        Log.warn(`${this.logPrefix}: Not found elements`);
+      } else {
+        Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
+      }
+
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawl : ${err.message}`);
+      Log.error(`${this.logPrefix} Error to crawl: ${err.message}`);
       Log.error(err.stack);
     }
   }
