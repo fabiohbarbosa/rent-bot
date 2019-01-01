@@ -4,7 +4,7 @@ const regexes = [
 ];
 
 const types = {
-  house: false,
+  house: true,
   apartment: false,
 };
 
