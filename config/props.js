@@ -13,12 +13,12 @@ const defaultVars = {
       delay: 0 * 1000
     },
     dataMining: {
-      batchSize: 1,
+      batchSize: 2,
       interval: 0.5 * 60 * 1000,
       delay: 5 * 1000 // 5 seconds
     },
     availability: {
-      batchSize: 1,
+      batchSize: 2,
       interval: 0.5 * 60 * 1000,
       delay: 10 * 1000 // 10 seconds
     }
@@ -43,12 +43,12 @@ const localVars = {
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: true,
+      enabled: false,
       delay: 0
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: true,
+      enabled: false,
       delay: 0
     }
   },

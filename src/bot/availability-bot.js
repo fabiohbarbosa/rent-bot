@@ -8,11 +8,14 @@ import props from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
 class AvailabilityBot {
-  constructor(db, provider, url) {
+  constructor(db, provider, url, timesUnvailable) {
     this.db = db;
     this.url = url;
     this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.logPrefix = this.availability.logPrefix;
+
+    const count = timesUnvailable ? timesUnvailable : 0;
+    this.timesUnvailable = count;
   }
 
   /**
@@ -44,6 +47,7 @@ class AvailabilityBot {
         if (err.status && err.status === 404) {
           Log.warn(`${this.logPrefix} ${err.message}`);
           set['status'] = 'UNVAILABLE';
+          set['timesUnvailable'] = this.timesUnvailable + 1; // increase time that website was unvailable
         } else {
           Log.error(`${this.logPrefix} ${err.message}`);
         }
@@ -63,21 +67,25 @@ class AvailabilityBot {
   static async initialise(db) {
     try {
       const query = {
-        status: { $ne: 'OUT_OF_FILTER' }
+        $or: [
+          { timesUnvailable: { $lte: 50 } },
+          { timesUnvailable: null }
+        ]
       };
-
       const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
       const { batchSize } = props.bots.availability;
 
       const properties = await batchProperties(db, query, sort, batchSize);
       properties.forEach(p =>
-        new AvailabilityBot(db, p.provider, p.url).evaluate()
+        new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable).evaluate()
       );
     } catch (err) {
       Log.error(`Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }
   }
+
+
 
 }
 
