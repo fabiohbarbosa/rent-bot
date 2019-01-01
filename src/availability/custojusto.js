@@ -1,5 +1,6 @@
 import { adapt } from '../lib/html-adapter';
-import BorError from '../utils/bot-error';
+import BotError from '../utils/bot-error';
+import Log from '../../config/logger';
 
 class CustoJustoAvailability {
   constructor(logPrefix) {
@@ -9,16 +10,18 @@ class CustoJustoAvailability {
   async evaluate(url) {
     let $;
     try {
-      $ = await adapt(url, true);
+      $ = await adapt(url);
     } catch (err) {
-      throw new Error(`Error to access url ${url}`);
+      Log.error(err);
+      const status = err.response && err.response.status ? err.response.status : 500;
+      throw new BotError(`Error to access url ${url}`, status);
     }
 
     const title = $('div.title-1 > h1');
     if (title.length > 0) {
       return;
     }
-    throw new BorError(`The page ${url} is unvailable`, 404);
+    throw new BotError(`The page ${url} is unvailable`, 404);
   }
 }
 

@@ -1,5 +1,6 @@
 import { adapt } from '../lib/html-adapter';
 import BotError from '../utils/bot-error';
+import Log from '../../config/logger';
 
 class OlxAvailability {
   constructor(logPrefix) {
@@ -11,7 +12,9 @@ class OlxAvailability {
     try {
       $ = await adapt(url);
     } catch (err) {
-      throw new Error(`Error to access url ${url}`);
+      Log.error(err);
+      const status = err.response && err.response.status ? err.response.status : 500;
+      throw new BotError(`Error to access url ${url}`, status);
     }
 
     const title = $('a[data-cy="adpage_observe_star"]');

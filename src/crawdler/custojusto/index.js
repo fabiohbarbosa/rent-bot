@@ -13,7 +13,7 @@ class CustoJustoProvider {
 
   async parse() {
     try {
-      let $ = await adapt(this.url, true);
+      let $ = await adapt(this.url);
 
       const totalEntries = parseInt($('.list-result-tabs > li > a.active > small').text().trim(), 10);
       const totalPages = Math.ceil(totalEntries / itemsPage);
@@ -27,7 +27,7 @@ class CustoJustoProvider {
       elements.push(...this.getElements($));
 
       for (let page = 2; page <= totalPages; page++) {
-        $ = await adapt(this.url.replace('?', `?o=${page}?`, true));
+        $ = await adapt(this.url.replace('?', `?o=${page}?`));
         elements.push(...this.getElements($, page));
       }
       return elements;

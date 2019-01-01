@@ -1,7 +1,7 @@
-import { adapt } from '../lib/html-adapter';
-import BotError from '../utils/bot-error';
+import { adaptRetry } from '../lib/html-adapter';
 import { energeticCertificates } from '../../config/props';
 import Log from '../../config/logger';
+import { proxy } from '../lib/proxy-factory';
 
 class IdealistaMiner {
   constructor(logPrefix) {
@@ -11,38 +11,30 @@ class IdealistaMiner {
   async mine(url) {
     let $;
     try {
-      $ = await adapt(url);
+      $ = await adaptRetry(proxy(url), 403, true);
     } catch (err) {
       Log.error(err);
       throw new Error(`Error to access url ${url}`);
     }
 
     const item = $('div.details-property_features > ul > span[class^="icon-energy"]');
-    return this.ensureEnergeticCertificate(url, item);
+    return this.ensureEnergeticCertificate(item);
   }
 
-  ensureEnergeticCertificate(url, item) {
+  ensureEnergeticCertificate(item) {
     if (!item || item.length !== 1) {
-      throw new BotError(`The page ${url} is out of filter`, 400);
+      return { isOnFilter: false, energeticCertificate: 'unknown' };
     }
     const energeticCertificate = item[0].attribs['title'];
 
     // not found
     if (!energeticCertificate) {
-      Log.warn(`${this.logPrefix} Not found energetic certificate for ${url}`);
-      throw new BotError(`The page ${url} is out of filter`, 400);
+      return { isOnFilter: false, energeticCertificate: 'unknown' };
     }
 
-    Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
     const isOnFilter = energeticCertificates.includes(energeticCertificate);
 
-    // found less than minimal expected
-    if (!isOnFilter) {
-      throw new BotError(`The page ${url} is out of filter`, 400, { energeticCertificate });
-    }
-
-    // expected energeetic certificate
-    return energeticCertificate;
+    return { isOnFilter, energeticCertificate };
   }
 
 }

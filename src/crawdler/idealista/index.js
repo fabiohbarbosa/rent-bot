@@ -1,18 +1,20 @@
-import { adapt } from '../../lib/html-adapter';
+import { adaptRetry } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
 import { filters, itemsPage } from './config';
+import { proxy, unProxy } from '../../lib/proxy-factory';
 
 class IdealistaProvider {
   constructor(logPrefix, type, topology, url) {
     this.logPrefix = logPrefix;
     this.type = type;
     this.topology = topology;
-    this.url = this.proxyUrl(url); // busting URL and proxying the request to prevent future access block
+    this.url = url;
   }
 
   async parse() {
+    let $ = await adaptRetry(proxy(this.url), 403, true);
+
     try {
-      let $ = await adapt(this.url);
       const mainTitle = $('div#h1-container > span.h1-simulated')[0];
 
       if (mainTitle.children.length === 0) {
@@ -25,9 +27,9 @@ class IdealistaProvider {
 
       const totalPages = Math.ceil(parseInt(mainTitle.children[0].data, 10) / itemsPage);
       for (let page = 2; page <= totalPages; page++) {
-        if (page > 2 && page % 2 === 0) await this.sleep(2000); // sleep to prevent future access block
+        const nextUrl = this.url.replace('?', `pagina-${page}?`);
+        $ = await adaptRetry(proxy(nextUrl), 403, true);
 
-        $ = await adapt(this.url.replace('?', `pagina-${page}?`));
         elements.push(...this.getElements($, page));
       }
 
@@ -37,33 +39,24 @@ class IdealistaProvider {
     }
   }
 
-  proxyUrl(url) {
-    const base64 = Buffer.from(url).toString('base64').replace('=', '');
-    return `https://www.hidemyass-freeproxy.com/proxy/en-ww/${base64.replace('=', '')}`;
-  }
-
   getElements($, page = 1) {
     Log.info(`${this.logPrefix}: Crawling page ${page}`);
 
     const elements = [];
     $('div.items-container > article').each((i, e) => {
-      // skipping 'Quartos em apartamento partilhado'
+      // skip 'Quartos em apartamento partilhado'
       if ($(e).attr('class') === 'item_shared-flat') return;
-      // adversings
+      // skip adversings
       if ($(e).attr('class') === 'adv noHover') return;
-
-      const { url, realUrl } = this.parseUrl($, e);
 
       elements.push({
         providerId: $(e).find('div.item').attr('data-adid'),
         title: $(e).find('div.item-info-container > a.item-link').text().trim(),
         subtitle: this.parseSubtitle($, e),
-        url,
-        realUrl,
+        url: this.parseUrl($, e),
         price: parseInt($(e).find('span.item-price')[0].firstChild.data, 10),
         photos: this.parsePhotos($, e),
-        type: this.type,
-        topology: this.topology
+        type: this.type
       });
     });
     return elements;
@@ -86,12 +79,7 @@ class IdealistaProvider {
 
   parseUrl($, e) {
     const url = $(e).find('div.item-info-container > a.item-link').attr('href');
-    const pieceUrl = url.split('/');
-    const realUrl = Buffer.from(pieceUrl[pieceUrl.length - 1], 'base64').toString('ascii');
-    return {
-      url,
-      realUrl
-    };
+    return unProxy(url);
   }
 
   parsePhotos($, e) {

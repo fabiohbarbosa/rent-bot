@@ -1,5 +1,7 @@
-import rq from '../lib/rq';
+import { rqRetry } from '../lib/rq';
 import BotError from '../utils/bot-error';
+import { proxy } from '../lib/proxy-factory';
+import Log from '../../config/logger';
 
 class IdealistaAvailability {
   constructor(logPrefix) {
@@ -8,12 +10,15 @@ class IdealistaAvailability {
 
   async evaluate(url) {
     try {
-      await rq(url);
+      await rqRetry(proxy(url), 403, true);
     } catch (err) {
-      if (err.statusCode && err.statusCode === 404) {
+      if (err.response && err.response.status === 404) {
         throw new BotError(`The page ${url} is unvailable`, 404);
       }
-      throw new Error(`Error to access url ${url}`);
+
+      Log.error(err);
+      const status = err.response && err.response.status ? err.response.status : 500;
+      throw new BotError(`Error to access url ${url}`, status);
     }
   }
 }

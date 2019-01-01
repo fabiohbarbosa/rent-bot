@@ -4,6 +4,25 @@ const defaultVars = {
     name: 'Rent Bot',
     maxConnections: 256
   },
+  db: {
+    dbName: 'rent-bot'
+  },
+  bots: {
+    crawler: {
+      interval: 1 * 60 * 1000,
+      delay: 0 * 1000
+    },
+    dataMining: {
+      batchSize: 1,
+      interval: 0.5 * 60 * 1000,
+      delay: 5 * 1000 // 5 seconds
+    },
+    availability: {
+      batchSize: 1,
+      interval: 0.5 * 60 * 1000,
+      delay: 10 * 1000 // 10 seconds
+    }
+  }
 };
 
 const localVars = {
@@ -14,12 +33,24 @@ const localVars = {
   },
   db: {
     url: 'mongodb://localhost:27017',
-    dbName: 'rent-bot'
+    ...defaultVars.db
   },
   bots: {
-    crawler: true,
-    dataMining: true,
-    availability: true
+    crawler: {
+      ...defaultVars.bots.crawler,
+      enabled: true,
+      delay: 0
+    },
+    dataMining: {
+      ...defaultVars.bots.dataMining,
+      enabled: true,
+      delay: 0
+    },
+    availability: {
+      ...defaultVars.bots.availability,
+      enabled: true,
+      delay: 0
+    }
   },
   logLevel: 'info'
 };
@@ -32,19 +63,24 @@ const envVars = {
   },
   db: {
     url: process.env.DB_URL,
-    dbName: 'rent-bot'
+    ...defaultVars.db
   },
   bots: {
-    crawler: process.env.CRAWLER_BOT,
-    availability: process.env.AVAILABILITY_BOT,
-    dataMining: process.env.DATA_MINING_BOT
+    crawler: {
+      enabled: process.env.CRAWLER_BOT,
+      ...defaultVars.bots.crawler
+    },
+    dataMining: {
+      enabled: process.env.AVAILABILITY_BOT,
+      ...defaultVars.bots.dataMining
+    },
+    availability: {
+      enabled: process.env.DATA_MINING_BOT,
+      ...defaultVars.bots.availability
+    }
   },
   logLevel: process.env.LOG_LEVEL,
 };
-
-const crawlerInterval = 1.2 * 60 * 1000;
-const dataMiningInterval = 0.2 * 60 * 1000;
-const availableInterval = 1.5 * 60 * 1000;
 
 const maxPrice = 850;
 const energeticCertificates = [
@@ -53,5 +89,5 @@ const energeticCertificates = [
   'c+', '+c', 'c-', '-c', 'c',
 ];
 
-export { crawlerInterval, availableInterval, dataMiningInterval, maxPrice, energeticCertificates };
+export { maxPrice, energeticCertificates };
 export default !process.env.NODE_ENV ? localVars : envVars;

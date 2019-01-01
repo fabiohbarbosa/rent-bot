@@ -1,5 +1,4 @@
 import { adapt } from '../lib/html-adapter';
-import BotError from '../utils/bot-error';
 import { energeticCertificates } from '../../config/props';
 import Log from '../../config/logger';
 
@@ -18,25 +17,18 @@ class ImovirtualMiner {
     }
 
     const item = $("li:contains('Certificado Energ')");
-    return this.ensureEnergeticCertificate(url, item);
+    return this.ensureEnergeticCertificate(item);
   }
 
-  ensureEnergeticCertificate(url, item) {
+  ensureEnergeticCertificate(item) {
     if (!item || item.length !== 1 || !item[0].lastChild || !item[0].lastChild.firstChild || !item[0].lastChild.firstChild.data) {
-      throw new BotError(`The page ${url} is out of filter`, 400);
+      return { isOnFilter: false, energeticCertificate: 'unknown' };
     }
 
     const energeticCertificate = item[0].lastChild.firstChild.data.toLowerCase();
-    Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
     const isOnFilter = energeticCertificates.includes(energeticCertificate);
 
-    // found less than minimal expected
-    if (!isOnFilter) {
-      throw new BotError(`The page ${url} is out of filter`, 400, { energeticCertificate });
-    }
-
-    // expected energeetic certificate
-    return energeticCertificate;
+    return { isOnFilter, energeticCertificate };
   }
 
 }

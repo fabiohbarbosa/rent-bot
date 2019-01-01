@@ -13,7 +13,8 @@
 **Idealista**
 - Freguesias
 - Remover imóveis com data antiga
-- 
+- Buscar topologia
+
 **Imovirtual**
 - Freguesias
 - Remover imóveis com data antiga

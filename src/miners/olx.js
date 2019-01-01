@@ -1,5 +1,4 @@
 import { adapt } from '../lib/html-adapter';
-import BotError from '../utils/bot-error';
 import { energeticCertificates } from '../../config/props';
 import Log from '../../config/logger';
 
@@ -18,27 +17,20 @@ class OlxMiner {
     }
 
     const item = $("th:contains('Certificado Energ')");
-    return this.ensureEnergeticCertificate(url, $, item);
+    return this.ensureEnergeticCertificate($, item);
   }
 
-  ensureEnergeticCertificate(url, $, item) {
+  ensureEnergeticCertificate($, item) {
     if (!item || item.length !== 1 || !item[0].next || !item[0].next.next) {
-      throw new BotError(`The page ${url} is out of filter`, 400);
+      return { isOnFilter: false, energeticCertificate: 'unknown' };
     }
 
     const el = $(item[0].next.next);
-    const energeticCertificate = el.find('strong > a')[0].firstChild.data.trim().toLowerCase();
 
-    Log.info(`${this.logPrefix} Found energetic certificate '${energeticCertificate}' for ${url}`);
+    const energeticCertificate = el.find('strong > a')[0].firstChild.data.trim().toLowerCase();
     const isOnFilter = energeticCertificates.includes(energeticCertificate);
 
-    // found less than minimal expected
-    if (!isOnFilter) {
-      throw new BotError(`The page ${url} is out of filter`, 400, { energeticCertificate });
-    }
-
-    // expected energeetic certificate
-    return energeticCertificate;
+    return { isOnFilter, energeticCertificate };
   }
 
 }

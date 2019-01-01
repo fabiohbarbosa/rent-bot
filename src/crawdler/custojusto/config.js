@@ -5,7 +5,7 @@ const regexes = [
 
 const types = {
   house: false,
-  apartment: true,
+  apartment: false,
 };
 
 const topologies = [

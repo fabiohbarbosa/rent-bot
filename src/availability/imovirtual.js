@@ -1,5 +1,6 @@
-import rq from '../lib/rq';
+import { rq } from '../lib/rq';
 import BotError from '../utils/bot-error';
+import Log from '../../config/logger';
 
 class ImovirtualAvailability {
   constructor(logPrefix) {
@@ -10,10 +11,13 @@ class ImovirtualAvailability {
     try {
       await rq(url);
     } catch (err) {
-      if (err.statusCode && err.statusCode === 404) {
+      if (err.response && err.response.status === 404) {
         throw new BotError(`The page ${url} is unvailable`, 404);
       }
-      throw new Error(`Error to access url ${url}`);
+
+      Log.error(err);
+      const status = err.response && err.response.status ? err.response.status : 500;
+      throw new BotError(`Error to access url ${url}`, status);
     }
   }
 }

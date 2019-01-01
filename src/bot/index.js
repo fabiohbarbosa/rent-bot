@@ -12,7 +12,7 @@ import ImovirtualProvider, { filters as imovirtualFilters } from '../crawdler/im
 import OlxProvider, { filters as olxFilters } from '../crawdler/olx';
 
 import Log from '../../config/logger';
-import props, { crawlerInterval, availableInterval, dataMiningInterval } from '../../config/props';
+import props from '../../config/props';
 
 class Bot {
 
@@ -21,13 +21,13 @@ class Bot {
    * @param {MongoDb} db - mongo connection
    */
   static crawlers(db) {
-    if (!props.bots.crawler) {
+    const { crawler } = props.bots;
+    if (!crawler.enabled) {
       Log.warn('Skipping crawlers...');
       return;
     }
 
     Log.info('Initialising crawlers');
-
     const start = () => {
       CrawlerBot.crawle(db, CustoJustoProvider, custoJustoFilters);
       CrawlerBot.crawle(db, ImovirtualProvider, imovirtualFilters);
@@ -35,8 +35,11 @@ class Bot {
       CrawlerBot.crawle(db, IdealistaProvider, idealistaFilters);
     };
 
-    start();
-    setInterval(start, crawlerInterval);
+    setTimeout(() => {
+      start();
+    }, crawler.delay);
+
+    setInterval(start, crawler.interval);
   }
 
   /**
@@ -44,7 +47,9 @@ class Bot {
    * @param {MongoDb} db - mongo connection
    */
   static dataMining(db) {
-    if (!props.bots.dataMining) {
+    const { dataMining } = props.bots;
+
+    if (!dataMining.enabled) {
       Log.warn('Skipping data mining...');
       return;
     }
@@ -55,8 +60,8 @@ class Bot {
       DataMiningBot.initialise(db);
     };
 
-    setTimeout(() => start(), 5000);
-    setInterval(start, dataMiningInterval);
+    setTimeout(() => start(), dataMining.delay);
+    setInterval(start, dataMining.interval);
   }
 
   /**
@@ -64,7 +69,9 @@ class Bot {
    * @param {MongoDb} db - mongo connection
    */
   static evaluateAvailability(db) {
-    if (!props.bots.availability) {
+    const { availability } = props.bots;
+
+    if (!availability.enabled) {
       Log.warn('Skipping evaluate availability...');
       return;
     }
@@ -75,8 +82,8 @@ class Bot {
       AvailabilityBot.initialise(db);
     };
 
-    setTimeout(() => start(), 10000);
-    setInterval(start, availableInterval);
+    setTimeout(() => start(), availability.delay);
+    setInterval(start, availability.interval);
   }
 }
 

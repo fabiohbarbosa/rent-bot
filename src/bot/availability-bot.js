@@ -4,46 +4,51 @@
 
 import AvailabilityBotFactory from '../availability/factory';
 import Log from '../../config/logger';
-import { batchProperties, updateDateBatch } from '../utils/schedulers-utils';
-
-const sortField = 'availabilityLastCheck';
+import props from '../../config/props';
+import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
 class AvailabilityBot {
   constructor(db, provider, url) {
     this.db = db;
-    this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.url = url;
+    this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.logPrefix = this.availability.logPrefix;
-    this.statusAvailability = 'PENDING';
-    this.statusUnvailable = 'UNVAILABLE';
-    this.sortField = sortField;
   }
 
   /**
    * @param {MongoDb} db - mongo connection
    */
   evaluate() {
-    const url = this.url;
-    const sortField = this.sortField;
     const callback = this.callback.bind(this);
 
-    this.availability.evaluate(url)
+    this.availability.evaluate(this.url)
       .then(() => {
-        Log.info(`${this.logPrefix} The ${url} is a valid URL`);
-        updateDateBatch(this.db, callback, {
-          url, sortField, status: this.statusAvailability
-        });
+        Log.info(`${this.logPrefix} The ${this.url} is a valid URL`);
+        updateDateBatch(this.db,
+          { url: this.url },
+          {
+            availabilityLastCheck: new Date(),
+            isAvailabilityLastCheck: true,
+            status: 'PENDING'
+          },
+          callback
+        );
       })
       .catch(err => {
-        if (!err.status && !err.status !== 404) {
-          Log.error(`${this.logPrefix} Error to evaluate url ${url} availability: ${err}`);
-          Log.error(err.stack);
-          return;
+        const set = {
+          availabilityLastCheck: new Date(),
+          isAvailabilityLastCheck: true
+        };
+
+        // caught up miner else is unknown error
+        if (err.status && err.status === 404) {
+          Log.warn(`${this.logPrefix} ${err.message}`);
+          set['status'] = 'UNVAILABLE';
+        } else {
+          Log.error(`${this.logPrefix} ${err.message}`);
         }
-        Log.warn(`${this.logPrefix} ${err.message}`);
-        updateDateBatch(this.db, callback, {
-          url, sortField, status: this.statusUnvailable
-        });
+
+        updateDateBatch(this.db, { url: this.url }, set, callback);
       });
   };
 
@@ -57,7 +62,14 @@ class AvailabilityBot {
 
   static async initialise(db) {
     try {
-      const properties = await batchProperties(db, sortField);
+      const query = {
+        status: { $ne: 'OUT_OF_FILTER' }
+      };
+
+      const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
+      const { batchSize } = props.bots.availability;
+
+      const properties = await batchProperties(db, query, sort, batchSize);
       properties.forEach(p =>
         new AvailabilityBot(db, p.provider, p.url).evaluate()
       );
