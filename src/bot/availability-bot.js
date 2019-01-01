@@ -13,9 +13,7 @@ class AvailabilityBot {
     this.url = url;
     this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.logPrefix = this.availability.logPrefix;
-
-    const count = timesUnvailable ? timesUnvailable : 0;
-    this.timesUnvailable = count;
+    this.timesUnvailable = timesUnvailable || 0;
   }
 
   /**
@@ -84,7 +82,6 @@ class AvailabilityBot {
       Log.error(err.stack);
     }
   }
-
 
 
 }
