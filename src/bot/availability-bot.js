@@ -8,12 +8,13 @@ import props from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
 class AvailabilityBot {
-  constructor(db, provider, url, timesUnvailable) {
+  constructor(db, provider, url, timesUnvailable, status) {
     this.db = db;
     this.url = url;
     this.availability = AvailabilityBotFactory.getInstance(provider, url);
     this.logPrefix = this.availability.logPrefix;
     this.timesUnvailable = timesUnvailable || 0;
+    this.status = status;
   }
 
   /**
@@ -30,7 +31,7 @@ class AvailabilityBot {
           {
             availabilityLastCheck: new Date(),
             isAvailabilityLastCheck: true,
-            status: 'PENDING'
+            status: this.status === 'UNVAILABLE' ? 'PENDING' : this.status
           },
           callback
         );
@@ -75,7 +76,7 @@ class AvailabilityBot {
 
       const properties = await batchProperties(db, query, sort, batchSize);
       properties.forEach(p =>
-        new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable).evaluate()
+        new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable, p.status).evaluate()
       );
     } catch (err) {
       Log.error(`Error to load properties from database: ${err.message}`);
