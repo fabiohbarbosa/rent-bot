@@ -9,17 +9,17 @@ const defaultVars = {
   },
   bots: {
     crawler: {
-      interval: 1 * 60 * 1000,
+      interval: 288 * 60 * 1000, // five times day
       delay: 0 * 1000
     },
     dataMining: {
-      batchSize: 3,
-      interval: 0.5 * 60 * 1000,
+      batchSize: 4,
+      interval: 144.5 * 60 * 1000,
       delay: 5 * 1000 // 5 seconds
     },
     availability: {
-      batchSize: 1,
-      interval: 0.5 * 60 * 1000,
+      batchSize: 4,
+      interval: 144.5 * 60 * 1000,
       delay: 10 * 1000 // 10 seconds
     }
   }
@@ -38,17 +38,20 @@ const localVars = {
   bots: {
     crawler: {
       ...defaultVars.bots.crawler,
-      enabled: false,
+      interval: 1 * 60 * 1000,
+      enabled: true,
       delay: 0
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
       enabled: true,
+      interval: 0.5 * 60 * 1000,
       delay: 0
     },
     availability: {
       ...defaultVars.bots.availability,
       enabled: true,
+      interval: 0.5 * 60 * 1000,
       delay: 0
     }
   },
