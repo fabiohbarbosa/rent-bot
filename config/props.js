@@ -9,18 +9,18 @@ const defaultVars = {
   },
   bots: {
     crawler: {
-      interval: 288 * 60 * 1000, // five times day
+      interval: 30 * 60 * 1000, // five times day
       delay: 0 * 1000
     },
     dataMining: {
       batchSize: 4,
-      interval: 144.5 * 60 * 1000,
-      delay: 5 * 1000 // 5 seconds
+      interval: 10 * 60 * 1000,
+      delay: 10 * 1000
     },
     availability: {
       batchSize: 4,
-      interval: 144.5 * 60 * 1000,
-      delay: 10 * 1000 // 10 seconds
+      interval: 10 * 60 * 1000,
+      delay: 15 * 1000
     }
   }
 };
