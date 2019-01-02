@@ -9,7 +9,7 @@ const defaultVars = {
   },
   bots: {
     crawler: {
-      interval: 30 * 60 * 1000, // five times day
+      interval: 30 * 60 * 1000,
       delay: 0 * 1000
     },
     dataMining: {
