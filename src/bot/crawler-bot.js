@@ -42,7 +42,7 @@ class CrawlerBot {
               Log.debug(`${filter.logPrefix} Success to insert or update property: ${result}`);
 
               // new entry send the notification by e-mail
-              if (result.upsertedCount > 0)  {
+              if (result.upsertedCount > 0) {
                 Log.info(`${filter.logPrefix} Found new property ${e.url}`);
                 Mail.send({
                   title: e.title,
