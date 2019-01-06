@@ -1,5 +1,10 @@
 const defaultVars = {
   env: process.env.NODE_ENV || 'local',
+  retries: 3,
+  receivers: [
+    'fabiohbarbosa@gmail.com',
+    'josiannygonzales@gmail.com'
+  ],
   server: {
     name: 'Rent Bot',
     maxConnections: 256
