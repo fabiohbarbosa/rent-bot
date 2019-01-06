@@ -29,9 +29,8 @@ const rqRetry = async(url, status, isProxied, binary = false) => {
   } catch (err) {
     // throw exception when it reachs the total requests configured
     if (maxRequests[unProxyUrl] === props.retries) {
-      Log.error(`Exceed ${props.retries} retries time to request ${unProxyUrl}`);
       maxRequests[unProxyUrl] = 0;
-      throw err;
+      throw new Error(`Exceed ${props.retries} retries time to request ${unProxyUrl} - ${err.statusCode}`);
     }
 
     if (err.statusCode === status) {
