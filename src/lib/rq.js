@@ -1,6 +1,9 @@
 import request from 'request-promise';
 import Log from '../../config/logger';
+import props from '../../config/props';
 import { proxy, unProxy } from './proxy-factory';
+
+const maxRequests = {};
 
 const rq = async(url, binary = false) => {
   return request({
@@ -15,14 +18,25 @@ const rq = async(url, binary = false) => {
 };
 
 const rqRetry = async(url, status, isProxied, binary = false) => {
+  // increase times that URL was requested
+  const unProxyUrl = isProxied ? unProxy(url) : url;
+  const totalRequests = maxRequests[unProxyUrl] || 0;
+  maxRequests[unProxyUrl] = totalRequests + 1;
+
+  // request
   try {
     return await rq(url, binary);
   } catch (err) {
+    // throw exception when it reachs the total requests configured
+    if (maxRequests[unProxyUrl] === props.retries) {
+      Log.error(`Exceed ${props.retries} retries time to request ${unProxyUrl}`);
+      maxRequests[unProxyUrl] = 0;
+      throw err;
+    }
+
     if (err.statusCode === status) {
       Log.warn(`Error ${status} to access ${url}. Trying again...`);
-
-      const newUrl = isProxied ? proxy(unProxy(url)) : url;
-      return await rqRetry(newUrl, status, isProxied, binary);
+      return await rqRetry(proxy(unProxyUrl), status, isProxied, binary);
     }
     throw err;
   }
