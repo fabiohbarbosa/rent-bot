@@ -51,7 +51,7 @@ class MailJob {
   static schedule(db) {
     const { mail } = props.scheduler;
 
-    const start = async () => {
+    const start = async() => {
       const logPrefix = '[scheduler:mail]:';
       Log.info(`${logPrefix} Initialising mail notification`);
 
@@ -78,7 +78,7 @@ class MailJob {
         Log.error(`${logPrefix} Error to load properties from database: ${err.message}`);
         Log.error(err.stack);
       }
-    }
+    };
 
     setTimeout(() => start(), mail.delay);
     setInterval(start, mail.interval);
