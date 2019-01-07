@@ -79,7 +79,7 @@ const localVars = {
 
 const envVars = {
   ...defaultVars,
-  proxy: true,
+  proxy: false,
   server: {
     ...defaultVars.server,
     port: process.env.PORT
