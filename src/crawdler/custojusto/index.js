@@ -1,7 +1,8 @@
-import { adapt } from '../../lib/html-adapter';
+import { adapt, adaptRetry } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
 import { filters, itemsPage, regexes } from './config';
 import { dataFilters } from '../../../config/props';
+import { proxy, unProxy } from '../../lib/proxy-factory';
 
 class CustoJustoProvider {
   constructor(logPrefix, type, topology, url) {
@@ -13,7 +14,8 @@ class CustoJustoProvider {
 
   async parse() {
     try {
-      let $ = await adapt(this.url, true);
+      // let $ = await adapt(this.url, true);
+      let $ = await adaptRetry(proxy(this.url), 403, true);
 
       const totalEntries = parseInt($('.list-result-tabs > li > a.active > small').text().trim(), 10);
       const totalPages = Math.ceil(totalEntries / itemsPage);
@@ -24,7 +26,11 @@ class CustoJustoProvider {
       elements.push(...this.getElements($));
 
       for (let page = 2; page <= totalPages; page++) {
-        $ = await adapt(this.url.replace('?', `?o=${page}?`), true);
+        const nextUrl = this.url.replace('?', `?o=${page}?`);
+
+        // $ = await adapt(nextUrl, true);
+        $ = await adapt(proxy(nextUrl), 403, true);
+
         elements.push(...this.getElements($, page));
       }
       return elements;
@@ -47,7 +53,8 @@ class CustoJustoProvider {
         providerId: e.attribs['id'],
         title,
         subtitle: this.parseSubtitle($, e),
-        url: e.attribs['href'],
+        // url: e.attribs['href'],
+        url: unProxy(e.attribs['href']),
         price,
         photos: this.parsePhotos($, e),
         type: this.type,
