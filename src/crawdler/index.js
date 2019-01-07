@@ -1,5 +1,5 @@
 import Log from '../../config/logger';
-import { maxPrice, onlyPhoto } from './config';
+import { dataFilters } from '../../config/props';
 
 class Crawler {
   constructor(Provider, options) {
@@ -12,8 +12,8 @@ class Crawler {
     try {
       const elementsRaw = await this.provider.parse();
       const elements = elementsRaw.filter(e => {
-        if (e.price > maxPrice) return false;
-        if (onlyPhoto) return e.photos.length > 0;
+        if (e.price > dataFilters.maxPrice) return false;
+        if (dataFilters.onlyPhoto) return e.photos.length > 0;
         return true;
       });
 
