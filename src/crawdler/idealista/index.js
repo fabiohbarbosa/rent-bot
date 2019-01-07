@@ -77,7 +77,7 @@ class IdealistaProvider {
 
   parseUrl($, e) {
     let url = $(e).find('div.item-info-container > a.item-link').attr('href');
-    if (!props.proxy) url = `https://idealista.pt${url}`;
+    if (!props.proxy) url = `https://www.idealista.pt${url}`;
 
     return unProxy(url);
   }
