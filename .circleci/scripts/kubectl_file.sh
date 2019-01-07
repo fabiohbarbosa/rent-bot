@@ -52,6 +52,8 @@ spec:
             value: '$AVAILABILITY_BOT'
           - name: DATA_MINING_BOT
             value: '$DATA_MINING_BOT'
+          - name: SENDGRID_API_KEY
+            value: '$SENDGRID_API_KEY'
         ports:
           - containerPort: $PORT
         readinessProbe:
