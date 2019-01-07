@@ -1,5 +1,6 @@
 import { adaptRetry } from '../../lib/html-adapter';
 import Log from '../../../config/logger';
+import props from '../../../config/props';
 import { filters, itemsPage } from './config';
 import { proxy, unProxy } from '../../lib/proxy-factory';
 
@@ -75,7 +76,9 @@ class IdealistaProvider {
   }
 
   parseUrl($, e) {
-    const url = $(e).find('div.item-info-container > a.item-link').attr('href');
+    let url = $(e).find('div.item-info-container > a.item-link').attr('href');
+    if (!props.proxy) url = `https://idealista.pt${url}`;
+
     return unProxy(url);
   }
 

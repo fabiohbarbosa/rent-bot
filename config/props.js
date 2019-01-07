@@ -1,6 +1,6 @@
 const defaultVars = {
   env: process.env.NODE_ENV || 'local',
-  retries: 3,
+  retries: 6,
   receivers: [
     'fabiohbarbosa@gmail.com',
     'josiannygonzales@gmail.com'
@@ -27,11 +27,19 @@ const defaultVars = {
       interval: 10 * 60 * 1000,
       delay: 15 * 1000
     }
+  },
+  scheduler: {
+    mail: {
+      batchSize: 100,
+      interval: 0.5 * 60 * 1000,
+      delay: 5 * 1000
+    }
   }
 };
 
 const localVars = {
   ...defaultVars,
+  proxy: false,
   server: {
     ...defaultVars.server,
     port: 3000
@@ -60,11 +68,18 @@ const localVars = {
       delay: 0
     }
   },
+  scheduler: {
+    mail: {
+      ...defaultVars.scheduler.mail,
+      enabled: true
+    }
+  },
   logLevel: 'info'
 };
 
 const envVars = {
   ...defaultVars,
+  proxy: true,
   server: {
     ...defaultVars.server,
     port: process.env.PORT
@@ -85,6 +100,12 @@ const envVars = {
     availability: {
       enabled: process.env.DATA_MINING_BOT,
       ...defaultVars.bots.availability
+    }
+  },
+  scheduler: {
+    mail: {
+      ...defaultVars.scheduler.mail,
+      enabled: true
     }
   },
   logLevel: process.env.LOG_LEVEL,

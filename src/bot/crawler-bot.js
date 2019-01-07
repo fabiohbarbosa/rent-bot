@@ -1,6 +1,5 @@
 import Log from '../../config/logger';
 import Crawdler from '../crawdler';
-import Mail from '../mail';
 
 /**
  * @typedef {import('mongodb').Db} MongoDb
@@ -41,16 +40,8 @@ class CrawlerBot {
 
               Log.debug(`${filter.logPrefix} Success to insert or update property: ${result}`);
 
-              // new entry send the notification by e-mail
               if (result.upsertedCount > 0) {
                 Log.info(`${filter.logPrefix} Found new property ${e.url}`);
-                Mail.send({
-                  title: e.title,
-                  subtitle: e.subtitle,
-                  url: e.url,
-                  price: e.price,
-                  photo: e.photos && e.photos.length > 0 ? e.photos[0] : undefined
-                });
               } else {
                 Log.debug(`${filter.logPrefix} The property ${e.url} already exists`);
               }

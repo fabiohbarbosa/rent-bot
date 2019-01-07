@@ -79,7 +79,7 @@ class AvailabilityBot {
         new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable, p.status).evaluate()
       );
     } catch (err) {
-      Log.error(`Error to load properties from database: ${err.message}`);
+      Log.error(`[availability] Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }
   }

@@ -6,7 +6,9 @@ import props from '../config/props';
 import Db from '../config/db';
 
 import healthcheck from './api/healthcheck-api';
+
 import Bot from './bot';
+import MailJob from './mail/mail-job';
 
 // initialize the express server
 const app = express();
@@ -35,4 +37,5 @@ server.listen(port, async() => {
   Bot.crawlers(db);
   Bot.evaluateAvailability(db);
   Bot.dataMining(db);
+  MailJob.schedule(db);
 });

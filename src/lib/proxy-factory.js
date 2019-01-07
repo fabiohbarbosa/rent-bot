@@ -1,4 +1,5 @@
 import Log from '../../config/logger';
+import props from '../../config/props';
 
 const proxies = [
   'https://proxy-nyc.hidemyass-freeproxy.com/proxy/en-ww',
@@ -13,6 +14,8 @@ const proxies = [
 let index = Math.floor(Math.random() * proxies.length);
 
 const proxy = url => {
+  if (!props.proxy) return url;
+
   if (index === proxies.length) {
     index = 0;
   }
@@ -28,6 +31,8 @@ const proxy = url => {
 };
 
 const unProxy = url => {
+  if (!props.proxy) return url;
+
   const pieceUrl = url.split('/');
   const realUrl = Buffer.from(pieceUrl[pieceUrl.length - 1], 'base64').toString('ascii');
   return realUrl;
