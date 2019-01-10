@@ -12,7 +12,6 @@ class ImovirtualMiner {
     try {
       $ = await adapt(url);
     } catch (err) {
-      Log.error(err);
       throw new Error(`Error to access url ${url}`);
     }
 

@@ -27,6 +27,7 @@ const rqRetry = async(url, status, isProxied, binary = false) => {
   try {
     return await rq(url, binary);
   } catch (err) {
+    Log.debug(err);
     // throw exception when it reachs the total requests configured
     if (maxRequests[unProxyUrl] === props.retries) {
       maxRequests[unProxyUrl] = 0;

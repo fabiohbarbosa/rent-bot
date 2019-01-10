@@ -1,6 +1,5 @@
 import { adapt } from '../lib/html-adapter';
 import BotError from '../utils/bot-error';
-import Log from '../../config/logger';
 
 class CustoJustoAvailability {
   constructor(logPrefix) {
@@ -12,7 +11,6 @@ class CustoJustoAvailability {
     try {
       $ = await adapt(url, true);
     } catch (err) {
-      Log.error(err);
       const status = err.statusCode ? err.statusCode : 500;
       throw new BotError(`Error to access url ${url}`, status);
     }
