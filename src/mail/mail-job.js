@@ -55,21 +55,18 @@ class MailJob {
       const logPrefix = '[scheduler:mail]:';
       Log.info(`${logPrefix} Initialising mail notification`);
 
-      if (!mail.enabled){
+      if (!mail.enabled)
         Log.warn(`${logPrefix} Skipping...`);
-      }
 
       try {
         const query = {
           notificated: false,
           isAvailabilityLastCheck: true,
           isDataMiningLastCheck: true,
-          status: 'PENDING'
+          status: 'MATCHED'
         };
 
-        const sort = {
-          createAt: -1
-        };
+        const sort = { createAt: -1 };
 
         const properties = await batchProperties(db, query, sort, mail.batchSize);
         new MailJob(logPrefix, db).initialise(properties);

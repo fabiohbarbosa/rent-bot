@@ -25,7 +25,7 @@ class DataMiningBot {
     try {
       const { isOnFilter, data } = await this.miner.mine(url);
 
-      let status = 'PENDING';
+      let status = 'MATCHED';
       if (!isOnFilter) {
         Log.warn(`${this.logPrefix} The ${url} is out of filter`);
         status = 'OUT_OF_FILTER';
