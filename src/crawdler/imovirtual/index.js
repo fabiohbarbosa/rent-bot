@@ -44,7 +44,7 @@ class ImovirtualProvider {
         providerId: $(e).attr('data-tracking-id'),
         title: $(e).find('div.offer-item-details > header > h3 span.offer-item-title').text(),
         subtitle: $(e).find('div.offer-item-details > header > p').text(),
-        url: e.attribs['data-url'],
+        url: e.attribs['data-url'].split('#')[0],
         price: parseInt($(e).find('div.offer-item-details li.offer-item-price').text().split('€')[0].trim(), 10),
         photos: this.parsePhotos($, e),
         type: this.type,
