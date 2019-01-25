@@ -42,8 +42,6 @@ class DataMiningBot {
 
       updateDateBatch(this.db, { url }, set, callback);
     } catch (err) {
-      Log.error(err);
-
       const set = {
         dataMiningLastCheck: new Date(),
         isDataMiningLastCheck: true,

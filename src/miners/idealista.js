@@ -13,7 +13,6 @@ class IdealistaMiner {
     try {
       $ = await adaptRetry(proxy(url), 403, true);
     } catch (err) {
-      Log.error(err);
       throw new Error(`Error to access url ${url}`);
     }
 
