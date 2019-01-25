@@ -29,8 +29,9 @@ const adapt = async(url, binary = false) => {
       Log.error('Trying to save HTTP request error as a HTML file');
 
       fs.writeFile(filename, tmp.html(), errFs => {
-        if (errFs) Log.error(errFs);
-        Log.error(`The file error content was saved as ${filename}!`);
+        if (!errFs) {
+          Log.error(`The file error content was saved as ${filename}!`);
+        }
       });
     }
 
