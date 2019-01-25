@@ -39,7 +39,7 @@ const defaultVars = {
 
 const localVars = {
   ...defaultVars,
-  proxy: false,
+  proxy: true,
   server: {
     ...defaultVars.server,
     port: 3000
@@ -57,13 +57,13 @@ const localVars = {
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0
     }
@@ -71,7 +71,7 @@ const localVars = {
   scheduler: {
     mail: {
       ...defaultVars.scheduler.mail,
-      enabled: true
+      enabled: false
     }
   },
   logLevel: 'info'

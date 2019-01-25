@@ -3,20 +3,42 @@ import cheerio from 'cheerio';
 import Log from '../../config/logger';
 import props from '../../config/props';
 import { proxy, unProxy } from './proxy-factory';
+import * as fs from 'fs';
 
 const maxRequests = {};
 
-const adapt = async(url, binary = false) => {
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+const adapt = async (url, binary = false) => {
   try {
     const data = await rq(url, binary);
     return cheerio.load(data);
   } catch (err) {
     Log.debug(err);
+
+    // Save request error body as a HTML file to double check the error
+    if (err.response && err.response.toJSON) {
+      const tmp = await cheerio.load(err.response.toJSON().body);
+      const filename = `${uuidv4()}.html`;
+  
+      Log.error('Trying to save HTTP request error as a HTML file');
+
+      fs.writeFile(filename, tmp.html(), err => {
+        if (err) Log.error(err);
+        Log.error(`The file error content was saved as ${filename}!`);
+      });
+    }
+
     throw err;
   }
 };
 
-const adaptRetry = async(url, status, isProxied, binary = false) => {
+const adaptRetry = async (url, status, isProxied, binary = false) => {
   // increase times that URL was requested
   const unProxyUrl = isProxied ? unProxy(url) : url;
   const totalRequests = maxRequests[unProxyUrl] || 0;
@@ -26,7 +48,6 @@ const adaptRetry = async(url, status, isProxied, binary = false) => {
   try {
     return await adapt(url, binary);
   } catch (err) {
-    Log.debug(err);
     // throw exception when it reachs the total requests configured
     if (maxRequests[unProxyUrl] === props.retries) {
       maxRequests[unProxyUrl] = 0;
