@@ -32,7 +32,7 @@ const buildFilters = () => {
         type: 'house',
         topology: t.name,
         logPrefix: `[crawler:custojusto:${c.name}:house:${t.name}]`,
-        url: `https://www.custojusto.pt/porto/${c.name}/moradias-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
+        url: `https://www.custojusto.pt/porto/${c.name}/moradias-arrendar?ps=4&pe=7&roe=${t.code}&ros=${t.code}`
       });
 
       filters.push({
@@ -40,7 +40,7 @@ const buildFilters = () => {
         type: 'apartment',
         topology: t.name,
         logPrefix: `[crawler:custojusto:${c.name}:apartment:${t.name}]`,
-        url: `https://www.custojusto.pt/porto/${c.name}/apartamentos-arrendar?ps=1&pe=7&roe=${t.code}&ros=${t.code}`
+        url: `https://www.custojusto.pt/porto/${c.name}/apartamentos-arrendar?ps=4&pe=7&roe=${t.code}&ros=${t.code}`
       });
     });
   });

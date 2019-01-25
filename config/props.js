@@ -116,8 +116,7 @@ const dataFilters = {
   onlyPhoto: true,
   energeticCertificates: [
     'a+', '+a', 'a-', '-a', 'a',
-    'b+', '+b', 'b-', '-b', 'b',
-    'c+', '+c', 'c-', '-c', 'c',
+    'b+', '+b', 'b-', '-b', 'b'
   ],
   topologies: ['t3', 't4']
 };
