@@ -22,6 +22,7 @@ class AvailabilityBot {
    */
   evaluate() {
     const callback = this.callback.bind(this);
+    // default fields update for success and error
     let set = {
       availabilityLastCheck: new Date(),
       isAvailabilityLastCheck: true

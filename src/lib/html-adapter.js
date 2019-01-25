@@ -28,8 +28,8 @@ const adapt = async(url, binary = false) => {
 
       Log.error('Trying to save HTTP request error as a HTML file');
 
-      fs.writeFile(filename, tmp.html(), err => {
-        if (err) Log.error(err);
+      fs.writeFile(filename, tmp.html(), errFs => {
+        if (errFs) Log.error(errFs);
         Log.error(`The file error content was saved as ${filename}!`);
       });
     }
