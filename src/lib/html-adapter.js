@@ -9,12 +9,12 @@ const maxRequests = {};
 
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    const r = Math.random() * 16 | 0; const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 }
 
-const adapt = async (url, binary = false) => {
+const adapt = async(url, binary = false) => {
   try {
     const data = await rq(url, binary);
     return cheerio.load(data);
@@ -25,7 +25,7 @@ const adapt = async (url, binary = false) => {
     if (err.response && err.response.toJSON) {
       const tmp = await cheerio.load(err.response.toJSON().body);
       const filename = `${uuidv4()}.html`;
-  
+
       Log.error('Trying to save HTTP request error as a HTML file');
 
       fs.writeFile(filename, tmp.html(), err => {
@@ -38,7 +38,7 @@ const adapt = async (url, binary = false) => {
   }
 };
 
-const adaptRetry = async (url, status, isProxied, binary = false) => {
+const adaptRetry = async(url, status, isProxied, binary = false) => {
   // increase times that URL was requested
   const unProxyUrl = isProxied ? unProxy(url) : url;
   const totalRequests = maxRequests[unProxyUrl] || 0;

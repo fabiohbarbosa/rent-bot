@@ -10,11 +10,11 @@ const rq = async(url, binary = false) => {
     url,
     encoding: binary ? 'binary' : null,
     headers: {
-      'Connection': 'keep-alive',
-      'Cache-Control':' max-age=0',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      Connection: 'keep-alive',
+      'Cache-Control': ' max-age=0',
+      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.94 Safari/537.36',
-      'Referer': 'https://www.google.com/'
+      Referer: 'https://www.google.com/'
     }
   });
 };
