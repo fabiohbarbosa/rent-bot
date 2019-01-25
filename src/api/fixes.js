@@ -1,9 +1,9 @@
 import Log from '../../config/logger';
 
 export default (router, db) => {
-  router.get('/fix/properties/imovirtual/url', async (req, res, next) => {
+  router.get('/fix/properties/imovirtual/url', async(req, res, next) => {
 
-    const logPrefix = '[fix:properties:imovirtual]:'
+    const logPrefix = '[fix:properties:imovirtual]:';
 
     const query = {
       provider: 'imovirtual'

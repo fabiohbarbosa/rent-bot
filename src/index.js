@@ -12,7 +12,7 @@ import Bot from './bot';
 import MailJob from './mail/mail-job';
 
 // initialize the express server
-(async () => {
+(async() => {
   const db = await Db.createConnection(props.db.url, props.db.dbName);
 
   const app = express();

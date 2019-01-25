@@ -22,36 +22,43 @@ class AvailabilityBot {
    */
   evaluate() {
     const callback = this.callback.bind(this);
+    let set = {
+      availabilityLastCheck: new Date(),
+      isAvailabilityLastCheck: true
+    };
 
     this.availability.evaluate(this.url)
       .then(() => {
         Log.info(`${this.logPrefix} The ${this.url} is a valid URL`);
-        updateDateBatch(this.db,
+        updateDateBatch(
+          this.db,
           { url: this.url },
           {
-            availabilityLastCheck: new Date(),
-            isAvailabilityLastCheck: true,
-            status: this.status === 'UNVAILABLE' ? 'PENDING' : this.status
+            ...set,
+            status: this.status === 'UNVAILABLE' ? 'PENDING' : this.status,
+            timesUnvailable: 0 // cleanup unvailable counts to prevent lost property after long time
           },
           callback
         );
       })
       .catch(err => {
-        const set = {
-          availabilityLastCheck: new Date(),
-          isAvailabilityLastCheck: true
-        };
-
         // caught up miner else is unknown error
         if (err.status && err.status === 404) {
           Log.warn(`${this.logPrefix} ${err.message}`);
-          set['status'] = 'UNVAILABLE';
-          set['timesUnvailable'] = this.timesUnvailable + 1; // increase time that website was unvailable
+          set = {
+            ...set,
+            status: 'UNVAILABLE',
+            timesUnvailable: this.timesUnvailable + 1
+          };
         } else {
           Log.error(`${this.logPrefix} ${err.message}`);
         }
 
-        updateDateBatch(this.db, { url: this.url }, set, callback);
+        updateDateBatch(
+          this.db,
+          { url: this.url },
+          set,
+          callback);
       });
   };
 
