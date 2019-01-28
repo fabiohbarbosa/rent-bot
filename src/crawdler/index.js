@@ -6,6 +6,7 @@ class Crawler {
     const { url, logPrefix, type, topology } = options;
     this.provider = new Provider(logPrefix, type, topology, url);
     this.logPrefix = logPrefix;
+    this.url = url;
   }
 
   async crawl() {
@@ -18,14 +19,14 @@ class Crawler {
       });
 
       if (elements.length === 0) {
-        Log.warn(`${this.logPrefix}: Not found elements`);
+        Log.warn(`${this.logPrefix}: Not found elements in ${this.url}`);
       } else {
-        Log.info(`${this.logPrefix}: Found ${elements.length} elements`);
+        Log.info(`${this.logPrefix}: Found ${elements.length} elements in ${this.url}`);
       }
 
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawl: ${err.message}`);
+      Log.error(`${this.logPrefix} Error to crawl '${this.url}': ${err.message}`);
       Log.error(err.stack);
     }
   }
