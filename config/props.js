@@ -39,7 +39,7 @@ const defaultVars = {
 
 const localVars = {
   ...defaultVars,
-  proxy: true,
+  proxy: false,
   server: {
     ...defaultVars.server,
     port: 3000
@@ -52,7 +52,7 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: false,
+      enabled: true,
       delay: 0
     },
     dataMining: {

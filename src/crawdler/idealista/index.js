@@ -16,14 +16,16 @@ class IdealistaProvider {
     let $ = await adaptRetry(proxy(this.url), 403, true);
 
     try {
-      const mainTitle = $('div#h1-container > span.h1-simulated')[0];
+      const mainTitleNodes = $('div#h1-container > h1');
+      if (!mainTitleNodes || mainTitleNodes.length === 0 || mainTitleNodes.children.length === 0) return [];
 
-      if (mainTitle.children.length === 0) return [];
+      const totalElements = parseInt($('div#h1-container > h1')[0].children[0].data.split(' ')[0], 10);
+      if (!totalElements || totalElements === 0) return [];
 
       const elements = [];
       elements.push(...this.getElements($));
 
-      const totalPages = Math.ceil(parseInt(mainTitle.children[0].data, 10) / itemsPage);
+      const totalPages = Math.ceil(totalElements / itemsPage);
       for (let page = 2; page <= totalPages; page++) {
         const nextUrl = this.url.replace('?', `pagina-${page}?`);
         $ = await adaptRetry(proxy(nextUrl), 403, true);
