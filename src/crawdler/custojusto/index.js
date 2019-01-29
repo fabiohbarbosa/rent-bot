@@ -39,7 +39,7 @@ class CustoJustoProvider {
     Log.info(`${this.logPrefix}: Crawling page ${page}`);
 
     const elements = [];
-    $('div#dalist > a').each((i, e) => {
+    $('div#dalist > div.container_related > a').each((i, e) => {
       const price = this.parsePrice($, e);
       const title = $(e).find('h2').text().trim();
 
