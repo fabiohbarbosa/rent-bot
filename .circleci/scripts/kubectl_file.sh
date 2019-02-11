@@ -12,8 +12,10 @@ spec:
   selector:
     app: $GROUP-$SERVICENAME
   ports:
-    - port: $PORT
-      name: 'application'
+  - name: application
+    port: $PORT
+    protocol: TCP
+    targetPort: $TARGET_PORT
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

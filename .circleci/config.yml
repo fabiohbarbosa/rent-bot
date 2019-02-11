@@ -110,8 +110,8 @@ jobs:
       HEALTHCHECK: /healthcheck
 
       NODE_ENV: prod
-      PORT: 3000
-      NODE_PORT: 30002
+      PORT: 80
+      TARGET_PORT: 3000
       LOG_LEVEL: info
 
       CRAWLER_BOT: true
