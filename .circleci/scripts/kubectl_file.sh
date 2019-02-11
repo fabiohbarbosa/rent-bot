@@ -11,6 +11,7 @@ metadata:
 spec:
   selector:
     app: $GROUP-$SERVICENAME
+  type: NodePort
   ports:
     - protocol: TCP
       port: $PORT
