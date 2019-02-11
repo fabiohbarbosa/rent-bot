@@ -111,6 +111,7 @@ jobs:
 
       NODE_ENV: prod
       PORT: 3000
+      NODE_PORT: 30002
       LOG_LEVEL: info
 
       CRAWLER_BOT: true
