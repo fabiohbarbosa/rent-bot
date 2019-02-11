@@ -11,12 +11,9 @@ metadata:
 spec:
   selector:
     app: $GROUP-$SERVICENAME
-  type: NodePort
   ports:
-    - protocol: TCP
-      port: $PORT
-      targetPort: $PORT
-      nodePort: $NODE_PORT
+    - port: $PORT
+      name: 'application'
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

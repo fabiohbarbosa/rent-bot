@@ -5,3 +5,4 @@ node_modules/
 notes
 sendgrid.env
 logs/
+service.yml
