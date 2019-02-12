@@ -8,6 +8,9 @@ import props from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
 class AvailabilityBot {
+  /**
+   * @param {MongoDb} db - mongo connection
+   */
   constructor(db, provider, url, timesUnvailable, status) {
     this.db = db;
     this.url = url;
@@ -17,9 +20,6 @@ class AvailabilityBot {
     this.status = status;
   }
 
-  /**
-   * @param {MongoDb} db - mongo connection
-   */
   evaluate() {
     const callback = this.callback.bind(this);
     // default fields update for success and error

@@ -55,8 +55,10 @@ class MailJob {
       const logPrefix = '[scheduler:mail]:';
       Log.info(`${logPrefix} Initialising mail notification`);
 
-      if (!mail.enabled)
+      if (!mail.enabled) {
         Log.warn(`${logPrefix} Skipping...`);
+        return;
+      }
 
       try {
         const query = {
