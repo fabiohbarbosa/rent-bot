@@ -11,7 +11,7 @@ import { logPrefix, path, projection } from './consts';
  * @param {MongoDb} db - mongo connection
  */
 const api = (router, db) => {
-  router.get(path, async (req, res, next) => {
+  router.get(path, async(req, res, next) => {
     Log.info(`${logPrefix} Fetching all properties`);
 
     const properties = await db.collection('properties')
@@ -28,6 +28,6 @@ const api = (router, db) => {
     Log.info(`${logPrefix} Found ${properties.length} properties`);
     res.json(properties);
   });
-}
+};
 
 export default api;

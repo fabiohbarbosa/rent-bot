@@ -6,4 +6,4 @@ export default (err, req, res, next) => {
 
   res.status(status).json({ message });
   Log.error(err.stack);
-}
+};

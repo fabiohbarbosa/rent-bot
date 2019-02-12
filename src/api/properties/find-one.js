@@ -13,7 +13,7 @@ import { logPrefix, path, projection } from './consts';
  * @param {MongoDb} db - mongo connection
  */
 const api = (router, db) => {
-  router.get(`${path}/:id`, async (req, res, next) => {
+  router.get(`${path}/:id`, async(req, res, next) => {
     try {
       const _id = new ObjectID(req.params.id);
 
@@ -29,10 +29,10 @@ const api = (router, db) => {
       }
 
       res.json(property);
-    } catch(err) {
+    } catch (err) {
       next(err);
     }
   });
-}
+};
 
 export default api;
