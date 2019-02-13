@@ -46,9 +46,9 @@ class CrawlerBot {
 
                 // DATA MINE
                 new DataMiningBot(db, providerName, e.url).mine().then(() => {
-                  Log.debug(`${filter.logPrefix} Success to mine ${url}`);
+                  Log.debug(`${filter.logPrefix} Success to mine ${e.url}`);
                 }).catch(err => {
-                  Log.error(`${filter.logPrefix} Error mine ${url}`);
+                  Log.error(`${filter.logPrefix} Error mine ${e.url}`);
                   Log.error(err);
                 });
 

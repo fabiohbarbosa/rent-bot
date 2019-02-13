@@ -15,8 +15,9 @@ const availability = {
 
 class AvailabilityBotFactory {
   static getInstance(provider, url) {
+    let logPrefix = `[availability:${provider}]:`;
+
     try {
-      let logPrefix = `[availability:${provider}]:`;
       const realProvider = ensureRealProvider(logPrefix, provider, url);
       logPrefix = `[availability:${realProvider}]:`;
 

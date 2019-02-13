@@ -15,8 +15,9 @@ const miner = {
 
 class MinerBotFactory {
   static getInstance(provider, url) {
+    let logPrefix = `[miner:${provider}]:`;
+
     try {
-      let logPrefix = `[miner:${provider}]:`;
       const realProvider = ensureRealProvider(logPrefix, provider, url);
       logPrefix = `[miner:${realProvider}]:`;
 
