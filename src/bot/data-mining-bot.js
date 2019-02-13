@@ -7,6 +7,8 @@ import Log from '../../config/logger';
 import props from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
+let idealistaCounterCycle = props.bots.dataMining.intervalIdealistaCounter;
+
 class DataMiningBot {
   constructor(db, provider, url) {
     this.db = db;
@@ -61,8 +63,15 @@ class DataMiningBot {
   static async initialise(db) {
     try {
       const query = {
+        provider: { $ne: 'idealista' },
         status: { $ne: 'UNVAILABLE' }
       };
+
+      // reduce times to fetch idealista data
+      if (idealistaCounterCycle === 0) {
+        delete query['provider'];
+        idealistaCounterCycle = props.bots.dataMining.intervalIdealistaCounter;
+      }
 
       const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
       const { batchSize } = props.bots.dataMining;

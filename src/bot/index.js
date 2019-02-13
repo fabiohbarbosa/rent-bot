@@ -23,23 +23,28 @@ class Bot {
   static crawlers(db) {
     const { crawler } = props.bots;
     if (!crawler.enabled) {
-      Log.warn('Skipping crawlers...');
+      Log.warn('[bot:crawler]: Skipping...');
       return;
     }
 
-    Log.info('Initialising crawlers');
+    Log.info('[bot:crawler]: Initialising...');
     const start = () => {
       CrawlerBot.crawle(db, CustoJustoProvider, custoJustoFilters);
       CrawlerBot.crawle(db, ImovirtualProvider, imovirtualFilters);
       CrawlerBot.crawle(db, OlxProvider, olxFilters);
+    };
+
+    const startIdealista = () => {
       CrawlerBot.crawle(db, IdealistaProvider, idealistaFilters);
     };
 
     setTimeout(() => {
       start();
+      startIdealista();
     }, crawler.delay);
 
     setInterval(start, crawler.interval);
+    setInterval(startIdealista, crawler.interval * crawler.intervalIdealistaMultipler);
   }
 
   /**
@@ -50,11 +55,11 @@ class Bot {
     const { dataMining } = props.bots;
 
     if (!dataMining.enabled) {
-      Log.warn('Skipping data mining...');
+      Log.warn('[bot:minder]: Skipping...');
       return;
     }
 
-    Log.info('Initialising data minings');
+    Log.info('[bot:minder]: Initialising...');
 
     const start = () => {
       DataMiningBot.initialise(db);
@@ -72,11 +77,11 @@ class Bot {
     const { availability } = props.bots;
 
     if (!availability.enabled) {
-      Log.warn('Skipping evaluate availability...');
+      Log.warn('[bot:availability]: Skipping...');
       return;
     }
 
-    Log.info('Initialising evaluate availability');
+    Log.info('[bot:availability]: Initialising...');
 
     const start = () => {
       AvailabilityBot.initialise(db);

@@ -53,12 +53,12 @@ class MailJob {
 
     const start = async() => {
       const logPrefix = '[scheduler:mail]:';
-      Log.info(`${logPrefix} Initialising mail notification`);
-
       if (!mail.enabled) {
         Log.warn(`${logPrefix} Skipping...`);
         return;
       }
+
+      Log.info(`${logPrefix} Initialising mail notification`);
 
       try {
         const query = {
@@ -79,6 +79,7 @@ class MailJob {
       }
     };
 
+    start();
     setTimeout(() => start(), mail.delay);
     setInterval(start, mail.interval);
   }

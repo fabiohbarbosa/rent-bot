@@ -1,5 +1,5 @@
-const path = '/properties';
-const logPrefix = '[api:properties]:';
+const logPrefix = '[api:property]:';
+const path = '/property';
 const projection = {
   providerId: 1, createAt: 1, price: 1,
   provider: 1, status: 1, title: 1, type: 1,

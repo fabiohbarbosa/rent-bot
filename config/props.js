@@ -14,17 +14,20 @@ const defaultVars = {
   },
   bots: {
     crawler: {
-      interval: 30 * 60 * 1000,
+      interval: 1 * 60 * 1000,
+      intervalIdealistaMultipler: 30,
       delay: 0 * 1000
     },
     dataMining: {
       batchSize: 4,
-      interval: 10 * 60 * 1000,
+      interval: 30 * 60 * 1000,
+      intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
       delay: 10 * 1000
     },
     availability: {
       batchSize: 4,
-      interval: 10 * 60 * 1000,
+      interval: 30 * 60 * 1000,
+      intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
       delay: 15 * 1000
     }
   },
@@ -52,7 +55,7 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: false,
+      enabled: true,
       delay: 0
     },
     dataMining: {

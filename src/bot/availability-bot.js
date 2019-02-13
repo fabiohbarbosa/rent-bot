@@ -7,6 +7,8 @@ import Log from '../../config/logger';
 import props from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
+let idealistaCounterCycle = props.bots.availability.intervalIdealistaCounter;
+
 class AvailabilityBot {
   /**
    * @param {MongoDb} db - mongo connection
@@ -74,11 +76,19 @@ class AvailabilityBot {
   static async initialise(db) {
     try {
       const query = {
+        provider: { $ne: 'idealista' },
         $or: [
           { timesUnvailable: { $lte: 50 } },
           { timesUnvailable: null }
         ]
       };
+
+      // reduce times to fetch idealista data
+      if (idealistaCounterCycle === 0) {
+        delete query['provider'];
+        idealistaCounterCycle = props.bots.availability.intervalIdealistaCounter;
+      }
+
       const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
       const { batchSize } = props.bots.availability;
 
@@ -86,6 +96,9 @@ class AvailabilityBot {
       properties.forEach(p =>
         new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable, p.status).evaluate()
       );
+
+      idealistaCounterCycle--;
+
     } catch (err) {
       Log.error(`[availability] Error to load properties from database: ${err.message}`);
       Log.error(err.stack);

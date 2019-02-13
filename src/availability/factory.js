@@ -4,6 +4,7 @@ import ImovirtualAvailability from './imovirtual';
 import OlxAvailability from './olx';
 
 import Log from '../../config/logger';
+import { ensureRealProvider } from '../utils/provider-utils';
 
 const availability = {
   custojusto: CustoJustoAvailability,
@@ -14,23 +15,13 @@ const availability = {
 
 class AvailabilityBotFactory {
   static getInstance(provider, url) {
-    const logPrefix = `[availability:${provider}]:`;
-    let realProvider = provider;
-
-    if (realProvider === 'olx') {
-      if (url.includes('https://www.imovirtual.com')) {
-        realProvider = 'imovirtual';
-        Log.info(`${logPrefix} Changing availability class from '${provider}' to '${realProvider}' for ${url}`);
-      } else if (url.includes('https://www.olx.pt')) {
-        realProvider = provider;
-      } else {
-        Log.warn(`${logPrefix} Cannot find availability class to url ${url} and provider ${provider}`);
-      }
-    }
-
     try {
+      let logPrefix = `[availability:${provider}]:`;
+      const realProvider = ensureRealProvider(logPrefix, provider, url);
+      logPrefix = `[availability:${realProvider}]:`;
+
       const Availability = availability[realProvider];
-      return new Availability(`[availability:${realProvider}]:`);
+      return new Availability(logPrefix);
     } catch (err) {
       Log.error(`${logPrefix} Error to instance availability object`);
       throw err;

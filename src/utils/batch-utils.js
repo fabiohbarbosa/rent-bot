@@ -8,9 +8,9 @@
  * @param {object} query - query mongo json object
  * @param {object} sort - sort mongo json object
  */
-const batchProperties = (db, query, sort, size) => {
+const batchProperties = (db, query, sort, size, projection = {}) => {
   return db.collection('properties')
-    .find(query)
+    .find(query, projection)
     .sort(sort)
     .limit(size)
     .toArray();

@@ -4,6 +4,7 @@ import ImovirtualMiner from './imovirtual';
 import OlxMiner from './olx';
 
 import Log from '../../config/logger';
+import { ensureRealProvider } from '../utils/provider-utils';
 
 const miner = {
   custojusto: CustoJustoMiner,
@@ -14,23 +15,13 @@ const miner = {
 
 class MinerBotFactory {
   static getInstance(provider, url) {
-    const logPrefix = `[miner:${provider}]:`;
-    let realProvider = provider;
-
-    if (realProvider === 'olx') {
-      if (url.includes('https://www.imovirtual.com')) {
-        realProvider = 'imovirtual';
-        Log.info(`${logPrefix} Changing miner class from '${provider}' to '${realProvider}' for ${url}`);
-      } else if (url.includes('https://www.olx.pt')) {
-        realProvider = provider;
-      } else {
-        Log.warn(`${logPrefix} Cannot find miner class to url ${url} and provider ${provider}`);
-      }
-    }
-
     try {
+      let logPrefix = `[miner:${provider}]:`;
+      const realProvider = ensureRealProvider(logPrefix, provider, url);
+      logPrefix = `[miner:${realProvider}]:`;
+
       const Miner = miner[realProvider];
-      return new Miner(`[miner:${realProvider}]:`);
+      return new Miner(logPrefix);
     } catch (err) {
       Log.error(`${logPrefix} Error to instance miner object`);
       throw err;

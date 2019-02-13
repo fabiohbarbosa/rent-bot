@@ -9,8 +9,11 @@ import props from '../config/props';
 import Db from '../config/db';
 
 import healthcheck from './api/healthcheck-api';
-import fixes from './api/fixes-api';
-import properties from './api/properties-api';
+import fix from './api/fix-api';
+import property from './api/property-api';
+import provider from './api/provider-api';
+import status from './api/status-api';
+import topology from './api/topology-api';
 import errorHandler from './middleware/error-handler';
 
 import Bot from './bot';
@@ -33,8 +36,11 @@ import MailJob from './mail/mail-job';
   }));
 
   app.use('/', healthcheck(router));
-  app.use('/', fixes(router, db));
-  app.use('/', properties(router, db));
+  app.use('/', fix(router, db));
+  app.use('/', property(router, db));
+  app.use('/', provider(router, db));
+  app.use('/', status(router, db));
+  app.use('/', topology(router, db));
   app.use(errorHandler);
 
   // wrong routes should be return 404 status code

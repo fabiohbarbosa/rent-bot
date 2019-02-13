@@ -1,5 +1,6 @@
 import Log from '../../config/logger';
 import Crawdler from '../crawdler';
+import DataMiningBot from './data-mining-bot';
 
 /**
  * @typedef {import('mongodb').Db} MongoDb
@@ -14,7 +15,7 @@ class CrawlerBot {
    */
   static crawle(db, Provider, rawFilters) {
     const providerName = Provider.name.toLowerCase().replace('provider', '');
-    Log.info(`Initialising crawle for ${providerName}...`);
+    Log.info(`[crawler:${providerName}]: Initialising crawle...`);
 
     const filters = rawFilters.filter(filter => {
       if (!filter.enabled)
@@ -42,6 +43,15 @@ class CrawlerBot {
 
               if (result.upsertedCount > 0) {
                 Log.info(`${filter.logPrefix} Found new property ${e.url}`);
+
+                // DATA MINE
+                new DataMiningBot(db, providerName, e.url).mine().then(() => {
+                  Log.debug(`${filter.logPrefix} Success to mine ${url}`);
+                }).catch(err => {
+                  Log.error(`${filter.logPrefix} Error mine ${url}`);
+                  Log.error(err);
+                });
+
               } else {
                 Log.debug(`${filter.logPrefix} The property ${e.url} already exists`);
               }
