@@ -22,12 +22,14 @@ class Bot {
    */
   static crawlers(db) {
     const { crawler } = props.bots;
+    const logPrefix = '[bot:crawler]:';
+
     if (!crawler.enabled) {
-      Log.warn('[bot:crawler]: Skipping...');
+      Log.warn(`${logPrefix} Skipping...`);
       return;
     }
 
-    Log.info('[bot:crawler]: Initialising...');
+    Log.info(`${logPrefix} Initialising...`);
     const start = () => {
       CrawlerBot.crawle(db, CustoJustoProvider, custoJustoFilters);
       CrawlerBot.crawle(db, ImovirtualProvider, imovirtualFilters);
@@ -53,13 +55,14 @@ class Bot {
    */
   static dataMining(db) {
     const { dataMining } = props.bots;
+    const logPrefix = '[bot:crawler]:';
 
     if (!dataMining.enabled) {
-      Log.warn('[bot:minder]: Skipping...');
+      Log.warn(`${logPrefix} Skipping...`);
       return;
     }
 
-    Log.info('[bot:minder]: Initialising...');
+    Log.info(`${logPrefix} Initialising...`);
 
     const start = () => {
       DataMiningBot.initialise(db);
@@ -75,13 +78,14 @@ class Bot {
    */
   static evaluateAvailability(db) {
     const { availability } = props.bots;
+    const logPrefix = '[bot:availability]:';
 
     if (!availability.enabled) {
-      Log.warn('[bot:availability]: Skipping...');
+      Log.warn(`${logPrefix} Skipping...`);
       return;
     }
 
-    Log.info('[bot:availability]: Initialising...');
+    Log.info(`${logPrefix} Initialising...`);
 
     const start = () => {
       AvailabilityBot.initialise(db);
