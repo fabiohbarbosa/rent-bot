@@ -69,34 +69,36 @@ class DataMiningBot {
       return;
     }
 
+    const { url, photos } = property;
+
     try {
       MailService.send({
         ...property,
-        photo: property.photos && property.photos.length > 0 ? property.photos[0] : undefined
+        photo: photos && photos.length > 0 ? photos[0] : undefined
       });
-      const filter = { url: property.url };
+      const filter = { url };
       const update = { $set: { notificated: true, notificatedAt: new Date() } };
 
       this.db.collection('properties').updateOne(filter, update, (err, result) => {
         if (err) {
-          Log.error(`${this.logPrefix} Error in notifying URL '${property.url}'`);
+          Log.error(`${this.logPrefix} Error in notifying URL '${url}'`);
           return;
         }
-        Log.info(`${this.logPrefix} Success in notifying URL '${property.url}'`);
+        Log.info(`${this.logPrefix} Success in notifying URL '${url}'`);
       });
 
     } catch (err) {
-      Log.error(`${this.logPrefix} Error in notifying URL '${property.url}'`);
+      Log.error(`${this.logPrefix} Error in notifying URL '${url}'`);
     }
   }
 
   _callback(err, result) {
-    const url = this.property.url;
+    const { url } = this.property;
     if (err) {
-      Log.error(`${this.logPrefix} Error to mine url ${url}`);
+      Log.error(`${this.logPrefix} Error to mine URL '${url}'`);
       return;
     }
-    Log.debug(`${this.logPrefix} Success to mine url ${url}: ${result}`);
+    Log.debug(`${this.logPrefix} Success to mine URL '${url}': ${result}`);
   };
 
   static async initialise(db) {
