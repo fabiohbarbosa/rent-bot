@@ -86,14 +86,15 @@ class AvailabilityBot {
       };
 
       // reduce times to fetch idealista data
+      // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
       if (idealistaCounterCycle === 0) {
         delete query['provider'];
         idealistaCounterCycle = props.intervalIdealistaCounter;
       }
 
       const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
-
       const properties = await batchProperties(db, query, sort, props.batchSize);
+
       properties.forEach(p =>
         new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable, p.status).evaluate()
       );

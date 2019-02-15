@@ -4,16 +4,23 @@
 
 import MinerBotFactory from '../miners/factory';
 import Log from '../../config/logger';
-import props from '../../config/props';
+import allProps from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
-let idealistaCounterCycle = props.bots.dataMining.intervalIdealistaCounter;
+// get only dataMining properties
+const props = allProps.bots.dataMining;
+let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class DataMiningBot {
-  constructor(db, provider, url) {
+  constructor(db, property) {
+    const { provider, url, status, dirty } = property;
+
     this.db = db;
-    this.miner = MinerBotFactory.getInstance(provider, url);
     this.url = url;
+    this.status = status;
+    this.dirty = dirty;
+
+    this.miner = MinerBotFactory.getInstance(provider, url);
     this.logPrefix = this.miner.logPrefix;
   }
 
@@ -22,17 +29,21 @@ class DataMiningBot {
    */
   async mine() {
     const url = this.url;
+    let status = this.status;
+
     const callback = this.callback.bind(this);
 
     try {
       const { isOnFilter, data } = await this.miner.mine(url);
 
-      let status = 'MATCHED';
-      if (!isOnFilter) {
-        Log.warn(`${this.logPrefix} The ${url} is out of filter`);
+      if (!isOnFilter && this.dirty === false) {
         status = 'OUT_OF_FILTER';
-      } else {
+        Log.warn(`${this.logPrefix} The ${url} is out of filter`);
+      } else if (isOnFilter && this.dirty === false) {
+        status = 'MATCHED';
         Log.info(`${this.logPrefix} The ${url} is on filter`);
+      } else {
+        Log.warn(`${this.logPrefix} The ${url} is dirty and by bot is ${isOnFilter ? 'on' : 'not on'} filter but by user is ${status}`);
       }
 
       const set = {
@@ -68,19 +79,25 @@ class DataMiningBot {
       };
 
       // reduce times to fetch idealista data
+      // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
       if (idealistaCounterCycle === 0) {
         delete query['provider'];
-        idealistaCounterCycle = props.bots.dataMining.intervalIdealistaCounter;
+        idealistaCounterCycle = props.intervalIdealistaCounter;
       }
 
       const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
-      const { batchSize } = props.bots.dataMining;
+      const properties = await batchProperties(db, query, sort, props.batchSize);
 
-      const properties = await batchProperties(db, query, sort, batchSize);
+      properties.forEach(p => {
+        const property = {
+          provider: p.provider,
+          url: p.url,
+          status: p.status,
+          dirty: p.dirty !== undefined ? p.dirty : false
+        };
 
-      properties.forEach(p =>
-        new DataMiningBot(db, p.provider, p.url).mine()
-      );
+        new DataMiningBot(db, property).mine();
+      });
     } catch (err) {
       Log.error(`[minder]: Error to load properties from database: ${err.message}`);
       Log.error(err.stack);

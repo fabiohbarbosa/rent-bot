@@ -5,6 +5,6 @@ const projection = {
   provider: 1, status: 1, title: 1, type: 1,
   url: 1, topology: 1
 };
-const propertyStatus = [ 'UNVAILABLE', 'OUT_OF_FILTER', 'MATCHED', 'PENDING' ];
+const statusAvailableToPatch = [ 'OUT_OF_FILTER', 'MATCHED' ];
 
-export { logPrefix, path, projection, propertyStatus };
+export { logPrefix, path, projection, statusAvailableToPatch };

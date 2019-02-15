@@ -1,7 +1,7 @@
 import { ObjectID } from 'mongodb';
 
 import Log from '../../../config/logger';
-import { logPrefix, path, propertyStatus } from './consts';
+import { logPrefix, path, statusAvailableToPatch } from './consts';
 import HttpError from '../http-error';
 
 /**
@@ -9,27 +9,43 @@ import HttpError from '../http-error';
  * @typedef {import('mongodb').Db} MongoDb
  */
 
-const _getStatusFromBody = (body, _id) => {
-  if (!body) {
-    throw new HttpError('Field \'status\' cannot be null', 400);
-  }
+const _parseBody = (body, _id) => {
+  if (!body)
+    throw new HttpError('Body cannot be null', 400);
 
   for (const [key] of Object.entries(body)) {
-    if (key !== 'status') {
-      throw new HttpError('You can only patch field \'status\'', 400);
+    if (key !== 'status' && key !== 'ps') {
+      throw new HttpError('You can patch only fields \'status\' and/or \'ps\'', 400);
     }
   }
 
-
-  const { status } = body;
-  if (!status) {
-    throw new HttpError('Field \'status\' cannot be null', 400);
+  const { status, ps } = body;
+  if (status) {
+    if (!statusAvailableToPatch.includes(status))
+      throw new HttpError(`The 'status' should be: '${statusAvailableToPatch}'`, 400);
   }
 
-  if (!propertyStatus.includes(status)) {
-    throw new HttpError(`The 'status' should be: '${propertyStatus}'`, 400);
+  return { status, ps };
+};
+
+const _generateUpdate = (status, ps) => {
+  const update = {
+    status,
+    ps,
+    dirty: true
+  };
+
+  if (status === undefined) {
+    delete update['status'];
+    // property is dirty only when status is changed
+    // this changes exists to prevent bot to change a property set to MATCHED or OUT_OF_FILTER by user to a reverse status
+    update.dirty = false;
   }
-  return status;
+
+  if (ps === undefined)
+    delete update['ps'];
+
+  return update;
 };
 
 /**
@@ -40,15 +56,16 @@ const api = (router, db) => {
   router.patch(`${path}/:id`, async(req, res, next) => {
     try {
       const _id = new ObjectID(req.params.id);
-      const status = _getStatusFromBody(req.body, _id);
+      const { status, ps } = _parseBody(req.body, _id);
+      const update = _generateUpdate(status, ps);
 
       Log.info(`${logPrefix} Patching property by id '${_id}'`);
 
-      const updateResult = await db.collection('properties').updateOne({ _id }, { $set: { status } });
-      if (updateResult.modifiedCount === 0) {
+      const updateResult = await db.collection('properties').updateOne({ _id }, { $set: update });
+      if (updateResult.matchedCount === 0) {
         throw new HttpError(`Cannot find property '${_id}'`);
       }
-      res.send(204);
+      res.sendStatus(204);
 
     } catch (err) {
       next(err);
