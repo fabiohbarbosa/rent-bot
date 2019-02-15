@@ -13,6 +13,9 @@ const props = allProps.bots.dataMining;
 let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class DataMiningBot {
+  /**
+   * @param {MongoDb} db - mongo connection
+   */
   constructor(db, property) {
     this.db = db;
     this.property = property;
@@ -21,9 +24,6 @@ class DataMiningBot {
     this.logPrefix = this.miner.logPrefix;
   }
 
-  /**
-   * @param {MongoDb} db - mongo connection
-   */
   async mine() {
     const { url, dirty, notificated, status } = this.property;
     const callback = this._callback.bind(this);
@@ -68,7 +68,26 @@ class DataMiningBot {
     if (isOnFilter !== true || notificated === true) {
       return;
     }
-    MailService.send(property);
+
+    try {
+      MailService.send({
+        ...property,
+        photo: property.photos && property.photos.length > 0 ? property.photos[0] : undefined
+      });
+      const filter = { url: property.url };
+      const update = { $set: { notificated: true, notificatedAt: new Date() } };
+
+      this.db.collection('properties').updateOne(filter, update, (err, result) => {
+        if (err) {
+          Log.error(`${this.logPrefix} Error in notifying URL '${property.url}'`);
+          return;
+        }
+        Log.info(`${this.logPrefix} Success in notifying URL '${property.url}'`);
+      });
+
+    } catch (err) {
+      Log.error(`${this.logPrefix} Error in notifying URL '${property.url}'`);
+    }
   }
 
   _callback(err, result) {

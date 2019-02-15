@@ -43,7 +43,7 @@ class MailJob {
             { $set: { notificated: true, notificatedAt: new Date() } }, callback);
 
       } catch (err) {
-        Log.error(`Error to notified user about ${p.url}`);
+        Log.error(`${this.logPrefix} Error to notified user about ${p.url}`);
       }
     });
   }
