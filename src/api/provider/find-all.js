@@ -1,5 +1,5 @@
 import Log from '../../../config/logger';
-import { logPrefix, path } from './consts';
+import { logPrefix, path, providers } from './consts';
 
 /**
  * @typedef {import('express').Router} Router
@@ -14,16 +14,7 @@ const api = (router, db) => {
   router.get(path, async(req, res, next) => {
     Log.info(`${logPrefix} Fetching the providers`);
 
-    const providers = await db.collection('properties')
-      .distinct('provider');
-
-    if (providers.length === 0) {
-      Log.warn(`${logPrefix} Not found providers`);
-      res.send(204);
-      return;
-    }
-
-    Log.info(`${logPrefix} Found ${providers.length} provider`);
+    Log.info(`${logPrefix} Found ${providers.length} providers`);
     res.json(providers.sort());
   });
 };
