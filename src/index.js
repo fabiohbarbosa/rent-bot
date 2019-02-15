@@ -17,7 +17,6 @@ import topology from './api/topology-api';
 import errorHandler from './middleware/error-handler';
 
 import Bot from './bot';
-import MailJob from './mail/mail-job';
 
 // initialize the express server
 (async() => {
@@ -58,6 +57,5 @@ import MailJob from './mail/mail-job';
     Bot.crawlers(db);
     Bot.evaluateAvailability(db);
     Bot.dataMining(db);
-    MailJob.schedule(db);
   });
 })();

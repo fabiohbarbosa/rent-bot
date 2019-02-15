@@ -6,6 +6,7 @@ import MinerBotFactory from '../miners/factory';
 import Log from '../../config/logger';
 import allProps from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
+import MailService from '../mail/mail-service';
 
 // get only dataMining properties
 const props = allProps.bots.dataMining;
@@ -13,14 +14,10 @@ let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class DataMiningBot {
   constructor(db, property) {
-    const { provider, url, status, dirty } = property;
-
     this.db = db;
-    this.url = url;
-    this.status = status;
-    this.dirty = dirty;
+    this.property = property;
 
-    this.miner = MinerBotFactory.getInstance(provider, url);
+    this.miner = MinerBotFactory.getInstance(property.provider, property.url);
     this.logPrefix = this.miner.logPrefix;
   }
 
@@ -28,32 +25,21 @@ class DataMiningBot {
    * @param {MongoDb} db - mongo connection
    */
   async mine() {
-    const url = this.url;
-    let status = this.status;
-
-    const callback = this.callback.bind(this);
+    const { url, dirty, notificated, status } = this.property;
+    const callback = this._callback.bind(this);
 
     try {
       const { isOnFilter, data } = await this.miner.mine(url);
-
-      if (!isOnFilter && this.dirty === false) {
-        status = 'OUT_OF_FILTER';
-        Log.warn(`${this.logPrefix} The ${url} is out of filter`);
-      } else if (isOnFilter && this.dirty === false) {
-        status = 'MATCHED';
-        Log.info(`${this.logPrefix} The ${url} is on filter`);
-      } else {
-        Log.warn(`${this.logPrefix} The ${url} is dirty and by bot is ${isOnFilter ? 'on' : 'not on'} filter but by user is ${status}`);
-      }
-
+      const newStatus = this._chooseTheStatus(url, isOnFilter, dirty, status);
       const set = {
         ...data,
         dataMiningLastCheck: new Date(),
         isDataMiningLastCheck: true,
-        status
+        status: newStatus
       };
 
       updateDateBatch(this.db, { url }, set, callback);
+      this._notificateByEmail(isOnFilter, notificated, this.property);
     } catch (err) {
       const set = {
         dataMiningLastCheck: new Date(),
@@ -63,12 +49,35 @@ class DataMiningBot {
     }
   };
 
-  callback(err, result) {
-    if (err) {
-      Log.error(`${this.logPrefix} Error to mine url ${this.url}`);
+  _chooseTheStatus(url, isOnFilter, dirty, status) {
+    if (dirty === true) {
+      Log.warn(`${this.logPrefix} The ${url} is dirty and by bot is ${isOnFilter ? 'on' : 'not on'} filter but by user is ${status}. The status won't be change`);
+      return status;
+    }
+
+    if (!isOnFilter === true) {
+      Log.warn(`${this.logPrefix} The ${url} is out of filter`);
+      return 'OUT_OF_FILTER';
+    } else {
+      Log.info(`${this.logPrefix} The ${url} is on filter`);
+      return 'MATCHED';
+    }
+  }
+
+  _notificateByEmail(isOnFilter, notificated, property) {
+    if (isOnFilter !== true || notificated === true) {
       return;
     }
-    Log.debug(`${this.logPrefix} Success to mine url ${this.url}: ${result}`);
+    MailService.send(property);
+  }
+
+  _callback(err, result) {
+    const url = this.property.url;
+    if (err) {
+      Log.error(`${this.logPrefix} Error to mine url ${url}`);
+      return;
+    }
+    Log.debug(`${this.logPrefix} Success to mine url ${url}: ${result}`);
   };
 
   static async initialise(db) {
@@ -88,16 +97,9 @@ class DataMiningBot {
       const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
       const properties = await batchProperties(db, query, sort, props.batchSize);
 
-      properties.forEach(p => {
-        const property = {
-          provider: p.provider,
-          url: p.url,
-          status: p.status,
-          dirty: p.dirty !== undefined ? p.dirty : false
-        };
-
-        new DataMiningBot(db, property).mine();
-      });
+      properties.forEach(p =>
+        new DataMiningBot(db, p).mine()
+      );
     } catch (err) {
       Log.error(`[minder]: Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
