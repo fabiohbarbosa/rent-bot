@@ -21,7 +21,7 @@ const api = (router, db) => {
 
     if (properties.length === 0) {
       Log.warn(`${logPrefix} Not found properties`);
-      res.send(204);
+      res.sendStatus(204);
       return;
     }
 

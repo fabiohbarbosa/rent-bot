@@ -24,7 +24,7 @@ const api = (router, db) => {
 
       if (!property) {
         Log.warn(`${logPrefix} Not found property for id '${_id}'`);
-        res.send(204);
+        res.sendStatus(204);
         return;
       }
 
