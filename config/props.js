@@ -15,18 +15,19 @@ const defaultVars = {
   bots: {
     crawler: {
       interval: 1 * 60 * 1000,
-      intervalIdealistaMultipler: 30,
+      intervalIdealistaMultipler: 15,
       delay: 0 * 1000
     },
     dataMining: {
       batchSize: 4,
-      interval: 30 * 60 * 1000,
+      interval: 9 * 60 * 1000, // a cada 9 minutos é possível verificar 600 imóveis por dia
       intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
       delay: 10 * 1000
     },
     availability: {
       batchSize: 4,
-      interval: 30 * 60 * 1000,
+      ensureTimes: 5,
+      interval: 9 * 60 * 1000, // a cada 9 minutos é possível verificar 600 imóveis por dia
       intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
       delay: 15 * 1000
     }
@@ -55,18 +56,18 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: true,
+      enabled: false,
       delay: 0
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: false,
+      enabled: true,
       interval: 0.5 * 60 * 1000,
       delay: 0
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: false,
+      enabled: true,
       interval: 0.5 * 60 * 1000,
       delay: 0
     }
