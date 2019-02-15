@@ -4,10 +4,12 @@
 
 import AvailabilityBotFactory from '../availability/factory';
 import Log from '../../config/logger';
-import props from '../../config/props';
+import allProps from '../../config/props';
 import { batchProperties, updateDateBatch } from '../utils/batch-utils';
 
-let idealistaCounterCycle = props.bots.availability.intervalIdealistaCounter;
+// get only availability properties
+const props = allProps.bots.availability;
+let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class AvailabilityBot {
   /**
@@ -78,7 +80,7 @@ class AvailabilityBot {
       const query = {
         provider: { $ne: 'idealista' },
         $or: [
-          { timesUnvailable: { $lte: 50 } },
+          { timesUnvailable: { $lt: props.ensureTimes } },
           { timesUnvailable: null }
         ]
       };
@@ -86,13 +88,12 @@ class AvailabilityBot {
       // reduce times to fetch idealista data
       if (idealistaCounterCycle === 0) {
         delete query['provider'];
-        idealistaCounterCycle = props.bots.availability.intervalIdealistaCounter;
+        idealistaCounterCycle = props.intervalIdealistaCounter;
       }
 
       const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
-      const { batchSize } = props.bots.availability;
 
-      const properties = await batchProperties(db, query, sort, batchSize);
+      const properties = await batchProperties(db, query, sort, props.batchSize);
       properties.forEach(p =>
         new AvailabilityBot(db, p.provider, p.url, p.timesUnvailable, p.status).evaluate()
       );
