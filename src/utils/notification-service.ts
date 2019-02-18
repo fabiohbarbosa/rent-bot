@@ -9,7 +9,7 @@ class NotificationService {
   constructor(private logPrefix: string, private db: Db) {}
 
   async notificateByEmail (property: Property): Promise<void> {
-    if (!props.mail.notify) {
+    if (!props.mail.enabled) {
       Promise.resolve();
       return;
     }

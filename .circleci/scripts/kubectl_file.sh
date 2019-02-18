@@ -48,6 +48,8 @@ spec:
             value: $LOG_LEVEL
           - name: DB_URL
             value: $DB_URL
+          - name: MAIL
+            value: '$MAIL'
           - name: CRAWLER_BOT
             value: '$CRAWLER_BOT'
           - name: AVAILABILITY_BOT

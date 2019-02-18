@@ -12,11 +12,7 @@ const defaultVars = {
   db: {
     dbName: 'rent-bot'
   },
-  mail: {
-    notify: true,
-  },
   bots: {
-    notify: true,
     crawler: {
       interval: 1 * 60 * 1000,
       intervalIdealistaMultipler: 15,
@@ -57,7 +53,7 @@ const localVars = {
     ...defaultVars.db
   },
   mail: {
-    notify: false,
+    enabled: false,
   },
   bots: {
     crawler: {
@@ -98,6 +94,9 @@ const envVars = {
   db: {
     url: process.env.DB_URL,
     ...defaultVars.db
+  },
+  mail: {
+    enabled: process.env.MAIL,
   },
   bots: {
     crawler: {
