@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ],
+			"@config/*": [
+				"config/*"
+			],
+      "@api/*": [
+				"src/api/*"
+      ],
+      "@lib/*": [
+				"src/lib/*"
+			],
+			"@models/*": [
+				"src/models/*"
+      ],
+			"@modules/*": [
+				"src/modules/*"
+      ],
+			"@utils/*": [
+				"src/utils/*"
+			]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

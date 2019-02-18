@@ -7,12 +7,25 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "nodemon",
+        "name": "Launch Program",
+        "program": "${workspaceFolder}/src/index.ts",
+        "preLaunchTask": "npm: build",
+        "runtimeArgs": ["-r", "./tsconfig-paths.js"],
+        "restart": true,
+        "outFiles": [
+            "${workspaceFolder}/dist/**/*.js"
+        ]
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Nodemon",
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-        "program": "${workspaceFolder}/index.js",
         "restart": true,
         "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen"
-      },
+        "internalConsoleOptions": "openOnFirstSessionStart",
+        "port": 9229,
+        "stopOnEntry": true
+      }
     ]
-}
+  }

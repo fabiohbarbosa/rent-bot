@@ -5,10 +5,11 @@ ARG WORKDIR=/service
 RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
-COPY package.json .
-COPY package-lock.json .
+COPY ./ ./
 
-RUN npm install --production
+RUN npm install
+RUN npm run build
+RUN npm prune --production
 
 # ---- STAGE 2 - final image stage ----
 FROM node:11.1.0-alpine
@@ -18,10 +19,11 @@ RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
 COPY --from=builder ${WORKDIR}/node_modules/ ./node_modules
+COPY --from=builder ${WORKDIR}/dist ./dist
 
-COPY config config
-COPY src src
-COPY index.js .
+COPY tsconfig.json .
+COPY tsconfig-paths.js .
+COPY start.sh .
 
 EXPOSE 8080
-CMD ["node", "index.js"]
+CMD ["sh", "start.sh"]

@@ -1,3 +1,8 @@
+.DS_Store
 .circleci
-.vscode
-node_modules
+.vscode/*
+node_modules/
+logs/
+dist/
+sendgrid.env
+service.yml
