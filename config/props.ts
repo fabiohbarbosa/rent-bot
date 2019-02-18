@@ -1,6 +1,6 @@
 const defaultVars = {
   env: process.env.NODE_ENV || 'local',
-  retries: 6,
+  retries: 2,
   receivers: [
     'fabiohbarbosa@gmail.com',
     'josiannygonzales@gmail.com'
@@ -15,20 +15,20 @@ const defaultVars = {
   bots: {
     crawler: {
       interval: 1 * 60 * 1000,
-      intervalIdealistaMultipler: 15,
+      intervalIdealistaMultipler: 90,
       delay: 0 * 1000
     },
     dataMining: {
       batchSize: 4,
       interval: 9 * 60 * 1000, // a cada 9 minutos é possível verificar 600 imóveis por dia
-      intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
+      intervalIdealistaCounter: 15, // numbers of cycle before search by idealista URLs
       delay: 10 * 1000
     },
     availability: {
       batchSize: 4,
       ensureTimes: 5,
       interval: 9 * 60 * 1000, // a cada 9 minutos é possível verificar 600 imóveis por dia
-      intervalIdealistaCounter: 0, // numbers of cycle before search by idealista URLs
+      intervalIdealistaCounter: 15, // numbers of cycle before search by idealista URLs
       delay: 15 * 1000
     }
   },

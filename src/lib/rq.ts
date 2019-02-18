@@ -13,8 +13,8 @@ const rq = async(url, binary = false) => {
       Connection: 'keep-alive',
       'Cache-Control': ' max-age=0',
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.94 Safari/537.36',
-      Referer: 'https://www.google.com/'
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14931',
+      Referer: 'https://yahoo.com/'
     }
   });
 };
