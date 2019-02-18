@@ -23,7 +23,7 @@ class NotificationService {
       return;
     }
 
-    Log.debug(`${this.logPrefix} Property received:`)
+    Log.debug(`${this.logPrefix} Property received:`);
     Log.debug(JSON.stringify(property));
 
     try {
