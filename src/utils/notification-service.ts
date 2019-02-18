@@ -18,10 +18,13 @@ class NotificationService {
     }
 
     if (notificated === true || status === 'MATCHED') {
-            Log.warn(`${this.logPrefix} Skipping mail for ${url} because status ${status} and ${notificated}`);
+      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status ${status} and ${notificated}`);
       Promise.resolve();
       return;
     }
+
+    Log.debug(`${this.logPrefix} Property received:`)
+    Log.debug(JSON.stringify(property));
 
     try {
       await MailService.send({

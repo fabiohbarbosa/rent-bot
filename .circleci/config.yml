@@ -112,9 +112,9 @@ jobs:
       NODE_ENV: prod
       PORT: 80
       TARGET_PORT: 3000
-      LOG_LEVEL: info
+      LOG_LEVEL: debug
 
-      MAIL: false
+      MAIL: true
       CRAWLER_BOT: true
       AVAILABILITY_BOT: true
       DATA_MINING_BOT: true
