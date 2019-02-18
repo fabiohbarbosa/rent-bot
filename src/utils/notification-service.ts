@@ -18,7 +18,13 @@ class NotificationService {
     }
 
     if (notificated === true || status === 'MATCHED') {
-      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status ${status} and ${notificated}`);
+      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status is ${status} and notificated is ${notificated}`);
+      Promise.resolve();
+      return;
+    }
+
+    if (notificated === undefined || status === undefined) {
+      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status is ${status} and notificated is ${notificated}`);
       Promise.resolve();
       return;
     }
