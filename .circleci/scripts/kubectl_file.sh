@@ -83,4 +83,3 @@ spec:
             memory: 256Mi
 
 EOF
-cat service.yaml
