@@ -56,7 +56,7 @@ jobs:
       - <<: *attach_workspace
 
       - run:
-          name: Patching version
+          name: Check code style
           command: bash .circleci/scripts/lint.sh
 
   patch_version:

@@ -28,12 +28,13 @@ class CrawlerBot {
           properties.forEach(p => {
             const logPrefix = filter.logPrefix;
             const property = { ...p, provider: providerName };
+
             const callback = CrawlerBot.buildCallback(db, property, logPrefix);
             const energyCertify = property.energeticCertificate;
             const status = energyCertify && isMatched(energyCertify) ? 'MATCHED' : 'PENDING';
             const providerId = property.providerId;
             const update = {
-              $set: { property },
+              $set: property,
               $setOnInsert: {
                 createAt: new Date(),
                 availabilityLastCheck: new Date(), isAvailabilityLastCheck: false,
