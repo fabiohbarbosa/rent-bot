@@ -8,7 +8,9 @@ import { ClientResponse } from '@sendgrid/client/src/response';
 class MailService {
   static send(property): Promise<[ClientResponse, {}]> {
     try {
-      const data = fs.readFileSync('./assets/mail.html');
+      const templatePath = `${__dirname}/../../../assets/mail.html`;
+
+      const data = fs.readFileSync(templatePath);
       mail.setApiKey(process.env.SENDGRID_API_KEY);
 
       const source = data.toString();

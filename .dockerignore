@@ -3,6 +3,7 @@
 .vscode/*
 node_modules/
 logs/
+migration/
 dist/
 sendgrid.env
 service.yml
