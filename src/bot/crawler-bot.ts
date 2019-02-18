@@ -6,6 +6,7 @@ import NotificationService from '@utils/notification-service';
 import Crawdler from '@modules/crawdler';
 import DataMiningBot from './data-mining-bot';
 import CrawlerProvider, { CrawlerFilter } from '@modules/crawdler/crawler-provider';
+import Property from '@models/property';
 
 class CrawlerBot {
   static crawle(db: Db, Provider: typeof CrawlerProvider, rawFilters: CrawlerFilter[]) {
@@ -29,7 +30,6 @@ class CrawlerBot {
             const logPrefix = filter.logPrefix;
             const property = { ...p, provider: providerName };
 
-            const callback = CrawlerBot.buildCallback(db, property, logPrefix);
             const energyCertify = property.energeticCertificate;
             const status = energyCertify && isMatched(energyCertify) ? 'MATCHED' : 'PENDING';
             const providerId = property.providerId;
@@ -43,6 +43,7 @@ class CrawlerBot {
               }
             };
 
+            const callback = CrawlerBot.buildCallback(db, property, logPrefix);
             db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
 
           });
@@ -53,7 +54,7 @@ class CrawlerBot {
     }
   }
 
-  private static buildCallback(db, property, logPrefix) {
+  private static buildCallback(db: Db, property: Property, logPrefix: string) {
     // calback has been used to data mining
     return (err, result) => {
       if (err) {
@@ -63,17 +64,15 @@ class CrawlerBot {
 
       Log.debug(`${logPrefix} Success to insert or update property: ${result}`);
 
-      // new property found
+      // exist property
       if (result.upsertedCount === 0) {
         Log.debug(`${logPrefix} The property ${property.url} already exists`);
         return;
       }
 
       Log.info(`${logPrefix} Found new property ${property.url}`);
-
       // notificate new entries by email
-      if (status === 'MATCHED' && !property.notificated)
-        new NotificationService(logPrefix, db).notificateByEmail(property);
+      new NotificationService(logPrefix, db).notificateByEmail(property);
 
       new DataMiningBot(db, property).mine()
         .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))

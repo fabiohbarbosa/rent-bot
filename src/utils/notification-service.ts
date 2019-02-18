@@ -9,22 +9,10 @@ class NotificationService {
   constructor(private logPrefix: string, private db: Db) {}
 
   async notificateByEmail (property: Property): Promise<void> {
-    const { notificated, status, url, photos } = property;
+    const { url, photos } = property;
 
     if (!props.mail.enabled) {
       Log.warn(`${this.logPrefix} Mail disabled. Skipping mail for ${url}...`);
-      Promise.resolve();
-      return;
-    }
-
-    if (notificated === true || status === 'MATCHED') {
-      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status is ${status} and notificated is ${notificated}`);
-      Promise.resolve();
-      return;
-    }
-
-    if (notificated === undefined || status === undefined) {
-      Log.warn(`${this.logPrefix} Skipping mail for ${url} because status is ${status} and notificated is ${notificated}`);
       Promise.resolve();
       return;
     }
