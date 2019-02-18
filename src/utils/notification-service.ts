@@ -24,12 +24,12 @@ class NotificationService {
       const filter = { url };
       const update = { $set: { notificated: true, notificatedAt: new Date() } };
 
-      this.db.collection('properties').updateOne(filter, update, (err, result) => {
+      this.db.collection('properties').updateOne(filter, update, err => {
         if (err) {
-          Log.error(`${this.logPrefix} Error in notifying URL '${url}'`);
+          Log.error(`${this.logPrefix} Error to send e-mail for URL '${url}'`);
           return;
         }
-        Log.info(`${this.logPrefix} Success in notifying URL '${url}'`);
+        Log.info(`${this.logPrefix} Success to send e-mail for URL '${url}'`);
       });
 
     } catch (err) {
