@@ -114,7 +114,7 @@ jobs:
       TARGET_PORT: 3000
       LOG_LEVEL: info
 
-      MAIL: false
+      MAIL: true
       CRAWLER_BOT: true
       AVAILABILITY_BOT: true
       DATA_MINING_BOT: true
