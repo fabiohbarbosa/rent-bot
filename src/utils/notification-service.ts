@@ -10,6 +10,7 @@ class NotificationService {
 
   async notificateByEmail (property: Property): Promise<void> {
     if (!props.mail.enabled) {
+      Log.warn(`${this.logPrefix} Mail disabled. Skipping...`);
       Promise.resolve();
       return;
     }

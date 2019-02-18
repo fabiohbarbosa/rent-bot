@@ -96,19 +96,19 @@ const envVars = {
     ...defaultVars.db
   },
   mail: {
-    enabled: process.env.MAIL,
+    enabled: (process.env.MAIL === 'true')
   },
   bots: {
     crawler: {
-      enabled: process.env.CRAWLER_BOT,
+      enabled: (process.env.CRAWLER_BOT === 'true'),
       ...defaultVars.bots.crawler
     },
     dataMining: {
-      enabled: process.env.AVAILABILITY_BOT,
+      enabled: (process.env.AVAILABILITY_BOT === 'true'),
       ...defaultVars.bots.dataMining
     },
     availability: {
-      enabled: process.env.DATA_MINING_BOT,
+      enabled: (process.env.DATA_MINING_BOT === 'true'),
       ...defaultVars.bots.availability
     }
   },
