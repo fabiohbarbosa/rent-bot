@@ -43,7 +43,7 @@ class CrawlerBot {
               }
             };
 
-            const callback = CrawlerBot.buildCallback(db, property, logPrefix);
+            const callback = CrawlerBot.buildCallback(db, property, status, logPrefix);
             db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
 
           });
@@ -54,7 +54,7 @@ class CrawlerBot {
     }
   }
 
-  private static buildCallback(db: Db, property: Property, logPrefix: string) {
+  private static buildCallback(db: Db, property: Property, status: string, logPrefix: string) {
     // calback has been used to data mining
     return (err, result) => {
       if (err) {
@@ -71,8 +71,9 @@ class CrawlerBot {
       }
 
       Log.info(`${logPrefix} Found new property ${property.url}`);
-      // notificate new entries by email
-      new NotificationService(logPrefix, db).notificateByEmail(property);
+      // notify new entries by email
+      if (status === 'MATCHED')
+        new NotificationService(logPrefix, db).notificateByEmail(property);
 
       new DataMiningBot(db, property).mine()
         .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))

@@ -1,12 +1,14 @@
-import mail from '@sendgrid/mail';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
-import props from '@config/props';
-import Log from '@config/logger';
+import mail from '@sendgrid/mail';
 import { ClientResponse } from '@sendgrid/client/src/response';
 
+import props from '@config/props';
+import Log from '@config/logger';
+import { MailMessage } from './mail.message';
+
 class MailService {
-  static send(property): Promise<[ClientResponse, {}]> {
+  static send(message: MailMessage): Promise<[ClientResponse, {}]> {
     try {
       const templatePath = `${__dirname}/../../../assets/mail.html`;
 
@@ -15,12 +17,12 @@ class MailService {
 
       const source = data.toString();
       const template = Handlebars.compile(source);
-      const html = template(property);
+      const html = template(message);
 
       const msg = {
         to: props.receivers,
         from: 'noreply@rentbot-crawler.com',
-        subject: `${property.provider.toUpperCase()} - ${property.title}`,
+        subject: `${message.provider.toUpperCase()} - ${message.title}`,
         html
       };
 

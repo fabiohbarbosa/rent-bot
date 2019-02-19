@@ -22,14 +22,16 @@ class NotificationService {
 
     try {
       await MailService.send({
-        ...property,
+        provider: property.provider,
+        title: property.title,
+        subtitle: property.subtitle,
+        price: property.price,
+        url,
         photo: photos && photos.length > 0 ? photos[0] : undefined
       });
 
-      const filter = { url };
       const update = { $set: { notificated: true, notificatedAt: new Date() } };
-
-      this.db.collection('properties').updateOne(filter, update, err => {
+      this.db.collection('properties').updateOne({ url }, update, err => {
         if (err) {
           Log.error(`${this.logPrefix} Error to send e-mail for URL '${url}'`);
           return;
