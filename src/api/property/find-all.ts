@@ -1,4 +1,5 @@
 import Log from '@config/logger';
+
 import { logPrefix, path, projection } from './consts';
 
 const api = (router, db) => {
