@@ -59,7 +59,7 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: true,
+      enabled: false,
       delay: 0
     },
     dataMining: {

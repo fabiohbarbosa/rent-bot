@@ -20,14 +20,14 @@ class DataMiningBot {
   static async initialise(db) {
     try {
       const query = {
-        provider: { $nin: [ 'idealista', 'imovirtual' ] },
+        provider: { $nin: [ 'idealista' ] },
         status: { $ne: 'UNVAILABLE' }
       };
 
       // reduce times to fetch idealista data
       // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
       if (idealistaCounterCycle === 0) {
-        query.provider = { $nin: [ 'imovirtual' ] };
+        delete query.provider;
         idealistaCounterCycle = props.intervalIdealistaCounter;
       }
 

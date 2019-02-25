@@ -1,8 +1,10 @@
-import Log from '@config/logger';
+import { Db } from 'mongodb';
+import { Router } from 'express';
 
+import Log from '@config/logger';
 import { logPrefix, path, projection } from './consts';
 
-const api = (router, db) => {
+const api = (router: Router, db: Db) => {
   router.get(path, async(req, res, next) => {
     Log.info(`${logPrefix} Fetching all properties`);
 
