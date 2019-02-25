@@ -1,4 +1,4 @@
-import { Db } from "mongodb";
+import { Db } from 'mongodb';
 
 const batchProperties = (db: Db, query, sort, size, projection = {}) => {
   return db.collection('properties')
