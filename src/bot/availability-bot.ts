@@ -2,13 +2,14 @@ import Log from '@config/logger';
 import allProps from '@config/props';
 import { batchProperties } from '@utils/batch-utils';
 import Availability from '@modules/availability/availability';
+import { Db } from 'mongodb';
 
 // get only availability properties
 const props = allProps.bots.availability;
 let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class AvailabilityBot {
-  static async initialise(db) {
+  static async initialise(db: Db) {
     try {
       const query = {
         provider: { $ne: 'idealista' },
