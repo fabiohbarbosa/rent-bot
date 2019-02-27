@@ -14,8 +14,6 @@ spec:
   ports:
   - name: application
     port: $PORT
-    protocol: TCP
-    targetPort: $TARGET_PORT
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
