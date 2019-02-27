@@ -110,7 +110,7 @@ jobs:
       HEALTHCHECK: /healthcheck
 
       NODE_ENV: prod
-      PORT: 8080
+      PORT: 80
       LOG_LEVEL: info
 
       MAIL: true
