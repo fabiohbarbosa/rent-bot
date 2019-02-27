@@ -110,7 +110,7 @@ jobs:
       HEALTHCHECK: /healthcheck
 
       NODE_ENV: prod
-      PORT: 80
+      PORT: 8080
       TARGET_PORT: 3000
       LOG_LEVEL: info
 
