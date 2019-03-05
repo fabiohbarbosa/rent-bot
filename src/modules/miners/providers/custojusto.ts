@@ -1,10 +1,10 @@
 import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
-import MinderProvider, { MinderProviderRespose } from '../minder-provider';
+import MinderProvider, { MinderProviderResponse } from '../minder-provider';
 
   class CustoJustoMiner extends MinderProvider {
-    async mine(url: string): Promise<MinderProviderRespose> {
+    async mine(url: string): Promise<MinderProviderResponse> {
     let $;
     try {
       $ = await adapt(url, true);
@@ -16,7 +16,8 @@ import MinderProvider, { MinderProviderRespose } from '../minder-provider';
 
     const data = {
       energeticCertificate: this.getEnergeticCertificate(elements),
-      topology: this.getTopology(elements)
+      topology: this.getTopology(elements),
+      price: parseInt($('span.real-price')[0].firstChild.data.trim().split(' ')[0].replace('.', ''), 10)
     };
 
     const isOnFilter = this.isOnFilter(data);

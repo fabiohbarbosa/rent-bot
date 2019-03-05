@@ -1,3 +1,5 @@
+import { Db } from 'mongodb';
+
 import CrawlerBot from './crawler-bot';
 import DataMiningBot from './data-mining-bot';
 import AvailabilityBot from './availability-bot';
@@ -11,7 +13,7 @@ import Log from '@config/logger';
 import props from '@config/props';
 
 class Bot {
-  static crawlers(db) {
+  static crawlers(db: Db) {
     const { crawler } = props.bots;
     const logPrefix = '[bot:crawler]:';
 
@@ -42,7 +44,7 @@ class Bot {
 
   static dataMining(db) {
     const { dataMining } = props.bots;
-    const logPrefix = '[bot:crawler]:';
+    const logPrefix = '[bot:miner]:';
 
     if (!dataMining.enabled) {
       Log.warn(`${logPrefix} Skipping...`);

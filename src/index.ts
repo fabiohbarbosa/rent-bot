@@ -20,6 +20,7 @@ import Bot from './bot';
 const sleep = (seconds): Promise<void> => {
   return new Promise(resolve => {
     if (props.env === 'local') {
+      Log.info('Waiting nodemon instance...');
       setTimeout(() => resolve(), seconds * 1000);
       return;
     }
@@ -29,7 +30,7 @@ const sleep = (seconds): Promise<void> => {
 
 // initialize the express server
 const boostrap = async() => {
-  await sleep(3); // workaround to waiting for nodemon to be posible debug
+  // await sleep(5); // workaround to waiting for nodemon to be posible debug
 
   const db = await Db.createConnection(props.db.url, props.db.dbName);
 

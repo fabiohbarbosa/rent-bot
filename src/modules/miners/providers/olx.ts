@@ -1,11 +1,11 @@
 import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
-import MinderProvider, { MinderProviderRespose } from '../minder-provider';
+import MinderProvider, { MinderProviderResponse } from '../minder-provider';
 
 class OlxMiner extends MinderProvider {
 
-  async mine(url: string): Promise<MinderProviderRespose> {
+  async mine(url: string): Promise<MinderProviderResponse> {
     let $;
     try {
       $ = await adapt(url);
@@ -15,7 +15,8 @@ class OlxMiner extends MinderProvider {
 
     const elements = $("th:contains('Certificado Energ')");
     const data = {
-      energeticCertificate: this.getEnergeticCertificate($, elements)
+      energeticCertificate: this.getEnergeticCertificate($, elements),
+      price: parseInt($('.price-label > strong').text().split(' ')[0].replace('.', ''), 10)
     };
 
     const isOnFilter = this.isOnFilter(data);

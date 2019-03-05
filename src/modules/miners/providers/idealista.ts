@@ -2,11 +2,11 @@ import { adaptRetry } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
 import { proxy } from '@lib/proxy-factory';
-import MinderProvider, { MinderProviderRespose } from '../minder-provider';
+import MinderProvider, { MinderProviderResponse } from '../minder-provider';
 
 class IdealistaMiner extends MinderProvider {
 
-  async mine(url: string): Promise<MinderProviderRespose> {
+  async mine(url: string): Promise<MinderProviderResponse> {
     let $;
     try {
       $ = await adaptRetry(proxy(url), 403, true);
@@ -16,7 +16,8 @@ class IdealistaMiner extends MinderProvider {
 
     const data = {
       energeticCertificate: this.getEnergeticCertificate($),
-      topology: this.getTopology($)
+      topology: this.getTopology($),
+      price: parseInt($('span.info-data-price').text().split(' ')[0].replace('.', ''), 10)
     };
 
     const isOnFilter = this.isOnFilter(data);

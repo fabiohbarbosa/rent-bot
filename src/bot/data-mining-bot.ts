@@ -1,9 +1,10 @@
+import { Db } from 'mongodb';
+
 import MinerBotFactory from '@modules/miners/factory';
 import Log from '@config/logger';
 import allProps from '@config/props';
 import { batchProperties, updateDateBatch } from '@utils/batch-utils';
 import NotificationService from '@utils/notification-service';
-import { Db } from 'mongodb';
 import Property from '@models/property';
 import MinderProvider from '@modules/miners/minder-provider';
 
@@ -13,11 +14,10 @@ let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class DataMiningBot {
 
-
   miner: MinderProvider;
   logPrefix: string;
 
-  static async initialise(db) {
+  static async initialise(db: Db) {
     try {
       const query = {
         provider: { $nin: [ 'idealista' ] },

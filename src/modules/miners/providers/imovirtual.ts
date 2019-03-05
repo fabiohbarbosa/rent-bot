@@ -1,10 +1,10 @@
 import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
-import MinderProvider, { MinderProviderRespose } from '../minder-provider';
+import MinderProvider, { MinderProviderResponse } from '../minder-provider';
 
 class ImovirtualMiner extends MinderProvider {
-  async mine(url: string): Promise<MinderProviderRespose> {
+  async mine(url: string): Promise<MinderProviderResponse> {
     let $;
     try {
       $ = await adapt(url);
@@ -12,9 +12,9 @@ class ImovirtualMiner extends MinderProvider {
       throw new Error(`Error to access url ${url}`);
     }
 
-    const elements = $('li:contains("Certificado Energ")');
     const data = {
-      energeticCertificate: this.getEnergeticCertificate(elements)
+      energeticCertificate: this.getEnergeticCertificate($('li:contains("Certificado Energ")')),
+      price: parseInt($('article > div > header')[0].children[2].children[0].children[0].data.split(' ')[0].replace('.', ''), 10)
     };
 
     const isOnFilter = this.isOnFilter(data);
