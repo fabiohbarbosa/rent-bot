@@ -7,6 +7,7 @@ import { batchProperties, updateDateBatch } from '@utils/batch-utils';
 import NotificationService from '@utils/notification-service';
 import Property from '@models/property';
 import MinderProvider from '@modules/miners/minder-provider';
+import PropertyCache from '@lib/property-cache';
 
 // get only dataMining properties
 const props = allProps.bots.dataMining;
@@ -17,42 +18,43 @@ class DataMiningBot {
   miner: MinderProvider;
   logPrefix: string;
 
-  constructor(private db: Db, private property: Property) {
+  constructor(private db: Db, private cache: PropertyCache, private property: Property) {
     this.miner = MinerBotFactory.getInstance(property.provider, property.url);
     this.logPrefix = this.miner.logPrefix;
   }
 
   async mine() {
     const { url, dirty, notificated, status } = this.property;
-    const callback = this._callback.bind(this);
+
+    let set: Property = {
+      dataMiningLastCheck: new Date(),
+      isDataMiningLastCheck: true,
+    };
 
     try {
       const { isOnFilter, data } = await this.miner.mine(url);
       const newStatus = this._chooseTheStatus(url, isOnFilter, dirty, status);
-      const set = {
+      set = {
+        ...set,
         ...data,
-        dataMiningLastCheck: new Date(),
-        isDataMiningLastCheck: true,
         status: newStatus
       };
 
-      updateDateBatch(this.db, { url }, set, callback);
-
-      // notificate new entries by email
-      if (isOnFilter && !notificated)
+      // email notification for new entries
+      if (isOnFilter && !notificated) {
         new NotificationService(this.logPrefix, this.db)
           .notificateByEmail(this.property);
-
+      }
     } catch (err) {
-      const set = {
-        dataMiningLastCheck: new Date(),
-        isDataMiningLastCheck: true,
-      };
+      Log.debug(err);
+    } finally {
+      const callback = this._callback.bind(this);
       updateDateBatch(this.db, { url }, set, callback);
+      this.cache.updateByUrl(url, set);
     }
   }
 
-  _chooseTheStatus(url: string, isOnFilter: boolean, dirty: boolean, status: string) {
+  private _chooseTheStatus(url: string, isOnFilter: boolean, dirty: boolean, status: string) {
     if (dirty === true) {
       Log.warn(`${this.logPrefix} The ${url} is dirty and by bot is ${isOnFilter ? 'on' : 'not on'} filter but by user is ${status}.`);
       return status;
@@ -67,7 +69,7 @@ class DataMiningBot {
     }
   }
 
-  _callback(err, result) {
+  private _callback(err, result) {
     const { url } = this.property;
     if (err) {
       Log.error(`${this.logPrefix} Error to mine URL '${url}'`);
@@ -78,7 +80,7 @@ class DataMiningBot {
 
 }
 
-const mineDatabaseEntries = async (db: Db) => {
+const mineDatabaseEntries = async (db: Db, cache: PropertyCache) => {
   try {
     const query = {
       provider: { $nin: [ 'idealista' ] },
@@ -96,7 +98,7 @@ const mineDatabaseEntries = async (db: Db) => {
     const properties = await batchProperties(db, query, sort, props.batchSize);
 
     properties.forEach(p =>
-      new DataMiningBot(db, p).mine()
+      new DataMiningBot(db, cache, p).mine()
     );
   } catch (err) {
     Log.error(`[minder]: Error to load properties from database: ${err.message}`);

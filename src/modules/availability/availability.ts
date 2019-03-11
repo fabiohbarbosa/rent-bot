@@ -19,7 +19,7 @@ class Availability {
     const availability = AvailabilityBotFactory.getInstance(provider, url);
     this.logPrefix = availability.logPrefix;
 
-    const callback = this.buildCallback(url);
+    const callback = this._buildCallback(url);
 
     // default fields update for success and error
     let set = {
@@ -54,10 +54,11 @@ class Availability {
         }
       }).finally(() => {
         updateDateBatch(this.db, { url }, set, callback);
+        this.cache.updateByUrl(url, set);
       });
   }
 
-  private buildCallback(url: string) {
+  private _buildCallback(url: string) {
     const callback = (err, result) => {
       if (err) {
         Log.error(`${this.logPrefix} Error to update availability batch date to ${url}`);

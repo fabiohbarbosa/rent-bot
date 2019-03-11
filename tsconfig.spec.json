@@ -35,8 +35,5 @@
   "include": [
     "src/**/*",
     "config/**/*"
-  ],
-  "exclude": [
-    "src/**/*spec.js"
   ]
 }

@@ -9,49 +9,52 @@ interface PropertCacheEventCallback {
 }
 
 class PropertyCache {
-  properties: Property[];
-  private event: EventEmitter;
+  protected _properties: Property[] = [];
+  protected event: EventEmitter;
 
   constructor(private db: Db) {
     this.event = new EventEmitter();
+  }
+
+  get properties(): Property[] {
+    return this._properties;
   }
 
   /**
    * load all properties
    */
   async setup() {
-    this.properties = await Property.findAll(this.db);
+    this._properties = await Property.findAll(this.db);
   }
 
   add(property: Property) {
-    Log.info(`Properties array size before add: ${this.properties.length}`);
-    this.properties.unshift(property);
-    Log.info(`Properties array size after add: ${this.properties.length}`);
-    this.event.emit('add', [this.properties, property]);
+    this._properties.unshift(property);
+    this.event.emit('add', [this._properties, property]);
   }
 
-  updateFromUrl(url: string, fieldsToUpdate: Property) {
-    this.properties = this.properties.map(p => {
+  updateByUrl(url: string, fieldsToUpdate: Property) {
+    let exists = false;
+
+    this._properties = this._properties.map(p => {
       if (p.url === url) {
-        return { ...p, ...fieldsToUpdate }
+        exists = true;
+        return { ...p, ...fieldsToUpdate };
       }
       return p;
-    })
+    });
+
+    if (!exists) {
+      throw new Error(`Not found property '${url}'`);
+    }
   }
 
-  remove(property: Property) {
-    const _id = property._id;
-    this.properties = this.properties.filter(p => p._id !== _id);
-    this.event.emit('remove', [this.properties, property]);
-  }
-
-  removeFromUrl(url: string) {
+  removeByUrl(url: string) {
     let property: Property;
-    this.properties = this.properties.filter(p => {
+    this._properties = this._properties.filter(p => {
       if (p.url === url) property = p;
       return p.url !== url;
     });
-    this.event.emit('remove', [this.properties, property]);
+    this.event.emit('remove', [this._properties, property]);
   }
 
   onAdd(callback: PropertCacheEventCallback) {

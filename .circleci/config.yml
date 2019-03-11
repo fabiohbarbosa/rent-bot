@@ -49,6 +49,16 @@ jobs:
 
       - <<: *persist_to_workspace
 
+  test:
+    <<: *working_directory
+    <<: *default_image
+    steps:
+      - <<: *attach_workspace
+
+      - run:
+          name: Run tests
+          command: bash .circleci/scripts/test.sh
+
   lint:
     <<: *working_directory
     <<: *default_image
@@ -131,6 +141,10 @@ workflows:
     jobs:
       - install:
           context: rent-bot
+      - test:
+          context: rent-bot
+          requires:
+            - install
       - lint:
           context: rent-bot
           requires:
@@ -138,6 +152,7 @@ workflows:
       - patch_version:
           context: rent-bot
           requires:
+            - test
             - lint
           filters:
             <<: *only_master
