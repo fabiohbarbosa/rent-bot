@@ -12,7 +12,7 @@ import PropertyCache from '@lib/property-cache';
 class CrawlerBot {
 
   constructor(private db: Db,
-    private propertyCache: PropertyCache,
+    private cache: PropertyCache,
     private providerClass: typeof CrawlerProvider,
     private rawFilters: CrawlerFilter[]) {
   }
@@ -38,13 +38,13 @@ class CrawlerBot {
         ...property, ...setOnInsert
       };
 
-      this.propertyCache.add(newProperty);
+      this.cache.add(newProperty);
 
       if (property.status === 'MATCHED') {
         new NotificationService(logPrefix, this.db).notificateByEmail(property);
       }
 
-      new DataMiningBot(this.db, property).mine()
+      new DataMiningBot(this.db, this.cache, property).mine()
         .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))
         .catch(e => {
           Log.error(`${logPrefix} Error to mine ${property.url}`);
