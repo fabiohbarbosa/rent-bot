@@ -107,7 +107,7 @@ jobs:
       REPLICAS: 1
       GROUP: service
       SERVICENAME: rent-bot
-      HEALTHCHECK: /healthcheck
+      HEALTHCHECK: /api/healthcheck
 
       NODE_ENV: prod
       PORT: 8080
