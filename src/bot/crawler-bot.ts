@@ -9,7 +9,7 @@ import CrawlerProvider, { CrawlerFilter } from '@modules/crawdler/crawler-provid
 import Property from '@models/property';
 import PropertyCache from '@lib/property-cache';
 
-class CrawlerInitializer {
+class CrawlerBot {
 
   constructor(private db: Db,
     private propertyCache: PropertyCache,
@@ -108,6 +108,6 @@ export default (db: Db,
                 }) => {
 
   const { providerClass, searchFilters } = provider;
-  new CrawlerInitializer(db, cache, providerClass, searchFilters)
+  new CrawlerBot(db, cache, providerClass, searchFilters)
     .crawle();
 };

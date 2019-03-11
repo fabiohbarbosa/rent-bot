@@ -1,6 +1,8 @@
-import { EventEmitter } from 'events';
-import Property from '@models/property';
 import { Db } from 'mongodb';
+import { EventEmitter } from 'events';
+
+import Property from '@models/property';
+import Log from '@config/logger';
 
 interface PropertCacheEventCallback {
   (properties: Property[], property: Property);
@@ -12,16 +14,19 @@ class PropertyCache {
 
   constructor(private db: Db) {
     this.event = new EventEmitter();
-    this._fillProperties();
   }
 
-  private async _fillProperties() {
+  /**
+   * load all properties
+   */
+  async setup() {
     this.properties = await Property.findAll(this.db);
-    console.log('abc');
   }
 
   add(property: Property) {
+    Log.info(`Properties array size before add: ${this.properties.length}`);
     this.properties.push(property);
+    Log.info(`Properties array size after add: ${this.properties.length}`);
     this.event.emit('add', [this.properties, property]);
   }
 

@@ -20,7 +20,10 @@ import PropertyCache from '@lib/property-cache';
 
 const boostrap = async() => {
   const db = await Db.createConnection(props.db.url, props.db.dbName);
+
+  // it should be blocked to load all data before start the crawler
   const cache = new PropertyCache(db);
+  await cache.setup();
 
   const app = express();
   const server = http.createServer(app);
