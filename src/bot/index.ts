@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 
-import CrawlerBot from './crawler-bot';
-import DataMiningBot from './data-mining-bot';
-import AvailabilityBot from './availability-bot';
+import crawlerInitializer from './crawler-bot';
+import { mineDatabaseEntries } from './data-mining-bot';
+import { checkEntriesAvailability } from './availability-bot';
 
 import CustoJustoProvider, { filters as custoJustoFilters } from '@modules/crawdler/providers/custojusto';
 import IdealistaProvider, { filters as idealistaFilters } from '@modules/crawdler/providers/idealista';
@@ -11,26 +11,42 @@ import OlxProvider, { filters as olxFilters } from '@modules/crawdler/providers/
 
 import Log from '@config/logger';
 import props from '@config/props';
+import PropertyCache from '@lib/property-cache';
 
 class Bot {
-  static crawlers(db: Db) {
+  constructor(private db: Db, private cache: PropertyCache) {}
+
+  crawlers(): Bot {
     const { crawler } = props.bots;
     const logPrefix = '[bot:crawler]:';
 
     if (!crawler.enabled) {
       Log.warn(`${logPrefix} Skipping...`);
-      return;
+      return this;
     }
 
     Log.info(`${logPrefix} Initialising...`);
     const start = () => {
-      CrawlerBot.crawle(db, CustoJustoProvider, custoJustoFilters);
-      CrawlerBot.crawle(db, ImovirtualProvider, imovirtualFilters);
-      CrawlerBot.crawle(db, OlxProvider, olxFilters);
+      crawlerInitializer(this.db, this.cache, {
+        providerClass: CustoJustoProvider,
+        searchFilters: custoJustoFilters
+      });
+
+      crawlerInitializer(this.db, this.cache, {
+        providerClass: ImovirtualProvider,
+        searchFilters: imovirtualFilters
+      });
+      crawlerInitializer(this.db, this.cache, {
+        providerClass: OlxProvider,
+        searchFilters: olxFilters
+      });
     };
 
     const startIdealista = () => {
-      CrawlerBot.crawle(db, IdealistaProvider, idealistaFilters);
+      crawlerInitializer(this.db, this.cache, {
+        providerClass: IdealistaProvider,
+        searchFilters: idealistaFilters
+      });
     };
 
     setTimeout(() => {
@@ -40,44 +56,46 @@ class Bot {
 
     setInterval(start, crawler.interval);
     setInterval(startIdealista, crawler.interval * crawler.intervalIdealistaMultipler);
+
+    return this;
   }
 
-  static dataMining(db) {
-    const { dataMining } = props.bots;
-    const logPrefix = '[bot:miner]:';
-
-    if (!dataMining.enabled) {
-      Log.warn(`${logPrefix} Skipping...`);
-      return;
-    }
-
-    Log.info(`${logPrefix} Initialising...`);
-
-    const start = () => {
-      DataMiningBot.initialise(db);
-    };
-
-    setTimeout(() => start(), dataMining.delay);
-    setInterval(start, dataMining.interval);
-  }
-
-  static evaluateAvailability(db) {
+  evaluateAvailability(): Bot {
     const { availability } = props.bots;
     const logPrefix = '[bot:availability]:';
 
     if (!availability.enabled) {
       Log.warn(`${logPrefix} Skipping...`);
-      return;
+      return this;
     }
 
     Log.info(`${logPrefix} Initialising...`);
 
-    const start = () => {
-      AvailabilityBot.initialise(db);
-    };
+    const start = () => checkEntriesAvailability(this.db, this.cache);
 
     setTimeout(() => start(), availability.delay);
     setInterval(start, availability.interval);
+
+    return this;
+  }
+
+  dataMining(): Bot {
+    const { dataMining } = props.bots;
+    const logPrefix = '[bot:miner]:';
+
+    if (!dataMining.enabled) {
+      Log.warn(`${logPrefix} Skipping...`);
+      return this;
+    }
+
+    Log.info(`${logPrefix} Initialising...`);
+
+    const start = () => mineDatabaseEntries(this.db);
+
+    setTimeout(() => start(), dataMining.delay);
+    setInterval(start, dataMining.interval);
+
+    return this;
   }
 }
 

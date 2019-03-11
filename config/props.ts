@@ -70,7 +70,7 @@ const localVars = {
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: false,
+      enabled: true,
       interval: 0.5 * 60 * 1000,
       delay: 0
     },

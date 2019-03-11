@@ -1,6 +1,9 @@
+import { Db, MongoCallback, UpdateWriteOpResult } from 'mongodb';
+import { Router } from 'express';
+
 import Log from '@config/logger';
 
-export default (router, db) => {
+export default (router: Router, db: Db) => {
   router.get('/fix/properties/imovirtual/url', async(req, res, next) => {
 
     const logPrefix = '[fix:properties:imovirtual]:';

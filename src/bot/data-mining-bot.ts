@@ -17,32 +17,6 @@ class DataMiningBot {
   miner: MinderProvider;
   logPrefix: string;
 
-  static async initialise(db: Db) {
-    try {
-      const query = {
-        provider: { $nin: [ 'idealista' ] },
-        status: { $ne: 'UNVAILABLE' }
-      };
-
-      // reduce times to fetch idealista data
-      // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
-      if (idealistaCounterCycle === 0) {
-        delete query.provider;
-        idealistaCounterCycle = props.intervalIdealistaCounter;
-      }
-
-      const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
-      const properties = await batchProperties(db, query, sort, props.batchSize);
-
-      properties.forEach(p =>
-        new DataMiningBot(db, p).mine()
-      );
-    } catch (err) {
-      Log.error(`[minder]: Error to load properties from database: ${err.message}`);
-      Log.error(err.stack);
-    }
-  }
-
   constructor(private db: Db, private property: Property) {
     this.miner = MinerBotFactory.getInstance(property.provider, property.url);
     this.logPrefix = this.miner.logPrefix;
@@ -77,7 +51,8 @@ class DataMiningBot {
       updateDateBatch(this.db, { url }, set, callback);
     }
   }
-  _chooseTheStatus(url, isOnFilter, dirty, status) {
+
+  _chooseTheStatus(url: string, isOnFilter: boolean, dirty: boolean, status: string) {
     if (dirty === true) {
       Log.warn(`${this.logPrefix} The ${url} is dirty and by bot is ${isOnFilter ? 'on' : 'not on'} filter but by user is ${status}.`);
       return status;
@@ -100,6 +75,34 @@ class DataMiningBot {
     }
     Log.debug(`${this.logPrefix} Success to mine URL '${url}': ${result}`);
   }
+
 }
 
+const mineDatabaseEntries = async (db: Db) => {
+  try {
+    const query = {
+      provider: { $nin: [ 'idealista' ] },
+      status: { $ne: 'UNVAILABLE' }
+    };
+
+    // reduce times to fetch idealista data
+    // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
+    if (idealistaCounterCycle === 0) {
+      delete query.provider;
+      idealistaCounterCycle = props.intervalIdealistaCounter;
+    }
+
+    const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
+    const properties = await batchProperties(db, query, sort, props.batchSize);
+
+    properties.forEach(p =>
+      new DataMiningBot(db, p).mine()
+    );
+  } catch (err) {
+    Log.error(`[minder]: Error to load properties from database: ${err.message}`);
+    Log.error(err.stack);
+  }
+};
+
+export { mineDatabaseEntries };
 export default DataMiningBot;

@@ -7,55 +7,29 @@ import Crawdler from '@modules/crawdler';
 import DataMiningBot from './data-mining-bot';
 import CrawlerProvider, { CrawlerFilter } from '@modules/crawdler/crawler-provider';
 import Property from '@models/property';
+import PropertyCache from '@lib/property-cache';
 
-class CrawlerBot {
-  static crawle(db: Db, Provider: typeof CrawlerProvider, rawFilters: CrawlerFilter[]) {
-    const providerName = Provider.name.toLowerCase().replace('provider', '');
-    Log.info(`[crawler:${providerName}]: Initialising crawle...`);
+class CrawlerInitializer {
 
-    const filters = rawFilters.filter(f => {
+  constructor(private db: Db,
+    private propertyCache: PropertyCache,
+    private providerClass: typeof CrawlerProvider,
+    private rawFilters: CrawlerFilter[]) {
+  }
+
+  private _buildProviderName() {
+    return this.providerClass.name.toLowerCase().replace('provider', '');
+  }
+
+  private _getEnabledFilters() {
+    return this.rawFilters.filter(f => {
       if (!f.enabled)
         Log.warn(`${f.logPrefix} Skipping search...`);
       return f.enabled;
     });
-
-    for (let i = 0; i < filters.length; i++) {
-      const filter = filters[i];
-      new Crawdler(Provider, filter)
-        .crawl()
-        .then(properties => {
-          if (!properties) return;
-
-          properties.forEach(p => {
-            const logPrefix = filter.logPrefix;
-            const property = { ...p, provider: providerName };
-
-            const energyCertify = property.energeticCertificate;
-            const status = energyCertify && isMatched(energyCertify) ? 'MATCHED' : 'PENDING';
-            const providerId = property.providerId;
-            const update = {
-              $set: property,
-              $setOnInsert: {
-                createAt: new Date(),
-                availabilityLastCheck: new Date(), isAvailabilityLastCheck: false,
-                dataMiningLastCheck: new Date(), isDataMiningLastCheck: false,
-                status, notificated: false
-              }
-            };
-
-            const callback = CrawlerBot.buildCallback(db, property, status, logPrefix);
-            db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
-
-          });
-        }).catch(err => {
-          Log.error(err.stack);
-        });
-
-    }
   }
 
-  private static buildCallback(db: Db, property: Property, status: string, logPrefix: string) {
-    // calback has been used to data mining
+  private _crawlerCallback(logPrefix: string, property: Property, status: string) {
     return (err, result) => {
       if (err) {
         Log.error(`${logPrefix} Error to insert or update property`);
@@ -70,21 +44,70 @@ class CrawlerBot {
         return;
       }
 
+      // new property
       Log.info(`${logPrefix} Found new property ${property.url}`);
-      // notify new entries by email
-      if (status === 'MATCHED')
-        new NotificationService(logPrefix, db).notificateByEmail(property);
+      this.propertyCache.add(property);
 
-      new DataMiningBot(db, property).mine()
+      if (status === 'MATCHED') {
+        new NotificationService(logPrefix, this.db).notificateByEmail(property);
+      }
+
+      new DataMiningBot(this.db, property).mine()
         .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))
         .catch(e => {
-          Log.error(`${logPrefix} Error mine ${property.url}`);
+          Log.error(`${logPrefix} Error to mine ${property.url}`);
           Log.error(e);
         });
     };
+  };
+
+  private _handle(logPrefix: string, property: Property) {
+    const energyCertify = property.energeticCertificate;
+    const status = energyCertify && isMatched(energyCertify) ? 'MATCHED' : 'PENDING';
+    const providerId = property.providerId;
+    const update = {
+      $set: property,
+      $setOnInsert: {
+        createAt: new Date(),
+        availabilityLastCheck: new Date(), isAvailabilityLastCheck: false,
+        dataMiningLastCheck: new Date(), isDataMiningLastCheck: false,
+        status, notificated: false
+      }
+    };
+
+    const callback = this._crawlerCallback(logPrefix, property, status);
+    this.db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
   }
 
+  crawle() {
+    const providerName = this._buildProviderName();
+    Log.info(`[crawler:${providerName}]: Initialising crawler...`);
+    const filters = this._getEnabledFilters();
 
+    filters.forEach(filter => {
+      new Crawdler(this.providerClass, filter)
+        .crawl()
+        .then(properties => {
+          if (!properties) return;
+          properties.forEach((p: Property) =>{
+            const handleProperty = { ...p, provider: providerName };
+            this._handle(filter.logPrefix, handleProperty);
+          });
+        }).catch(err => {
+          Log.error(err.stack);
+        });
+    });
+  }
 }
 
-export default CrawlerBot;
+export default (db: Db,
+                cache: PropertyCache,
+                provider: {
+                  providerClass: typeof CrawlerProvider,
+                  searchFilters: CrawlerFilter[]
+                }) => {
+
+  const { providerClass, searchFilters } = provider;
+  new CrawlerInitializer(db, cache, providerClass, searchFilters)
+    .crawle();
+};

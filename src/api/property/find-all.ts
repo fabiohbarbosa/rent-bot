@@ -1,17 +1,15 @@
-import { Db } from 'mongodb';
 import { Router } from 'express';
 
-import Log from '@config/logger';
-import { logPrefix, path, projection } from './consts';
+import { logPrefix, path } from './consts';
 
-const api = (router: Router, db: Db) => {
+import Log from '@config/logger';
+import PropertyCache from '@lib/property-cache';
+
+
+const api = (router: Router, cache: PropertyCache) => {
   router.get(path, async(req, res, next) => {
     Log.info(`${logPrefix} Fetching all properties`);
-
-    const properties = await db.collection('properties')
-      .find({}, { projection })
-      .sort({ createAt: -1 })
-      .toArray();
+    const properties = cache.properties;
 
     if (properties.length === 0) {
       Log.warn(`${logPrefix} Not found properties`);

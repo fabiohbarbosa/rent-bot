@@ -5,11 +5,12 @@ import Property from '@models/property';
 import { updateDateBatch } from '@utils/batch-utils';
 
 import AvailabilityBotFactory from './factory';
+import PropertyCache from '@lib/property-cache';
 
 class Availability {
   logPrefix: string;
 
-  constructor(private db: Db) { }
+  constructor(private db: Db, private cache: PropertyCache) { }
 
   public evaluate(property: Property) {
     const { provider, url, status } = property;
@@ -31,16 +32,11 @@ class Availability {
     availability.evaluate(url)
       .then(() => {
         Log.info(`${this.logPrefix} The ${url} is a valid URL`);
-        updateDateBatch(
-          this.db,
-          { url: url },
-          {
-            ...set,
-            status: status === 'UNVAILABLE' ? 'PENDING' : status,
-            timesUnvailable: 0 // cleanup unvailable counts to prevent lost property after long time
-          },
-          callback
-        );
+        set = {
+          ...set,
+          status: status === 'UNVAILABLE' ? 'PENDING' : status,
+          timesUnvailable: 0 // cleanup unvailable counts to prevent lost property
+        }
       })
       .catch(err => {
         // caught up miner else is unknown error
@@ -51,15 +47,13 @@ class Availability {
             status: 'UNVAILABLE',
             timesUnvailable: timesUnvailable + 1
           };
+          // TODO study in which case it should be removed from list
+          // this.cache.removeFromUrl(url);
         } else {
           Log.error(`${this.logPrefix} ${err.message}`);
         }
 
-        updateDateBatch(
-          this.db,
-          { url: url },
-          set,
-          callback);
+        updateDateBatch(this.db, { url }, set, callback);
       });
   }
 

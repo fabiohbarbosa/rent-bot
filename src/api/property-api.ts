@@ -1,8 +1,12 @@
-import { findOne, findAll, patch } from './property';
+import { Router } from 'express';
+import { Db } from 'mongodb';
 
-const api = (router, db) => {
+import { findOne, findAll, patch } from './property';
+import PropertyCache from '@lib/property-cache';
+
+const api = (router: Router, db: Db, cache: PropertyCache) => {
   findOne(router, db);
-  findAll(router, db);
+  findAll(router, cache);
   patch(router, db);
   return router;
 };

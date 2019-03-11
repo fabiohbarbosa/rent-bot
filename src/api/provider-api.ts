@@ -1,6 +1,9 @@
+import { Router } from 'express';
+import { Db } from 'mongodb';
+
 import { findAll } from './provider';
 
-const api = (router, db) => {
+const api = (router: Router, db: Db) => {
   findAll(router, db);
   return router;
 };

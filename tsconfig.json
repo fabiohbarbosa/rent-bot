@@ -19,6 +19,9 @@
       "@api/*": [
 				"src/api/*"
       ],
+      "@events/*": [
+				"src/events/*"
+      ],
       "@lib/*": [
 				"src/lib/*"
 			],
