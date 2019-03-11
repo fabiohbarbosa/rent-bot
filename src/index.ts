@@ -46,12 +46,12 @@ const boostrap = async() => {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE']
   }));
 
-  app.use('/', healthcheck(router));
-  app.use('/', fix(router, db));
-  app.use('/', property(router, db));
-  app.use('/', provider(router, db));
-  app.use('/', status(router, db));
-  app.use('/', topology(router, db));
+  app.use('/api', healthcheck(router));
+  app.use('/api', fix(router, db));
+  app.use('/api', property(router, db));
+  app.use('/api', provider(router, db));
+  app.use('/api', status(router, db));
+  app.use('/api', topology(router, db));
   app.use(errorHandler);
 
   // wrong routes should be return 404 status code
