@@ -29,11 +29,16 @@ class CrawlerBot {
     });
   }
 
-  private _updateOneCallback(logPrefix: string, property: Property) {
+  private _updateOneCallback(logPrefix: string, property: Property, setOnInsert: Property) {
     const newPropertyExecution = () => {
       Log.info(`${logPrefix} Found new property ${property.url}`);
 
-      this.propertyCache.add(property);
+      // merge both array to simulate the new property object fields
+      const newProperty = {
+        ...property, ...setOnInsert
+      };
+
+      this.propertyCache.add(newProperty);
 
       if (property.status === 'MATCHED') {
         new NotificationService(logPrefix, this.db).notificateByEmail(property);
@@ -83,12 +88,7 @@ class CrawlerBot {
       $setOnInsert: setOnInsert
     };
 
-    // merge both array to simulate the new property object fields
-    const newProperty = {
-      ...property, ...setOnInsert
-    };
-
-    const callback = this._updateOneCallback(logPrefix, newProperty);
+    const callback = this._updateOneCallback(logPrefix, property, setOnInsert);
     this.db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
   }
 

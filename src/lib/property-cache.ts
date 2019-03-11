@@ -30,6 +30,15 @@ class PropertyCache {
     this.event.emit('add', [this.properties, property]);
   }
 
+  updateFromUrl(url: string, fieldsToUpdate: Property) {
+    this.properties = this.properties.map(p => {
+      if (p.url === url) {
+        return { ...p, ...fieldsToUpdate }
+      }
+      return p;
+    })
+  }
+
   remove(property: Property) {
     const _id = property._id;
     this.properties = this.properties.filter(p => p._id !== _id);

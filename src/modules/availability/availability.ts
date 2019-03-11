@@ -52,7 +52,7 @@ class Availability {
         } else {
           Log.error(`${this.logPrefix} ${err.message}`);
         }
-
+      }).finally(() => {
         updateDateBatch(this.db, { url }, set, callback);
       });
   }
