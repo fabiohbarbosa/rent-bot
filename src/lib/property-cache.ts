@@ -25,7 +25,7 @@ class PropertyCache {
 
   add(property: Property) {
     Log.info(`Properties array size before add: ${this.properties.length}`);
-    this.properties.push(property);
+    this.properties.unshift(property);
     Log.info(`Properties array size after add: ${this.properties.length}`);
     this.event.emit('add', [this.properties, property]);
   }

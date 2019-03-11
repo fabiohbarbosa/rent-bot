@@ -29,7 +29,25 @@ class CrawlerBot {
     });
   }
 
-  private _crawlerCallback(logPrefix: string, property: Property, status: string) {
+  private _updateOneCallback(logPrefix: string, property: Property) {
+    const newPropertyExecution = () => {
+      Log.info(`${logPrefix} Found new property ${property.url}`);
+
+      this.propertyCache.add(property);
+
+      if (property.status === 'MATCHED') {
+        new NotificationService(logPrefix, this.db).notificateByEmail(property);
+      }
+
+      new DataMiningBot(this.db, property).mine()
+        .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))
+        .catch(e => {
+          Log.error(`${logPrefix} Error to mine ${property.url}`);
+          Log.error(e);
+        });
+    };
+
+
     return (err, result) => {
       if (err) {
         Log.error(`${logPrefix} Error to insert or update property`);
@@ -44,20 +62,8 @@ class CrawlerBot {
         return;
       }
 
-      // new property
-      Log.info(`${logPrefix} Found new property ${property.url}`);
-      this.propertyCache.add(property);
-
-      if (status === 'MATCHED') {
-        new NotificationService(logPrefix, this.db).notificateByEmail(property);
-      }
-
-      new DataMiningBot(this.db, property).mine()
-        .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))
-        .catch(e => {
-          Log.error(`${logPrefix} Error to mine ${property.url}`);
-          Log.error(e);
-        });
+      // new property logic
+      newPropertyExecution();
     };
   }
 
@@ -65,17 +71,24 @@ class CrawlerBot {
     const energyCertify = property.energeticCertificate;
     const status = energyCertify && isMatched(energyCertify) ? 'MATCHED' : 'PENDING';
     const providerId = property.providerId;
-    const update = {
-      $set: property,
-      $setOnInsert: {
-        createAt: new Date(),
-        availabilityLastCheck: new Date(), isAvailabilityLastCheck: false,
-        dataMiningLastCheck: new Date(), isDataMiningLastCheck: false,
-        status, notificated: false
-      }
+    const setOnInsert = {
+      createAt: new Date(),
+      availabilityLastCheck: new Date(), isAvailabilityLastCheck: false,
+      dataMiningLastCheck: new Date(), isDataMiningLastCheck: false,
+      status, notificated: false
     };
 
-    const callback = this._crawlerCallback(logPrefix, property, status);
+    const update = {
+      $set: property,
+      $setOnInsert: setOnInsert
+    };
+
+    // merge both array to simulate the new property object fields
+    const newProperty = {
+      ...property, ...setOnInsert
+    };
+
+    const callback = this._updateOneCallback(logPrefix, newProperty);
     this.db.collection('properties').updateOne({ providerId }, update, { upsert: true }, callback);
   }
 

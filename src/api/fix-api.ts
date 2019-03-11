@@ -1,4 +1,4 @@
-import { Db, MongoCallback, UpdateWriteOpResult } from 'mongodb';
+import { Db } from 'mongodb';
 import { Router } from 'express';
 
 import Log from '@config/logger';
