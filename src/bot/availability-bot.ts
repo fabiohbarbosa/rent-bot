@@ -38,6 +38,6 @@ const checkEntriesAvailability = async (db: Db, cache: PropertyCache) => {
     Log.error(`[availability] Error to load properties from database: ${err.message}`);
     Log.error(err.stack);
   }
-}
+};
 
 export { checkEntriesAvailability };

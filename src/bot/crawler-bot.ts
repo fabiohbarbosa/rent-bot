@@ -59,7 +59,7 @@ class CrawlerInitializer {
           Log.error(e);
         });
     };
-  };
+  }
 
   private _handle(logPrefix: string, property: Property) {
     const energyCertify = property.energeticCertificate;
@@ -89,7 +89,7 @@ class CrawlerInitializer {
         .crawl()
         .then(properties => {
           if (!properties) return;
-          properties.forEach((p: Property) =>{
+          properties.forEach((p: Property) => {
             const handleProperty = { ...p, provider: providerName };
             this._handle(filter.logPrefix, handleProperty);
           });
