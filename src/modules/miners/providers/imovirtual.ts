@@ -1,10 +1,10 @@
 import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
-import MinderProvider, { MinderProviderResponse } from '../minder-provider';
+import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
 
-class ImovirtualMiner extends MinderProvider {
-  async mine(url: string): Promise<MinderProviderResponse> {
+class ImovirtualMiner extends MinerProvider {
+  async mine(url: string): Promise<MinerProviderResponse> {
     let $;
     try {
       $ = await adapt(url);

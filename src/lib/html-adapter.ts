@@ -51,9 +51,10 @@ const adapt = async(url, binary = false) => {
 };
 
 const adaptRetry = async(url, status, isProxied, binary = false) => {
-  // increase times that URL was requested
   const unProxyUrl = isProxied ? unProxy(url) : url;
+  // increase times that URL was requested
   const totalRequests = maxRequests[unProxyUrl] || 0;
+
   maxRequests[unProxyUrl] = totalRequests + 1;
 
   // request

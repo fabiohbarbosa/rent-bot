@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 
-import crawlerInitializer from './crawler-bot';
-import { mineDatabaseEntries } from './data-mining-bot';
-import { checkEntriesAvailability } from './availability-bot';
+import CrawlerBot from '@modules/crawdler/crawler-bot';
+import AvailabilityBot from '@modules/availability/availability-bot';
+import MinerBot from '@modules/miners/miner-bot';
 
 import CustoJustoProvider, { filters as custoJustoFilters } from '@modules/crawdler/providers/custojusto';
 import IdealistaProvider, { filters as idealistaFilters } from '@modules/crawdler/providers/idealista';
@@ -27,23 +27,23 @@ class Bot {
 
     Log.info(`${logPrefix} Initialising...`);
     const start = () => {
-      crawlerInitializer(this.db, this.cache, {
+      new CrawlerBot(this.db, this.cache, {
         providerClass: CustoJustoProvider,
         searchFilters: custoJustoFilters
-      });
+      }).crawle();
 
-      crawlerInitializer(this.db, this.cache, {
+      new CrawlerBot(this.db, this.cache, {
         providerClass: ImovirtualProvider,
         searchFilters: imovirtualFilters
-      });
-      crawlerInitializer(this.db, this.cache, {
+      }).crawle();
+      new CrawlerBot(this.db, this.cache, {
         providerClass: OlxProvider,
         searchFilters: olxFilters
-      });
+      }).crawle();
     };
 
     const startIdealista = () => {
-      crawlerInitializer(this.db, this.cache, {
+      new CrawlerBot(this.db, this.cache, {
         providerClass: IdealistaProvider,
         searchFilters: idealistaFilters
       });
@@ -71,7 +71,7 @@ class Bot {
 
     Log.info(`${logPrefix} Initialising...`);
 
-    const start = () => checkEntriesAvailability(this.db, this.cache);
+    const start = () => new AvailabilityBot(this.db, this.cache).evaluateDatabaseEntries();
 
     setTimeout(() => start(), availability.delay);
     setInterval(start, availability.interval);
@@ -90,7 +90,7 @@ class Bot {
 
     Log.info(`${logPrefix} Initialising...`);
 
-    const start = () => mineDatabaseEntries(this.db, this.cache);
+    const start = () => new MinerBot(this.db, this.cache);
 
     setTimeout(() => start(), dataMining.delay);
     setInterval(start, dataMining.interval);

@@ -8,6 +8,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
+    "lib": ["es6"],
     "paths": {
 			"@config/*": [
 				"config/*"
@@ -37,6 +38,7 @@
     "config/**/*"
   ],
   "exclude": [
-    "src/**/*spec.js"
+    "src/**/*spec.ts",
+    "node_modules/**"
   ]
 }

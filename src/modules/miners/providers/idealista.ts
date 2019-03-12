@@ -2,11 +2,11 @@ import { adaptRetry } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
 import { proxy } from '@lib/proxy-factory';
-import MinderProvider, { MinderProviderResponse } from '../minder-provider';
+import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
 
-class IdealistaMiner extends MinderProvider {
+class IdealistaMiner extends MinerProvider {
 
-  async mine(url: string): Promise<MinderProviderResponse> {
+  async mine(url: string): Promise<MinerProviderResponse> {
     let $;
     try {
       $ = await adaptRetry(proxy(url), 403, true);

@@ -5,6 +5,7 @@ import OlxMiner from './providers/olx';
 
 import Log from '@config/logger';
 import { ensureRealProvider } from '@utils/provider-utils';
+import MinerProvider from './miner-provider';
 
 const miner = {
   custojusto: CustoJustoMiner,
@@ -14,7 +15,7 @@ const miner = {
 };
 
 class MinerBotFactory {
-  static getInstance(provider, url) {
+  static getInstance(provider, url): MinerProvider {
     let logPrefix = `[miner:${provider}]:`;
 
     try {
