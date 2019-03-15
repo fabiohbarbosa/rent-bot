@@ -5,7 +5,7 @@ import OlxAvailability from './providers/olx';
 
 import Log from '@config/logger';
 import { ensureRealProvider } from '@utils/provider-utils';
-import AvailabilityProvider from './availabilty-provider';
+import AvailabilityProvider from './availability-provider';
 
 const availability = {
   custojusto: CustoJustoAvailability,

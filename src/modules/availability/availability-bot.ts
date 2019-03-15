@@ -10,15 +10,14 @@ import Property from '@models/property';
 import AvailabilityBotFactory from '@modules/availability/factory';
 import AvailabilityHandler from '@modules/availability/availability-handler';
 
+const props = allProps.bots.availability;
+let idealistaCounterCycle = props.intervalIdealistaCounter;
+
 class AvailabilityBot {
-  private props;
-  private idealistaCounterCycle;
   private handler: AvailabilityHandler;
 
   constructor(private db: Db, cache: PropertyCache) {
     this.handler = new AvailabilityHandler(db, cache);
-    this.props = allProps.bots.availability;
-    this.idealistaCounterCycle = this.props.intervalIdealistaCounter;
   }
 
   async evaluate(property: Property) {
@@ -32,7 +31,7 @@ class AvailabilityBot {
       const properties = await this._fetchDatabaseEntries();
       properties.forEach(p => this.evaluate(p));
 
-      this.idealistaCounterCycle--;
+      idealistaCounterCycle--;
     } catch (err) {
       Log.error(`[availability] Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
@@ -43,20 +42,20 @@ class AvailabilityBot {
     const query = {
       provider: { $ne: 'idealista' },
       $or: [
-        { timesUnvailable: { $lt: this.props.ensureTimes } },
+        { timesUnvailable: { $lt: props.ensureTimes } },
         { timesUnvailable: null }
       ]
     };
 
     // reduce times to fetch idealista data
     // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
-    if (this.idealistaCounterCycle === 0) {
+    if (idealistaCounterCycle === 0) {
       delete query['provider'];
-      this.idealistaCounterCycle = this.props.intervalIdealistaCounter;
+      idealistaCounterCycle = props.intervalIdealistaCounter;
     }
 
     const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
-    return batchProperties(this.db, query, sort, this.props.batchSize);
+    return batchProperties(this.db, query, sort, props.batchSize);
   }
 
 }

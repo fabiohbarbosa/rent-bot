@@ -16,7 +16,7 @@ const _slice = (properties: Property[], query: { page: string, offset: string })
 };
 
 const api = (router: Router, cache: PropertyCache) => {
-  router.get(path, async(req, res, next) => {
+  router.get(path, (req, res, next) => {
     Log.info(`${logPrefix} Fetching all properties`);
 
     const properties = _slice(cache.properties, req.query);

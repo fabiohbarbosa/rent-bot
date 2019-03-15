@@ -1,7 +1,7 @@
 import { rqRetry } from '@lib/rq';
 import BotError from '@utils/bot-error';
 import { proxy } from '@lib/proxy-factory';
-import AvailabilityProvider from '../availabilty-provider';
+import AvailabilityProvider from '../availability-provider';
 
 class IdealistaAvailability extends AvailabilityProvider {
     async evaluate(url: string): Promise<void> {

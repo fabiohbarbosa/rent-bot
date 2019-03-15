@@ -1,6 +1,6 @@
 import { adapt } from '@lib/html-adapter';
 import BotError from '@utils/bot-error';
-import AvailabilityProvider from '../availabilty-provider';
+import AvailabilityProvider from '../availability-provider';
 
 class OlxAvailability extends AvailabilityProvider {
   async evaluate(url: string): Promise<void> {

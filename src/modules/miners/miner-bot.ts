@@ -11,19 +11,18 @@ import PropertyCache from '@lib/property-cache';
 import MinerBotFactory from '@modules/miners/factory';
 import MinerHandler from '@modules/miners/miner-handler';
 
+const props = allProps.bots.dataMining;
+let idealistaCounterCycle = props.intervalIdealistaCounter;
+
 /**
  * Fetch data from database and start the data mining process
  * after that the result will be send to handler
  */
 class MinerBot {
-  private props;
-  private idealistaCounterCycle;
   private handler: MinerHandler;
 
   constructor(private db: Db, cache: PropertyCache) {
     this.handler = new MinerHandler(db, cache);
-    this.props = allProps.bots.dataMining;
-    this.idealistaCounterCycle = this.props.intervalIdealistaCounter;
   }
 
   async mine(property: Property) {
@@ -41,7 +40,7 @@ class MinerBot {
       const properties = await this._fetchDatabaseEntries();
       properties.forEach(p => this.mine(p));
 
-      this.idealistaCounterCycle--;
+      idealistaCounterCycle--;
     } catch (err) {
       Log.error(`[minder]: Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
@@ -56,13 +55,13 @@ class MinerBot {
 
     // reduce times to fetch idealista data
     // if the schedule do a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
-    if (this.idealistaCounterCycle === 0) {
+    if (idealistaCounterCycle === 0) {
       delete query.provider;
-      this.idealistaCounterCycle = this.props.intervalIdealistaCounter;
+      idealistaCounterCycle = props.intervalIdealistaCounter;
     }
 
     const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
-    return batchProperties(this.db, query, sort, this.props.batchSize);
+    return batchProperties(this.db, query, sort, props.batchSize);
   }
 }
 
