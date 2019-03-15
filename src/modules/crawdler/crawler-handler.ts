@@ -47,12 +47,7 @@ class CrawlerHandler {
         new NotificationService(logPrefix, this.db).notificateByEmail(property);
       }
 
-      new MinerBot(this.db, this.cache).mine(property)
-        .then(() => Log.debug(`${logPrefix} Success to mine ${property.url}`))
-        .catch(e => {
-          Log.error(`${logPrefix} Error to mine ${property.url}`);
-          Log.error(e);
-        });
+      new MinerBot(this.db, this.cache).mine(property);
     };
 
 

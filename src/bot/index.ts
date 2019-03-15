@@ -90,7 +90,7 @@ class Bot {
 
     Log.info(`${logPrefix} Initialising...`);
 
-    const start = () => new MinerBot(this.db, this.cache);
+    const start = () => new MinerBot(this.db, this.cache).mineDatabaseEntries();
 
     setTimeout(() => start(), dataMining.delay);
     setInterval(start, dataMining.interval);

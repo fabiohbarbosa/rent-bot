@@ -25,13 +25,13 @@ class MinerBot {
     this.handler = new MinerHandler(db, cache);
   }
 
-  async mine(property: Property) {
+  mine(property: Property): void {
     const miner = MinerBotFactory.getInstance(property.provider, property.url);
 
     miner.mine(property.url).then(response => {
       this.handler.handle(miner.logPrefix, property, response);
     }).catch(err => {
-      Log.debug(err);
+      Log.error(`[minder]: Error to mine ${property.url}: ${err.message}`);
     });
   }
 
@@ -39,7 +39,6 @@ class MinerBot {
     try {
       const properties = await this._fetchDatabaseEntries();
       properties.forEach(p => this.mine(p));
-
       idealistaCounterCycle--;
     } catch (err) {
       Log.error(`[minder]: Error to load properties from database: ${err.message}`);
