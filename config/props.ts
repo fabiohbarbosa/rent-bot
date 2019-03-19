@@ -49,7 +49,7 @@ const localVars = {
     port: 3000
   },
   db: {
-    url: 'mongodb://localhost:27017',
+    url: 'mongodb://localuser:kcEvbm76qebhGQRGUaSt8r6J7syESdMq@ds125368.mlab.com:25368/rent-bot',
     ...defaultVars.db
   },
   mail: {
