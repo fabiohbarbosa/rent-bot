@@ -13,6 +13,12 @@ import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-prov
     }
 
     const elements = $('ul.list-group.gbody');
+    if (elements.length === 0) {
+      Log.warn(`${this.logPrefix} Cannot access url ${url}. Wait for availability task to confirm unvailability.`);
+      return {
+        isOnFilter: true
+      }
+    }
 
     const data = {
       energeticCertificate: this.getEnergeticCertificate(elements),

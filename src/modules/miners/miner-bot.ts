@@ -19,9 +19,11 @@ let idealistaCounterCycle = props.intervalIdealistaCounter;
  * after that the result will be send to handler
  */
 class MinerBot {
+  private logPrefix: string;
   private handler: MinerHandler;
 
   constructor(private db: Db, cache: PropertyCache) {
+    this.logPrefix = '[miner]: ';
     this.handler = new MinerHandler(db, cache);
   }
 
@@ -31,7 +33,7 @@ class MinerBot {
     miner.mine(property.url).then(response => {
       this.handler.handle(miner.logPrefix, property, response);
     }).catch(err => {
-      Log.error(`[minder]: Error to mine ${property.url}: ${err.message}`);
+      Log.error(`${this.logPrefix} Error to mine ${property.url}: ${err.message}`);
       Log.error(err.stack);
     });
   }
@@ -39,10 +41,15 @@ class MinerBot {
   async mineDatabaseEntries() {
     try {
       const properties = await this._fetchDatabaseEntries();
-      properties.forEach(p => this.mine(p));
+      if (properties.length === 0) {
+        Log.warn(`${this.logPrefix} Not found properties to mine.`);
+      } else {
+        properties.forEach(p => this.mine(p));
+      }
+
       idealistaCounterCycle--;
     } catch (err) {
-      Log.error(`[minder]: Error to load properties from database: ${err.message}`);
+      Log.error(`${this.logPrefix} Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }
   }

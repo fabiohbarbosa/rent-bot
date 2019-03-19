@@ -14,6 +14,7 @@ class CustoJustoAvailability extends AvailabilityProvider {
 
     const title = $('div.title-1 > h1');
     if (title.length > 0) {
+      // available
       return;
     }
     throw new BotError(`The page ${url} is unvailable`, 404);

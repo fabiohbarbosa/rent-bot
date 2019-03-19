@@ -14,9 +14,11 @@ const props = allProps.bots.availability;
 let idealistaCounterCycle = props.intervalIdealistaCounter;
 
 class AvailabilityBot {
+  private logPrefix: string;
   private handler: AvailabilityHandler;
 
   constructor(private db: Db, cache: PropertyCache) {
+    this.logPrefix = '[availability]';
     this.handler = new AvailabilityHandler(db, cache);
   }
 
@@ -29,11 +31,15 @@ class AvailabilityBot {
   async evaluateDatabaseEntries() {
     try {
       const properties = await this._fetchDatabaseEntries();
-      properties.forEach(p => this.evaluate(p));
+      if (properties.length === 0) {
+        Log.warn(`${this.logPrefix} Not found properties to evaluate.`);
+      } else {
+        properties.forEach(p => this.evaluate(p));
+      }
 
       idealistaCounterCycle--;
     } catch (err) {
-      Log.error(`[availability] Error to load properties from database: ${err.message}`);
+      Log.error(`${this.logPrefix} Error to load properties from database: ${err.message}`);
       Log.error(err.stack);
     }
   }
