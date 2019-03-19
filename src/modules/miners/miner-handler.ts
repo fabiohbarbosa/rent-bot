@@ -35,7 +35,8 @@ class MinerHandler {
         new NotificationService(logPrefix, this.db).notificateByEmail(property);
       }
     } catch (err) {
-      Log.debug(err);
+      Log.error(`[minder]: Error to mine ${property.url}: ${err.message}`);
+      Log.error(err);
     } finally {
       updateDateBatch(this.db, { url }, set, (err, result) => {
         if (err) {

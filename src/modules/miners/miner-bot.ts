@@ -32,6 +32,7 @@ class MinerBot {
       this.handler.handle(miner.logPrefix, property, response);
     }).catch(err => {
       Log.error(`[minder]: Error to mine ${property.url}: ${err.message}`);
+      Log.error(err.stack);
     });
   }
 

@@ -13,11 +13,11 @@ class ImovirtualMiner extends MinerProvider {
     }
 
     const data = {
-      energeticCertificate: this.getEnergeticCertificate($('li:contains("Certificado Energ")')),
-      price: parseInt($('article > div > header')[0].children[2].children[0].children[0].data.split(' ')[0].replace('.', ''), 10)
+      energeticCertificate: this._getEnergeticCertificate($('li:contains("Certificado Energ")')),
+      price: this._getPrice($('article > header > div > div'), url)
     };
 
-    const isOnFilter = this.isOnFilter(data);
+    const isOnFilter = this._isOnFilter(data);
 
     Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
 
@@ -27,7 +27,7 @@ class ImovirtualMiner extends MinerProvider {
     };
   }
 
-  getEnergeticCertificate(elements) {
+  private _getEnergeticCertificate(elements): string {
     if (!elements ||
         elements.length !== 1 ||
         !elements[0].lastChild ||
@@ -39,9 +39,21 @@ class ImovirtualMiner extends MinerProvider {
     return elements[0].lastChild.firstChild.data.toLowerCase();
   }
 
-  isOnFilter(data) {
+  private _getPrice(elements, url: string): number {
+    if (!elements || !elements[2] || !elements[2].firstChild) {
+      throw new Error(`Error to access price of ${url}`);
+    }
+    return this._getPriceFromArray(elements[2].firstChild.data.split(' '));
+  }
+
+  private _isOnFilter(data) {
     if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
     return true;
+  }
+
+  protected _getPriceFromArray(priceArray: string[]): number {
+    priceArray.pop();
+    return parseInt(priceArray.join(''), 10);
   }
 
 }
