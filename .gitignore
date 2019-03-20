@@ -6,3 +6,4 @@ logs/
 dist/
 sendgrid.env
 service.yml
+.env

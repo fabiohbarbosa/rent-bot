@@ -1,9 +1,15 @@
 import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
+
 import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
+import { priceFromArrayRightSymbol } from '@utils/price-utils';
 
 class ImovirtualMiner extends MinerProvider {
+  constructor(public logPrefix: string) {
+    super(logPrefix);
+  }
+
   async mine(url: string): Promise<MinerProviderResponse> {
     let $;
     try {
@@ -39,21 +45,16 @@ class ImovirtualMiner extends MinerProvider {
     return elements[0].lastChild.firstChild.data.toLowerCase();
   }
 
-  private _getPrice(elements, url: string): number {
+  protected _getPrice(elements, url: string): number {
     if (!elements || !elements[2] || !elements[2].firstChild) {
       throw new Error(`Error to access price of ${url}`);
     }
-    return this._getPriceFromArray(elements[2].firstChild.data.split(' '));
+    return priceFromArrayRightSymbol(elements[2].firstChild.data.split(' '));
   }
 
   private _isOnFilter(data) {
     if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
     return true;
-  }
-
-  protected _getPriceFromArray(priceArray: string[]): number {
-    priceArray.pop();
-    return parseInt(priceArray.join(''), 10);
   }
 
 }

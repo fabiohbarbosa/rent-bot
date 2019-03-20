@@ -1,6 +1,13 @@
 import { Db } from 'mongodb';
 
-const batchProperties = (db: Db, query, sort, size, projection = {}) => {
+const executeQuery = (db: Db, query, sort = {}, projection = {}) => {
+  return db.collection('properties')
+    .find(query, projection)
+    .sort(sort)
+    .toArray();
+};
+
+const batchProperties = (db: Db, query, sort, size: number, projection = {}) => {
   return db.collection('properties')
     .find(query, projection)
     .sort(sort)
@@ -13,4 +20,4 @@ const updateDateBatch = (db: Db, filter, set, callback) => {
     .updateMany(filter, { $set: set }, callback);
 };
 
-export { batchProperties, updateDateBatch };
+export { batchProperties, updateDateBatch, executeQuery };

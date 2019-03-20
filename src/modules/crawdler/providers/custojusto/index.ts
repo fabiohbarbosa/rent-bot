@@ -5,6 +5,7 @@ import Log from '@config/logger';
 import { dataFilters } from '@config/props';
 
 import { filters, itemsPage, regexes } from './config';
+import { priceFromArrayRightSymbol } from '@utils/price-utils';
 
 class CustoJustoProvider extends CrawlerProvider {
   async parse() {
@@ -17,13 +18,13 @@ class CustoJustoProvider extends CrawlerProvider {
       if (!totalPages || totalPages === 0) return [];
 
       const elements = [];
-      elements.push(...this.getElements($));
+      elements.push(...this._getElements($));
 
       for (let page = 2; page <= totalPages; page++) {
         const nextUrl = this.url.replace('?', `?o=${page}?`);
         $ = await adapt(nextUrl, true);
 
-        elements.push(...this.getElements($, page));
+        elements.push(...this._getElements($, page));
       }
       return elements;
     } catch (err) {
@@ -31,23 +32,23 @@ class CustoJustoProvider extends CrawlerProvider {
     }
   }
 
-  getElements($, page = 1) {
+  private _getElements($, page = 1) {
     Log.info(`${this.logPrefix}: Crawling page ${page}`);
 
     const elements = [];
     $('div#dalist > div.container_related > a').each((i, e) => {
-      const price = this.parsePrice($, e);
       const title = $(e).find('h2').text().trim();
+      const price = this._parsePrice($, e);
 
-      if (this.isMetadataInvalid(title, price)) return;
+      if (this._isMetadataInvalid(title, price)) return;
 
       elements.push({
         providerId: e.attribs['id'],
         title,
-        subtitle: this.parseSubtitle($, e),
+        subtitle: this._parseSubtitle($, e),
         url: e.attribs['href'],
         price,
-        photos: this.parsePhotos($, e),
+        photos: this._parsePhotos($, e),
         type: this.type,
         topology: this.topology
       });
@@ -55,7 +56,7 @@ class CustoJustoProvider extends CrawlerProvider {
     return elements;
   }
 
-  isMetadataInvalid(title, price) {
+  private _isMetadataInvalid(title: string, price: number) {
     if (price > dataFilters.maxPrice) return true;
 
     for (let i = 0; i < regexes.length; i++) {
@@ -67,20 +68,18 @@ class CustoJustoProvider extends CrawlerProvider {
     return false;
   }
 
-  parsePrice($, e) {
+  private _parsePrice($, e): number {
     const h5 = $(e).find('h5')[0].lastChild.data.trim().split(' ');
-    if (h5.length === 2) {
-      return parseInt(h5[0], 10);
-    }
-    return parseInt(`${h5[0]}${h5[1]}`, 10);
+    const price = priceFromArrayRightSymbol(h5);
+    return price;
   }
 
-  parseSubtitle($, e) {
+  private _parseSubtitle($, e) {
     const spans = $(e).find('div > span').text().split('-').map(s => s.trim());
     return spans.join(' - ');
   }
 
-  parsePhotos($, e) {
+  private _parsePhotos($, e) {
     const gallery = $(e).find('div.imglist > img');
     if (gallery && gallery[0] && gallery[0].attribs) {
       const img = gallery[0].attribs['src'] ? gallery[0].attribs['src'] : gallery[0].attribs['data-src'];

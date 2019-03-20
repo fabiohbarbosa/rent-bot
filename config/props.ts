@@ -49,8 +49,8 @@ const localVars = {
     port: 3000
   },
   db: {
-    url: 'mongodb://localuser:kcEvbm76qebhGQRGUaSt8r6J7syESdMq@ds125368.mlab.com:25368/rent-bot',
-    ...defaultVars.db
+    ...defaultVars.db,
+    url: process.env.DB_URL || 'mongodb://localhost:27017'
   },
   mail: {
     enabled: false,
@@ -59,7 +59,7 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: false,
+      enabled: true,
       delay: 0
     },
     dataMining: {
@@ -70,7 +70,7 @@ const localVars = {
     },
     availability: {
       ...defaultVars.bots.availability,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0
     },

@@ -6,6 +6,7 @@ import Log from './logger';
 class Db {
   static async createConnection(url: string, dbName: string) {
     try {
+      Log.info('Establishing MongoDB connection...');
       const client = await MongoClient.connect(url, { useNewUrlParser: true });
       assert.equal(true, client.isConnected());
 

@@ -2,6 +2,7 @@ import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
 import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
+import { priceFromArrayRightSymbol } from '@utils/price-utils';
 
   class CustoJustoMiner extends MinerProvider {
     async mine(url: string): Promise<MinerProviderResponse> {
@@ -19,12 +20,12 @@ import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-prov
     }
 
     const data = {
-      energeticCertificate: this.getEnergeticCertificate(elements),
-      topology: this.getTopology(elements),
-      price: parseInt($('span.real-price')[0].firstChild.data.trim().split(' ')[0].replace('.', ''), 10)
+      energeticCertificate: this._getEnergeticCertificate(elements),
+      topology: this._getTopology(elements),
+      price: this._parsePrice($)
     };
 
-    const isOnFilter = this.isOnFilter(data);
+    const isOnFilter = this._isOnFilter(data);
 
     Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
     Log.debug(`${this.logPrefix} Found topology '${data.topology}' to ${url}`);
@@ -35,28 +36,34 @@ import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-prov
     };
   }
 
-  isInvalidElement(el) {
+  private _parsePrice($): number {
+    const metadata = $('span.real-price')[0].firstChild.data.trim().split(' ');
+    const price = priceFromArrayRightSymbol(metadata);
+    return price;
+  }
+
+  private _isInvalidElement(el) {
     return !el || el.length !== 1 ||
       !el[0].firstChild ||
       !el[0].firstChild.firstChild ||
       !el[0].firstChild.firstChild.data;
   }
 
-  getEnergeticCertificate(elements) {
+  private _getEnergeticCertificate(elements) {
     const el = elements.find("li:contains('Cert.')");
-    if (this.isInvalidElement(el)) return 'unknown';
+    if (this._isInvalidElement(el)) return 'unknown';
 
     return el[0].firstChild.firstChild.data.toLowerCase();
   }
 
-  getTopology(elements) {
+  private _getTopology(elements) {
     const el = elements.find("li:contains('Tipologia')");
-    if (this.isInvalidElement(el)) return 'unknown';
+    if (this._isInvalidElement(el)) return 'unknown';
 
     return el[0].firstChild.firstChild.data.toLowerCase();
   }
 
-  isOnFilter(data) {
+  private _isOnFilter(data) {
     if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
     if (!dataFilters.topologies.includes(data.topology)) return false;
     return true;

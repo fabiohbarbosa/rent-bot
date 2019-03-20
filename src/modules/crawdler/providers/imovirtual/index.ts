@@ -13,7 +13,7 @@ class ImovirtualProvider extends CrawlerProvider {
       if ($('.search-location-extended-warning').length > 0) return [];
 
       const elements = [];
-      elements.push(...this.getElements($));
+      elements.push(...this._getElements($));
 
       const totalElement = $('.pager-counter > .current');
       if (totalElement && totalElement.length > 0) {
@@ -21,7 +21,7 @@ class ImovirtualProvider extends CrawlerProvider {
 
         for (let page = 2; page <= totalPages; page++) {
           $ = await adapt(`${this.url}&page=${page}`);
-          elements.push(...this.getElements($, page));
+          elements.push(...this._getElements($, page));
         }
       }
 
@@ -31,7 +31,7 @@ class ImovirtualProvider extends CrawlerProvider {
     }
   }
 
-  getElements($, page = 1) {
+  private _getElements($, page = 1) {
     Log.info(`${this.logPrefix}: Crawling page ${page}`);
 
     const elements = [];
@@ -42,8 +42,8 @@ class ImovirtualProvider extends CrawlerProvider {
         subtitle: $(e).find('div.offer-item-details > header > p').text(),
         energeticCertificate: $(e).find('div.energy-certify').text(),
         url: e.attribs['data-url'].split('#')[0],
-        price: parseInt($(e).find('div.offer-item-details li.offer-item-price').text().split('€')[0].trim(), 10),
-        photos: this.parsePhotos($, e),
+        price: this._parsePrice($, e),
+        photos: this._parsePhotos($, e),
         type: this.type,
         topology: this.topology
       });
@@ -51,13 +51,19 @@ class ImovirtualProvider extends CrawlerProvider {
     return elements;
   }
 
-  parsePhotos($, e) {
+  private _parsePhotos($, e) {
     const gallery = $(e).find('figure.offer-item-image');
     if (gallery && gallery[0].attribs['data-quick-gallery']) {
       const photosElements = JSON.parse(gallery[0].attribs['data-quick-gallery']);
       return photosElements.map(p => p.photo);
     }
     return [];
+  }
+
+  private _parsePrice($, e) {
+    const metadata = $(e).find('div.offer-item-details li.offer-item-price').text().split('€');
+    const price = parseInt(metadata[0].trim().split(' ').join(''), 10);
+    return price;
   }
 
 }

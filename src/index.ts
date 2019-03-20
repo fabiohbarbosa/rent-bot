@@ -13,6 +13,7 @@ import property from '@api/property-api';
 import provider from '@api/provider-api';
 import status from '@api/status-api';
 import topology from '@api/topology-api';
+import miner from '@api/miner-api';
 import errorHandler from '@api/middleware/error-handler';
 
 import Bot from './bot';
@@ -40,6 +41,7 @@ const boostrap = async() => {
   app.use('/api', provider(router, db));
   app.use('/api', status(router, db));
   app.use('/api', topology(router, db));
+  app.use('/api', miner(router, db, cache));
   app.use(errorHandler);
 
   // wrong routes should be return 404 status code
