@@ -12,15 +12,15 @@ import { logPrefix, path } from './consts';
 const api = (router: Router, db: Db, cache: PropertyCache) => {
   router.post(path, async(req, res, next) => {
     try {
-      const { url } = req.body;
-      if (!url) throw new HttpError('Invalid url', 400);
+      const urls = req.body;
+      if (!urls) throw new HttpError('Invalid urls', 400);
 
-      Log.info(`${logPrefix} Mining ${url}...`);
-      const properties = await executeQuery(db, { url });
-      const property = properties[0];
+      Log.info(`${logPrefix} Mining ${urls}...`);
+      const properties = await executeQuery(db, { url: { $in: urls } });
+      if (properties.length === 0) throw new HttpError('Invalid urls', 400);
+
       res.send(204);
-
-      new MinerBot(db, cache).mine(property);
+      properties.forEach(p => new MinerBot(db, cache).mine(p))
     } catch (err) {
       next(err);
     }
