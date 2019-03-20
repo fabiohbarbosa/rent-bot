@@ -122,7 +122,7 @@ const envVars = {
 };
 
 const dataFilters = {
-  maxPrice: 850,
+  maxPrice: 1000,
   onlyPhoto: true,
   energeticCertificates: [
     'a+', '+a', 'a-', '-a', 'a',
