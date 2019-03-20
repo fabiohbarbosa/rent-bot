@@ -2,6 +2,7 @@ import { adapt } from '@lib/html-adapter';
 import { dataFilters } from '@config/props';
 import Log from '@config/logger';
 import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
+import { priceFromArrayRightSymbol } from '@utils/price-utils';
 
 class OlxMiner extends MinerProvider {
 
@@ -16,11 +17,11 @@ class OlxMiner extends MinerProvider {
 
     const elements = $("th:contains('Certificado Energ')");
     const data = {
-      energeticCertificate: this.getEnergeticCertificate($, elements),
-      price: parseInt($('.price-label > strong').text().split(' ')[0].replace('.', ''), 10)
+      energeticCertificate: this._getEnergeticCertificate($, elements),
+      price: this._parsePrice($)
     };
 
-    const isOnFilter = this.isOnFilter(data);
+    const isOnFilter = this._isOnFilter(data);
 
     Log.info(`${this.logPrefix} Found energetic certificate '${data.energeticCertificate}' to ${url}`);
 
@@ -30,7 +31,15 @@ class OlxMiner extends MinerProvider {
     };
   }
 
-  getEnergeticCertificate($, elements) {
+  private _parsePrice($): number {
+    const metadata = $('.price-label > strong').text()
+                          .trim().split(' ')
+                          .map(v => v.replace('.', ''));
+    const price = priceFromArrayRightSymbol(metadata);
+    return price;
+  }
+
+  private _getEnergeticCertificate($, elements) {
     if (!elements ||
         elements.length !== 1 ||
         !elements[0].next ||
@@ -43,7 +52,7 @@ class OlxMiner extends MinerProvider {
     return el.find('strong > a')[0].firstChild.data.trim().toLowerCase();
   }
 
-  isOnFilter(data) {
+  private _isOnFilter(data) {
     if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
     return true;
   }

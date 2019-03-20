@@ -69,8 +69,8 @@ class CustoJustoProvider extends CrawlerProvider {
   }
 
   private _parsePrice($, e): number {
-    const h5 = $(e).find('h5')[0].lastChild.data.trim().split(' ');
-    const price = priceFromArrayRightSymbol(h5);
+    const metadata = $(e).find('h5')[0].lastChild.data.trim().split(' ');
+    const price = priceFromArrayRightSymbol(metadata);
     return price;
   }
 

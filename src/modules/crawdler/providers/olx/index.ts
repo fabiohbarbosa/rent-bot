@@ -2,6 +2,7 @@ import CrawlerProvider from '../../crawler-provider';
 
 import { adapt } from '@lib/html-adapter';
 import Log from '@config/logger';
+import { priceFromArrayRightSymbol } from '@utils/price-utils';
 
 import filters from './config';
 
@@ -13,7 +14,7 @@ class OlxProvider extends CrawlerProvider {
       if ($('h1.c41').length > 0) return [];
 
       const elements = [];
-      elements.push(...this.getElements($));
+      elements.push(...this._getElements($));
 
       const totalElement = $('.pager > span.item > a > span');
       if (totalElement && totalElement.length > 0) {
@@ -21,7 +22,7 @@ class OlxProvider extends CrawlerProvider {
 
         for (let page = 2; page <= totalPages; page++) {
           $ = await adapt(`${this.url}&page=${page}`);
-          elements.push(...this.getElements($, page));
+          elements.push(...this._getElements($, page));
         }
       }
 
@@ -31,7 +32,7 @@ class OlxProvider extends CrawlerProvider {
     }
   }
 
-  getElements($, page = 1) {
+  private _getElements($, page = 1) {
     Log.info(`${this.logPrefix}: Crawling page ${page}`);
 
     const elements = [];
@@ -44,8 +45,8 @@ class OlxProvider extends CrawlerProvider {
         title: $(e).find('td.title-cell > div > h3').text().trim(),
         subtitle: $(e).find('td.bottom-cell > div > p > small').text().trim().split(' ')[0],
         url,
-        price: parseInt($(e).find('td.td-price > div > p').text().trim().split(' ')[0], 10),
-        photos: this.parsePhotos($, e),
+        price: this._parsePrice($, e),
+        photos: this._parsePhotos($, e),
         type: this.type,
         topology: this.topology
       });
@@ -53,7 +54,15 @@ class OlxProvider extends CrawlerProvider {
     return elements;
   }
 
-  parsePhotos($, e) {
+  private _parsePrice($, e): number {
+    const metadata = $(e).find('td.td-price > div > p').text()
+                          .trim().split(' ')
+                          .map(v => v.replace('.', ''));
+    const price = priceFromArrayRightSymbol(metadata);
+    return price;
+  }
+
+  private _parsePhotos($, e) {
     const img = $(e).find('td > a > img').attr('src');
     if (!img) {
       return [];
