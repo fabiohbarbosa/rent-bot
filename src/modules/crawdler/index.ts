@@ -1,9 +1,9 @@
 import Log from '@config/logger';
 import { dataFilters } from '@config/props';
-import { CrawlerFilter } from './crawler-provider';
+import CrawlerProvider, { CrawlerFilter } from './crawler-provider';
 
 class Crawler {
-  private provider;
+  private provider: CrawlerProvider;
   private logPrefix: string;
   private url: string;
 
@@ -31,7 +31,7 @@ class Crawler {
 
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawl '${this.url}': ${err.message}`);
+      Log.error(`${this.logPrefix} Error to crawl '${this.url}'`);
       Log.error(err.stack);
     }
   }

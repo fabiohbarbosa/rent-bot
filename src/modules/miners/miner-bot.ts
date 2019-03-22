@@ -31,7 +31,9 @@ class MinerBot {
     const miner = MinerBotFactory.getInstance(property.provider, property.url);
 
     miner.mine(property.url).then(response => {
-      this.handler.handle(miner.logPrefix, property, response);
+      this.handler
+        .handle(miner.logPrefix, property, response)
+        .catch(err => `${this.logPrefix} Error to handle ${property.url}: ${err.message}`);
     }).catch(err => {
       Log.error(`${this.logPrefix} Error to mine ${property.url}: ${err.message}`);
       Log.error(err.stack);

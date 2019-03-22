@@ -7,7 +7,7 @@ abstract class CrawlerProvider {
               protected url: string) {
   }
 
-  abstract parse(): Promise<object[]>;
+  abstract parse();
 }
 
 interface CrawlerFilter {
