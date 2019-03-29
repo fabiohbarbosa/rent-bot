@@ -45,7 +45,11 @@ class MinerHandler {
         }
         Log.debug(`${logPrefix} Success to mine URL '${url}': ${result}`);
       });
-      this.cache.updateByUrl(url, set);
+      try {
+        this.cache.updateByUrl(url, set);
+      } catch(err) {
+        Log.error(`${logPrefix} ${err.message}`);
+      }
     }
   }
 

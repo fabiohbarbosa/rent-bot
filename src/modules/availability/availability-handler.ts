@@ -46,7 +46,11 @@ class AvailabilityHandler {
         }
         Log.debug(`${logPrefix} Success to update availability batch date: ${result}`);
       });
-      this.cache.updateByUrl(url, set);
+      try {
+        this.cache.updateByUrl(url, set);
+      } catch(err) {
+        Log.error(`${logPrefix} ${err.message}`);
+      }
     });
   }
 }

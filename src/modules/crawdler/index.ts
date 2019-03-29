@@ -32,7 +32,7 @@ class Crawler {
       return elements;
     } catch (err) {
       Log.error(`${this.logPrefix} Error to crawl '${this.url}'`);
-      Log.error(err.stack);
+      Log.debug(err.stack);
     }
   }
 }

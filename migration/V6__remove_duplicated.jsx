@@ -1,8 +1,8 @@
 db.properties.aggregate(
   { $group: {
-      _id: { url: "$url" },
+      _id: { provider: "$provider" },
       count: { $sum:  1 },
-      docs: { $push: "$_id" }
+      docs: { $push: "$provider" }
   }},
   { $match: {
       count: { $gt : 1 }

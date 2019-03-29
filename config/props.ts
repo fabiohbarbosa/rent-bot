@@ -66,13 +66,15 @@ const localVars = {
       ...defaultVars.bots.dataMining,
       enabled: true,
       interval: 0.5 * 60 * 1000,
-      delay: 0
+      delay: 0,
+      intervalIdealistaCounter: 5
     },
     availability: {
       ...defaultVars.bots.availability,
       enabled: false,
       interval: 0.5 * 60 * 1000,
-      delay: 0
+      delay: 0,
+      intervalIdealistaCounter: 5
     },
   },
   scheduler: {

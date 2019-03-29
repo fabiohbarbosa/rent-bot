@@ -3,8 +3,12 @@ import { dataFilters } from '@config/props';
 import Log from '@config/logger';
 import { proxy } from '@lib/proxy-factory';
 import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
+import Property, { PropertyTopology } from '@models/property';
 
 class IdealistaMiner extends MinerProvider {
+  constructor(public logPrefix: string) {
+    super(logPrefix);
+  }
 
   async mine(url: string): Promise<MinerProviderResponse> {
     let $;
@@ -40,19 +44,21 @@ class IdealistaMiner extends MinerProvider {
     return energeticCertificate;
   }
 
-  getTopology($) {
+  getTopology($): PropertyTopology {
     for (let i = 0; i < dataFilters.topologies.length; i++) {
       const topology = dataFilters.topologies[i];
 
       if ($(`div.info-features > span:contains("${topology.toUpperCase()}")`)) {
-        return topology;
+        return PropertyTopology[topology.toUpperCase()];
       }
     }
+    return PropertyTopology.UNKNOWN;
   }
 
-  isOnFilter(data) {
-    if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
-    return true;
+  isOnFilter(data: Property) {
+    const { energeticCertificate, price } = data;
+    return dataFilters.energeticCertificates.includes(energeticCertificate)
+            && price <= dataFilters.maxPrice;
   }
 
 }

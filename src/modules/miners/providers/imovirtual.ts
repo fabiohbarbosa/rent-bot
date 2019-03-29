@@ -4,6 +4,7 @@ import Log from '@config/logger';
 
 import MinerProvider, { MinerProviderResponse } from '@modules/miners/miner-provider';
 import { priceFromArrayRightSymbol } from '@utils/price-utils';
+import Property from '@models/property';
 
 class ImovirtualMiner extends MinerProvider {
   constructor(public logPrefix: string) {
@@ -15,6 +16,7 @@ class ImovirtualMiner extends MinerProvider {
     try {
       $ = await adapt(url);
     } catch (err) {
+      Log.debug(err);
       throw new Error(`Error to access url ${url}`);
     }
 
@@ -52,9 +54,10 @@ class ImovirtualMiner extends MinerProvider {
     return priceFromArrayRightSymbol(elements[2].firstChild.data.split(' '));
   }
 
-  private _isOnFilter(data) {
-    if (!dataFilters.energeticCertificates.includes(data.energeticCertificate)) return false;
-    return true;
+  private _isOnFilter(data: Property) {
+    const { energeticCertificate, price } = data;
+    return dataFilters.energeticCertificates.includes(energeticCertificate)
+            && price <= dataFilters.maxPrice;
   }
 
 }
