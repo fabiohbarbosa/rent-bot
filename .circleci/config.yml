@@ -121,7 +121,7 @@ jobs:
 
       NODE_ENV: prod
       PORT: 8080
-      LOG_LEVEL: error
+      LOG_LEVEL: info
 
       MAIL: true
       CRAWLER_BOT: true
