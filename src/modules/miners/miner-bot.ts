@@ -10,6 +10,7 @@ import PropertyCache from '@lib/property-cache';
 
 import MinerBotFactory from '@modules/miners/factory';
 import MinerHandler from '@modules/miners/miner-handler';
+import AvailabilityBot from '@modules/availability/availability-bot';
 
 const props = allProps.bots.dataMining;
 let idealistaCounterCycle = props.intervalIdealistaCounter;
@@ -22,7 +23,7 @@ class MinerBot {
   private logPrefix: string;
   private handler: MinerHandler;
 
-  constructor(private db: Db, cache: PropertyCache) {
+  constructor(private db: Db, private cache: PropertyCache) {
     this.logPrefix = '[miner]: ';
     this.handler = new MinerHandler(db, cache);
   }
@@ -35,8 +36,9 @@ class MinerBot {
         .handle(miner.logPrefix, property, response)
         .catch(err => `${this.logPrefix} Error to handle ${property.url}: ${err.message}`);
     }).catch(err => {
-      Log.error(`${this.logPrefix} Error to mine ${property.url}: ${err.message}`);
       Log.error(err.stack);
+      new AvailabilityBot(this.db, this.cache).evaluate(property)
+        .catch(err => Log.error(err));
     });
   }
 

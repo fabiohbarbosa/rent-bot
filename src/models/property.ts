@@ -48,10 +48,20 @@ class Property {
       .toArray();
   }
 
-  static findOne = async (db: Db, id: string) => {
+  static findOneById = async (db: Db, id: string) => {
     const _id = new ObjectID(id);
     return db.collection('properties')
       .findOne({ _id }, { projection });
+  }
+
+  static findOneByUrl = async (db: Db, url: string) => {
+    return db.collection('properties')
+      .findOne({ url }, { projection });
+  }
+
+  static findByQuery = (db: Db, query: {}) => {
+    return db.collection('properties')
+      .find(query, { projection }).toArray();
   }
 
 }

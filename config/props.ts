@@ -58,14 +58,14 @@ const localVars = {
   bots: {
     crawler: {
       ...defaultVars.bots.crawler,
-      interval: 1 * 60 * 1000,
       enabled: false,
+      interval: 1 * 60 * 1000,
       delay: 0,
       intervalIdealistaMultipler: 1,
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0,
       intervalIdealistaCounter: 5
@@ -89,7 +89,7 @@ const localVars = {
 
 const envVars = {
   ...defaultVars,
-  proxy: true,
+  proxy: false,
   server: {
     ...defaultVars.server,
     port: process.env.PORT

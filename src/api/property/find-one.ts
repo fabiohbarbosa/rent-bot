@@ -12,7 +12,7 @@ const api = (router: Router, db: Db) => {
       const _id = req.params.id;
       Log.info(`${logPrefix} Fetching property by id '${_id}'`);
 
-      const property = await Property.findOne(db, _id);
+      const property = await Property.findOneById(db, _id);
 
       if (!property) {
         Log.warn(`${logPrefix} Not found property for id '${_id}'`);
