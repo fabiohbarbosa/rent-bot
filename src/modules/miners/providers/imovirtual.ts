@@ -20,6 +20,18 @@ class ImovirtualMiner extends MinerProvider {
       throw new Error(`Cannot access ${url}`);
     }
 
+    if ($('.section-overview').length === 0) {
+      Log.warn(`The ${url} probably is unavailable. Ensure it on unavailable service.`);
+      return {
+        isOnFilter: false,
+        data: {
+          url
+        }
+      };
+    }
+
+
+
     const data = {
       energeticCertificate: this._getEnergeticCertificate($('li:contains("Certificado Energ")')),
       price: this._getPrice($('article > header > div > div'), url)
