@@ -46,7 +46,7 @@ class Bot {
       new CrawlerBot(this.db, this.cache, {
         providerClass: IdealistaProvider,
         searchFilters: idealistaFilters
-      });
+      }).crawle();
     };
 
     setTimeout(() => {

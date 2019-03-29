@@ -14,8 +14,8 @@ const defaultVars = {
   },
   bots: {
     crawler: {
-      interval: 1 * 60 * 1000,
-      intervalIdealistaMultipler: 90,
+      interval: 1 * 60 * 1000, // 1 minute
+      intervalIdealistaMultipler: 10,
       delay: 0 * 1000
     },
     dataMining: {
@@ -59,12 +59,13 @@ const localVars = {
     crawler: {
       ...defaultVars.bots.crawler,
       interval: 1 * 60 * 1000,
-      enabled: false,
-      delay: 0
+      enabled: true,
+      delay: 0,
+      intervalIdealistaMultipler: 1,
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0,
       intervalIdealistaCounter: 5
