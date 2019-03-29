@@ -18,13 +18,13 @@ class CustoJustoProvider extends CrawlerProvider {
       if (!totalPages || totalPages === 0) return [];
 
       const elements = [];
-      elements.push(...this._getElements($));
+      elements.push(...this._getElements($, this.url));
 
       for (let page = 2; page <= totalPages; page++) {
         const nextUrl = this.url.replace('?', `?o=${page}?`);
         $ = await adapt(nextUrl, true);
 
-        elements.push(...this._getElements($, page));
+        elements.push(...this._getElements($, nextUrl, page));
       }
       return elements;
     } catch (err) {
@@ -32,8 +32,8 @@ class CustoJustoProvider extends CrawlerProvider {
     }
   }
 
-  private _getElements($, page = 1) {
-    Log.info(`${this.logPrefix}: Crawling page ${page}`);
+  private _getElements($, url: string, page = 1) {
+    Log.info(`${this.logPrefix}: Crawling page ${page} - url: ${url}`);
 
     const elements = [];
     $('div#dalist > div.container_related > a').each((i, e) => {

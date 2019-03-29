@@ -30,7 +30,7 @@ class CrawlerBot {
 
   private _crawleProvider(filter: CrawlerFilter) {
     const providerName = this._buildProviderName();
-    new Crawdler(this.providerClass, filter).crawl().then(properties => {
+    new Crawdler(this.providerClass, providerName, filter).crawl().then(properties => {
       if (!properties) return;
       properties.forEach((p: Property) => {
         const property = { ...p, provider: providerName };

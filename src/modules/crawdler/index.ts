@@ -7,7 +7,7 @@ class Crawler {
   private logPrefix: string;
   private url: string;
 
-  constructor(Provider, filters: CrawlerFilter) {
+  constructor(Provider, private providerName: string, private filters: CrawlerFilter) {
     const { url, logPrefix, type, topology } = filters;
     this.provider = new Provider(logPrefix, type, topology, url);
     this.logPrefix = logPrefix;
@@ -24,14 +24,14 @@ class Crawler {
       });
 
       if (elements.length === 0) {
-        Log.warn(`${this.logPrefix}: Not found elements in ${this.url}`);
+        Log.warn(`${this.logPrefix}: Not found elements for provider '${this.providerName}' with filter '${JSON.stringify(this.filters)}'`);
       } else {
-        Log.info(`${this.logPrefix}: Found ${elements.length} elements in ${this.url}`);
+        Log.info(`${this.logPrefix}: Found ${elements.length} elements for provider '${this.providerName}' with filter '${JSON.stringify(this.filters)}'`);
       }
 
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawl '${this.url}'`);
+      Log.error(`${this.logPrefix} Error to crawling provider '${this.providerName}' with filter '${JSON.stringify(this.filters)}'`);
       Log.debug(err.stack);
     }
   }

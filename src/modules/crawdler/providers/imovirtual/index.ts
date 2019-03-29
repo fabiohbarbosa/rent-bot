@@ -13,15 +13,16 @@ class ImovirtualProvider extends CrawlerProvider {
       if ($('.search-location-extended-warning').length > 0) return [];
 
       const elements = [];
-      elements.push(...this._getElements($));
+      elements.push(...this._getElements($, this.url));
 
       const totalElement = $('.pager-counter > .current');
       if (totalElement && totalElement.length > 0) {
         const totalPages = totalElement[0].firstChild.data;
 
         for (let page = 2; page <= totalPages; page++) {
-          $ = await adapt(`${this.url}&page=${page}`);
-          elements.push(...this._getElements($, page));
+          const nextUrl = `${this.url}&page=${page}`;
+          $ = await adapt(nextUrl);
+          elements.push(...this._getElements($, nextUrl, page));
         }
       }
 
@@ -31,8 +32,8 @@ class ImovirtualProvider extends CrawlerProvider {
     }
   }
 
-  private _getElements($, page = 1) {
-    Log.info(`${this.logPrefix}: Crawling page ${page}`);
+  private _getElements($, url: string, page = 1) {
+    Log.info(`${this.logPrefix}: Crawling page ${page} - url: ${url}`);
 
     const elements = [];
     $('div.col-md-content > article.offer-item').each((i, e) => {

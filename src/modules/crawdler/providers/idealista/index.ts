@@ -19,14 +19,14 @@ class IdealistaProvider extends CrawlerProvider {
       if (!totalElements || totalElements === 0) return [];
 
       const elements = [];
-      elements.push(...this.getElements($));
+      elements.push(...this._getElements($, this.url));
 
       const totalPages = Math.ceil(totalElements / itemsPage);
       for (let page = 2; page <= totalPages; page++) {
         const nextUrl = this.url.replace('?', `pagina-${page}?`);
         $ = await adaptRetry(proxy(nextUrl), 403, true);
 
-        elements.push(...this.getElements($, page));
+        elements.push(...this._getElements($, nextUrl, page));
       }
 
       return elements;
@@ -35,8 +35,8 @@ class IdealistaProvider extends CrawlerProvider {
     }
   }
 
-  getElements($, page = 1) {
-    Log.info(`${this.logPrefix}: Crawling page ${page}`);
+  private _getElements($, url: string, page = 1) {
+    Log.info(`${this.logPrefix}: Crawling page ${page} - url: ${url}`);
 
     const elements = [];
     $('div.items-container > article').each((i, e) => {
@@ -48,17 +48,17 @@ class IdealistaProvider extends CrawlerProvider {
       elements.push({
         providerId: $(e).find('div.item').attr('data-adid'),
         title: $(e).find('div.item-info-container > a.item-link').text().trim(),
-        subtitle: this.parseSubtitle($, e),
-        url: this.parseUrl($, e),
+        subtitle: this._parseSubtitle($, e),
+        url: this._parseUrl($, e),
         price: parseInt($(e).find('span.item-price')[0].firstChild.data, 10),
-        photos: this.parsePhotos($, e),
+        photos: this._parsePhotos($, e),
         type: this.type
       });
     });
     return elements;
   }
 
-  parseSubtitle($, e) {
+  private _parseSubtitle($, e) {
     const details = $(e).find('div.item-info-container > span.item-detail');
     let subtitle = '';
     for (let i = 1; i < details.length; i++) {
@@ -73,23 +73,19 @@ class IdealistaProvider extends CrawlerProvider {
     return subtitle.trim();
   }
 
-  parseUrl($, e) {
+  private _parseUrl($, e) {
     let url = $(e).find('div.item-info-container > a.item-link').attr('href');
     if (!props.proxy) url = `https://www.idealista.pt${url}`;
 
     return unProxy(url);
   }
 
-  parsePhotos($, e) {
+  private _parsePhotos($, e) {
     const gallery = $(e).find('div.gallery-fallback > img');
     if (gallery && gallery[0] && gallery[0].attribs) {
       return [gallery[0].attribs['data-ondemand-img']];
     }
     return [];
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 }

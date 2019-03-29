@@ -14,15 +14,16 @@ class OlxProvider extends CrawlerProvider {
       if ($('h1.c41').length > 0) return [];
 
       const elements = [];
-      elements.push(...this._getElements($));
+      elements.push(...this._getElements($, this.url));
 
       const totalElement = $('.pager > span.item > a > span');
       if (totalElement && totalElement.length > 0) {
         const totalPages = parseInt(totalElement[totalElement.length - 1].lastChild.data, 10);
 
         for (let page = 2; page <= totalPages; page++) {
-          $ = await adapt(`${this.url}&page=${page}`);
-          elements.push(...this._getElements($, page));
+          const nextUrl = `${this.url}&page=${page}`;
+          $ = await adapt(nextUrl);
+          elements.push(...this._getElements($, nextUrl, page));
         }
       }
 
@@ -32,8 +33,8 @@ class OlxProvider extends CrawlerProvider {
     }
   }
 
-  private _getElements($, page = 1) {
-    Log.info(`${this.logPrefix}: Crawling page ${page}`);
+  private _getElements($, url: string, page = 1) {
+    Log.info(`${this.logPrefix}: Crawling page ${page} - url: ${url}`);
 
     const elements = [];
     $('table#offers_table > tbody > tr.wrap > td > div.offer-wrapper > table > tbody').each((i, e) => {
