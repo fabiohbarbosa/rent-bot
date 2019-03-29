@@ -15,7 +15,7 @@ class IdealistaMiner extends MinerProvider {
     try {
       $ = await adaptRetry(proxy(url), 403, true);
     } catch (err) {
-      throw new Error(`Error to access url ${url}`);
+      throw new Error(`Cannot access ${url}`);
     }
 
     const data = {

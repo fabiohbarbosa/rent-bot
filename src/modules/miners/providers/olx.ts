@@ -16,7 +16,7 @@ class OlxMiner extends MinerProvider {
       $ = await adapt(url);
     } catch (err) {
       Log.debug(err);
-      throw new Error(`Error to access url ${url}`);
+      throw new Error(`Cannot access ${url}`);
     }
 
     const elements = $("th:contains('Certificado Energ')");

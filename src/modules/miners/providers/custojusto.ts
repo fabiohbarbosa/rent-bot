@@ -16,13 +16,13 @@ import Property, { PropertyTopology } from '@models/property';
       $ = await adapt(url, true);
     } catch (err) {
       Log.debug(err);
-      throw new Error(`Error to access url ${url}`);
+      throw new Error(`Cannot access ${url}`);
     }
 
     const elements = $('ul.list-group.gbody');
     if (elements.length === 0) {
-      Log.warn(`${this.logPrefix} Cannot access url ${url}. Wait for availability task to check unvailability.`);
-      throw Error(`${this.logPrefix} Cannot access ${url}`);
+      Log.debug(`${this.logPrefix} Cannot access url ${url}. Wait for availability task to check unvailability.`);
+      throw new Error(`Cannot access ${url}`);
     }
 
     const data = {
