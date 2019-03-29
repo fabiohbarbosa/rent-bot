@@ -24,7 +24,9 @@ class PropertyCache {
    * load all properties
    */
   async setup() {
+    Log.info('Loading properties to cache');
     this._properties = await Property.findAll(this.db);
+    Log.info(`${this._properties.length} properties loaded to cache`);
   }
 
   add(property: Property) {
