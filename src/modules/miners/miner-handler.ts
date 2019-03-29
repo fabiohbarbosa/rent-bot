@@ -4,7 +4,7 @@ import Log from '@config/logger';
 import PropertyCache from '@lib/property-cache';
 
 import NotificationService from '@lib/notification-service';
-import { updateDateBatch } from '@utils/batch-utils';
+import { updateProperties } from '@utils/batch-utils';
 
 import Property from '@models/property';
 
@@ -38,7 +38,7 @@ class MinerHandler {
       Log.error(`[minder]: Error to mine ${property.url}: ${err.message}`);
       Log.error(err);
     } finally {
-      updateDateBatch(this.db, { url }, set, (err, result) => {
+      updateProperties(this.db, { url }, set, (err, result) => {
         if (err) {
           Log.error(`${logPrefix} Error to mine URL '${url}'`);
           return;

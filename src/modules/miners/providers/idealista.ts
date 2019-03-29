@@ -18,9 +18,18 @@ class IdealistaMiner extends MinerProvider {
       throw new Error(`Cannot access ${url}`);
     }
 
+    if ($('detail-info').length === 0) {
+      return {
+        isOnFilter: false,
+        data: {
+          url
+        }
+      }
+    }
+
     const data = {
       energeticCertificate: this.getEnergeticCertificate($),
-      topology: this.getTopology($),
+      topology: this.getTopology($, url),
       price: parseInt($('span.info-data-price').text().split(' ')[0].replace('.', ''), 10)
     };
 
@@ -44,11 +53,11 @@ class IdealistaMiner extends MinerProvider {
     return energeticCertificate;
   }
 
-  getTopology($): PropertyTopology {
+  getTopology($, url): PropertyTopology {
     for (let i = 0; i < dataFilters.topologies.length; i++) {
       const topology = dataFilters.topologies[i];
 
-      if ($(`div.info-features > span:contains("${topology.toUpperCase()}")`)) {
+      if ($(`div.info-features > span:contains("${topology.toUpperCase()}")`).length > 0) {
         return PropertyTopology[topology.toUpperCase()];
       }
     }

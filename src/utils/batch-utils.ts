@@ -15,9 +15,9 @@ const batchProperties = (db: Db, query, sort, size: number, projection = {}) => 
     .toArray();
 };
 
-const updateDateBatch = (db: Db, filter, set, callback) => {
+const updateProperties = (db: Db, filter, set, callback) => {
   db.collection('properties')
     .updateMany(filter, { $set: set }, callback);
 };
 
-export { batchProperties, updateDateBatch, executeQuery };
+export { batchProperties, updateProperties, executeQuery };

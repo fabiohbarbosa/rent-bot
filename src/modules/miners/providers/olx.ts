@@ -19,6 +19,16 @@ class OlxMiner extends MinerProvider {
       throw new Error(`Cannot access ${url}`);
     }
 
+    // ensure the box info exists
+    if ($('.offer-titlebox').length === 0) {
+      return {
+        isOnFilter: false,
+        data: {
+          url
+        }
+      };
+    }
+
     const elements = $("th:contains('Certificado Energ')");
     const data = {
       energeticCertificate: this._getEnergeticCertificate($, elements),
@@ -36,9 +46,17 @@ class OlxMiner extends MinerProvider {
   }
 
   private _parsePrice($): number {
-    const metadata = $('.price-label > strong').text()
+    let metadata = $('.price-label > strong').text()
                           .trim().split(' ')
                           .map(v => v.replace('.', ''));
+
+
+    // fallback for unvailable entries
+    if ((!metadata || metadata.length === 0 || metadata.length === 1) && metadata[0] === '') {
+      metadata = $('.pricelabel > strong').text()
+                    .trim().split(' ')
+                    .map(v => v.replace('.', ''));
+    }
     const price = priceFromArrayRightSymbol(metadata);
     return price;
   }

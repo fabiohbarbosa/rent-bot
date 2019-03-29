@@ -70,7 +70,7 @@ class MinerBot {
     }
 
     const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
-    return batchProperties(this.db, query, sort, props.batchSize);
+    return batchProperties(this.db, query, sort, 100);
   }
 }
 

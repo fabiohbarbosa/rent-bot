@@ -3,7 +3,7 @@ import { Db } from 'mongodb';
 import Log from '@config/logger';
 import PropertyCache from '@lib/property-cache';
 import Property from '@models/property';
-import { updateDateBatch } from '@utils/batch-utils';
+import { updateProperties } from '@utils/batch-utils';
 
 class AvailabilityHandler {
   constructor(private db: Db, private cache: PropertyCache) {}
@@ -39,7 +39,7 @@ class AvailabilityHandler {
         Log.error(`${logPrefix} ${err.message}`);
       }
     }).finally(() => {
-      updateDateBatch(this.db, { url }, set, (err, result) => {
+      updateProperties(this.db, { url }, set, (err, result) => {
         if (err) {
           Log.error(`${logPrefix} Error to update availability batch date to ${url}`);
           return;
