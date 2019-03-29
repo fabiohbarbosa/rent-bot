@@ -1,11 +1,7 @@
 import { ObjectID } from 'bson';
 import { Db } from 'mongodb';
 
-const projection = {
-  providerId: 1, createAt: 1, price: 1, photos: 1,
-  provider: 1, status: 1, title: 1, type: 1, notificated: 1,
-  url: 1, topology: 1, ps: 1, energeticCertificate: 1
-};
+const projection = {};
 
 //-------------------------------
 // Classes
