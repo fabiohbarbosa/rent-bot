@@ -21,12 +21,8 @@ class OlxMiner extends MinerProvider {
 
     // ensure the box info exists
     if ($('.offer-titlebox').length === 0) {
-      return {
-        isOnFilter: false,
-        data: {
-          url
-        }
-      };
+      Log.warn(`The ${url} probably is unavailable. Ensure it on unavailable service.`);
+      throw new Error(`Cannot mine ${url}`);
     }
 
     const elements = $("th:contains('Certificado Energ')");

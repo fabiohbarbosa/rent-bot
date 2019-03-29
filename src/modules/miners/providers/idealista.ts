@@ -20,12 +20,7 @@ class IdealistaMiner extends MinerProvider {
 
     if ($('.detail-info').length === 0) {
       Log.warn(`The ${url} probably is unavailable. Ensure it on unavailable service.`);
-      return {
-        isOnFilter: false,
-        data: {
-          url
-        }
-      };
+      throw new Error(`Cannot mine ${url}`);
     }
 
     const data = {

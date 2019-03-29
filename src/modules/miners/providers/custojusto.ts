@@ -21,8 +21,8 @@ import Property, { PropertyTopology } from '@models/property';
 
     const elements = $('ul.list-group.gbody');
     if (elements.length === 0) {
-      Log.debug(`${this.logPrefix} Cannot access url ${url}. Wait for availability task to check unvailability.`);
-      throw new Error(`Cannot access ${url}`);
+      Log.warn(`The ${url} probably is unavailable. Ensure it on unavailable service.`);
+      throw new Error(`Cannot mine ${url}`);
     }
 
     const data = {
