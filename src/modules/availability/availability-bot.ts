@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
 
 import Log from '@config/logger';
-import allProps from '@config/props';
+import allProps, { dataFilters } from '@config/props';
 import PropertyCache from '@lib/property-cache';
 import { batchProperties } from '@utils/batch-utils';
 
@@ -47,6 +47,7 @@ class AvailabilityBot {
   private _fetchDatabaseEntries() {
     const query = {
       provider: { $ne: 'idealista' },
+      price: { $lte: dataFilters.maxPrice },
       $or: [
         { timesUnvailable: { $lt: props.ensureTimes } },
         { timesUnvailable: null }

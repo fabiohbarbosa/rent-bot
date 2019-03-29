@@ -44,7 +44,7 @@ class PropertyCache {
     });
 
     if (!exists) {
-      throw new Error(`Not found property '${url}'`);
+      throw new Error(`Not found property '${url}' on cache`);
     }
   }
 

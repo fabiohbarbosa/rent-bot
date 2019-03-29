@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
 
 import Log from '@config/logger';
-import allProps from '@config/props';
+import allProps, { dataFilters } from '@config/props';
 
 import { batchProperties } from '@utils/batch-utils';
 
@@ -59,7 +59,8 @@ class MinerBot {
   private _fetchDatabaseEntries() {
     const query = {
       provider: { $nin: [ 'idealista' ] },
-      status: { $ne: 'UNVAILABLE' }
+      status: { $ne: 'UNVAILABLE' },
+      price: { $lte: dataFilters.maxPrice }
     };
 
     // reduce times to fetch idealista data
