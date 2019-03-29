@@ -1,5 +1,6 @@
 import { ObjectID } from 'bson';
 import { Db } from 'mongodb';
+import { dataFilters } from '@config/props';
 
 const projection = {};
 
@@ -42,7 +43,7 @@ class Property {
 
   static findAll = async (db: Db) => {
     return await db.collection('properties')
-      .find({}, { projection })
+      .find({ price: { $lte: dataFilters.maxPrice } }, { projection })
       .sort({ createAt: -1 })
       .toArray();
   }
