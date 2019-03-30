@@ -7,14 +7,16 @@ export default winston.createLogger({
   format: winston.format.combine(
     winston.format.simple(),
     winston.format.timestamp(),
-    winston.format.printf(msg =>
-      winston.format
+    winston.format.printf(msg => {
+      const format = props.env === 'local' ?
+        `${msg.timestamp} ${msg.level}: ${msg.message}` : msg.message;
+      return winston.format
         .colorize()
-        .colorize(msg.level, `${msg.timestamp} ${msg.level}: ${msg.message}`)
-    )
+        .colorize(msg.level, format);
+    })
   ),
   transports: [
     new winston.transports.Console(),
-    LoggingWinston
+    new LoggingWinston()
   ]
 });
