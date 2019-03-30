@@ -19,6 +19,9 @@ RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
 COPY --from=builder ${WORKDIR}/node_modules/ ./node_modules
+# GCP libraries
+RUN npm rebuild
+
 COPY --from=builder ${WORKDIR}/dist ./dist
 
 COPY tsconfig.json .
