@@ -61,7 +61,7 @@ class MinerBot {
   private _fetchDatabaseEntries() {
     const query = {
       provider: { $nin: [ 'idealista' ] },
-      status: { $ne: 'UNVAILABLE' },
+      status: { $ne: 'UNAVAILABLE' },
       price: { $lte: dataFilters.maxPrice }
     };
 

@@ -4,7 +4,7 @@ const status = {
   MATCHED: 'MATCHED',
   OUT_OF_FILTER: 'OUT_OF_FILTER',
   PENDING: 'PENDING',
-  UNVAILABLE: 'UNVAILABLE'
+  UNAVAILABLE: 'UNAVAILABLE'
 };
 
 export { logPrefix, path, status };

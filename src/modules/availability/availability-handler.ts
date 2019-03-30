@@ -24,7 +24,7 @@ class AvailabilityHandler {
       Log.info(`${logPrefix} The ${url} is a valid URL`);
       set = {
         ...set,
-        status: status === 'UNVAILABLE' ? 'PENDING' : status,
+        status: status === 'UNAVAILABLE' ? 'PENDING' : status,
         timesUnvailable: 0 // cleanup unvailable counts to prevent lost temporaly unvailable property
       }
     }).catch(err => {
@@ -32,7 +32,7 @@ class AvailabilityHandler {
         Log.warn(`${logPrefix} ${err.message}`);
         set = {
           ...set,
-          status: 'UNVAILABLE',
+          status: 'UNAVAILABLE',
           timesUnvailable: timesUnvailable + 1
         };
       } else {
