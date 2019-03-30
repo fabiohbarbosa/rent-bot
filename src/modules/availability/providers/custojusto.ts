@@ -17,7 +17,7 @@ class CustoJustoAvailability extends AvailabilityProvider {
       // available
       return;
     }
-    throw new BotError(`The page ${url} is unvailable`, 404);
+    throw new BotError(`The page ${url} is unavailable`, 404);
   }
 }
 

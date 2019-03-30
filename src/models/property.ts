@@ -38,7 +38,7 @@ class Property {
   isDataMiningLastCheck?: boolean;
   energeticCertificate?: string; // TODO enum
   notificatedAt?: Date;
-  timesUnvailable?: number;
+  timesUnavailable?: number;
   dirty?: boolean;
 
   static findAll = async (db: Db) => {

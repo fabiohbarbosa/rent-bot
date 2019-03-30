@@ -14,14 +14,14 @@ class OlxAvailability extends AvailabilityProvider {
 
     // fallback for unavailables
     if ($('#ad-not-available-box').length > 0) {
-      throw new BotError(`The page ${url} is unvailable`, 404);
+      throw new BotError(`The page ${url} is unavailable`, 404);
     }
 
     const title = $('a[data-cy="adpage_observe_star"]');
     if (title.length > 0) {
       return;
     }
-    throw new BotError(`The page ${url} is unvailable`, 404);
+    throw new BotError(`The page ${url} is unavailable`, 404);
   }
 
 }

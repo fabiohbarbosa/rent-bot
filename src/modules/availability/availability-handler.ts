@@ -10,14 +10,14 @@ class AvailabilityHandler {
 
   handle(logPrefix: string, property: Property, evaluate: Promise<void>) {
     const { url, status } = property;
-    const timesUnvailable = property.timesUnvailable || 0;
+    const timesUnavailable = property.timesUnavailable || 0;
 
     // default fields update for success and error
     let set = {
       availabilityLastCheck: new Date(),
       isAvailabilityLastCheck: true,
       status,
-      timesUnvailable
+      timesUnavailable
     };
 
     evaluate.then(() => {
@@ -25,7 +25,7 @@ class AvailabilityHandler {
       set = {
         ...set,
         status: status === 'UNAVAILABLE' ? 'PENDING' : status,
-        timesUnvailable: 0 // cleanup unvailable counts to prevent lost temporaly unvailable property
+        timesUnavailable: 0 // cleanup unavailable counts to prevent lost temporaly unavailable property
       }
     }).catch(err => {
       if (err.status && err.status === 404) {
@@ -33,7 +33,7 @@ class AvailabilityHandler {
         set = {
           ...set,
           status: 'UNAVAILABLE',
-          timesUnvailable: timesUnvailable + 1
+          timesUnavailable: timesUnavailable + 1
         };
       } else {
         Log.error(`${logPrefix} ${err.message}`);

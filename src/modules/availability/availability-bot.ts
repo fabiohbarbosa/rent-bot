@@ -49,8 +49,8 @@ class AvailabilityBot {
       provider: { $ne: 'idealista' },
       price: { $lte: dataFilters.maxPrice },
       $or: [
-        { timesUnvailable: { $lt: props.ensureTimes } },
-        { timesUnvailable: null }
+        { timesUnavailable: { $lt: props.ensureTimes } },
+        { timesUnavailable: null }
       ]
     };
 

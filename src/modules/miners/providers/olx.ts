@@ -47,7 +47,7 @@ class OlxMiner extends MinerProvider {
                           .map(v => v.replace('.', ''));
 
 
-    // fallback for unvailable entries
+    // fallback for unavailable entries
     if ((!metadata || metadata.length === 0 || metadata.length === 1) && metadata[0] === '') {
       metadata = $('.pricelabel > strong').text()
                     .trim().split(' ')

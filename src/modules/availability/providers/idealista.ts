@@ -9,7 +9,7 @@ class IdealistaAvailability extends AvailabilityProvider {
       await rqRetry(proxy(url), 403, true);
     } catch (err) {
       if (err.statusCode === 404) {
-        throw new BotError(`The page ${url} is unvailable`, 404);
+        throw new BotError(`The page ${url} is unavailable`, 404);
       }
 
       const status = err.statusCode ? err.statusCode : 500;
