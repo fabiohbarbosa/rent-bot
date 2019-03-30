@@ -1,5 +1,6 @@
 import winston from 'winston';
 import props from './props';
+import { LoggingWinston } from '@google-cloud/logging-winston';
 
 export default winston.createLogger({
   level: props.logLevel,
@@ -12,5 +13,8 @@ export default winston.createLogger({
         .colorize(msg.level, `${msg.timestamp} ${msg.level}: ${msg.message}`)
     )
   ),
-  transports: new winston.transports.Console()
+  transports: [
+    new winston.transports.Console(),
+    LoggingWinston
+  ]
 });
