@@ -38,7 +38,7 @@ class OlxProvider extends CrawlerProvider {
 
     const elements = [];
     $('table#offers_table > tbody > tr.wrap > td > div.offer-wrapper > table > tbody').each((i, e) => {
-      const url = $(e).find('td.title-cell > div > h3 > a').attr('href');
+      const url = $(e).find('td.title-cell > div > h3 > a').attr('href').split('#')[0];
       if (url.includes('https://www.imovirtual.com')) return;
 
       elements.push({

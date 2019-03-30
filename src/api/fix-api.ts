@@ -4,12 +4,12 @@ import { Router } from 'express';
 import Log from '@config/logger';
 
 export default (router: Router, db: Db) => {
-  router.get('/fix/properties/imovirtual/url', async(req, res, next) => {
+  router.get('/fix/property', async(req, res, next) => {
 
     const logPrefix = '[fix:properties:imovirtual]:';
 
     const query = {
-      provider: 'imovirtual'
+      provider: 'olx'
     };
 
     const properties = await db.collection('properties')
