@@ -1,6 +1,5 @@
 import winston from 'winston';
 import props from './props';
-import { LoggingWinston } from '@google-cloud/logging-winston';
 
 const localConfig = {
   level: props.logLevel,
@@ -14,19 +13,14 @@ const localConfig = {
     )
   ),
   transports: [
-    new winston.transports.Console(),
-    new LoggingWinston()
+    new winston.transports.Console()
   ]
 };
 
 const prodConfig = {
   level: props.logLevel,
-  // format: winston.format.combine(
-  //   winston.format.printf(msg => msg.message)
-  // ),
   transports: [
-    new winston.transports.Console(),
-    new LoggingWinston()
+    new winston.transports.Console()
   ]
 };
 
