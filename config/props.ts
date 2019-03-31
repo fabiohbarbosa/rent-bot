@@ -58,7 +58,7 @@ const localVars = {
   bots: {
     crawler: {
       ...defaultVars.bots.crawler,
-      enabled: true,
+      enabled: false,
       interval: 1 * 60 * 1000,
       delay: 0,
       intervalIdealistaMultipler: 1,
