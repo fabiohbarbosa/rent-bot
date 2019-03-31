@@ -30,4 +30,4 @@ const prodConfig = {
   ]
 };
 
-export default winston.createLogger(props.env !== 'local' ? localConfig : prodConfig);
+export default winston.createLogger(props.env === 'local' ? localConfig : prodConfig);
