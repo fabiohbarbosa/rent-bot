@@ -8,9 +8,7 @@ export default winston.createLogger({
     winston.format.simple(),
     winston.format.timestamp(),
     winston.format.printf(msg => {
-      if (props.env !== 'local') {
-        return msg.message;
-      }
+      if (props.env !== 'local')  return msg.message;
       return winston.format
         .colorize()
         .colorize(msg.level, `${msg.timestamp} ${msg.level}: ${msg.message}`);
