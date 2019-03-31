@@ -113,7 +113,7 @@ const envVars = {
       ...defaultVars.bots.crawler,
       idealista: {
         ...defaultVars.bots.crawler.idealista,
-        enabled: (process.env.CRAWLER_IDEALISTA === 'true') || true
+        enabled: (process.env.CRAWLER_IDEALISTA === 'true')
       },
     },
     dataMining: {
