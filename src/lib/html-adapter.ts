@@ -27,8 +27,6 @@ const adapt = async(url, binary = false) => {
       const tmpFolder = 'logs';
       const filename = `${tmpFolder}/${uuidv4()}.html`;
 
-      Log.error('Trying to save HTTP request error as a HTML file');
-
       fs.mkdir(tmpFolder, { recursive: true }, errMkdir => {
         if (errMkdir) {
           Log.error(`Error to create logs folder for url ${url}`);
