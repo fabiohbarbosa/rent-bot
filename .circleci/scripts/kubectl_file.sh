@@ -50,6 +50,8 @@ spec:
             value: '$MAIL'
           - name: CRAWLER_BOT
             value: '$CRAWLER_BOT'
+          - name: CRAWLER_IDEALISTA
+            value: '$CRAWLER_IDEALISTA'
           - name: AVAILABILITY_BOT
             value: '$AVAILABILITY_BOT'
           - name: DATA_MINING_BOT

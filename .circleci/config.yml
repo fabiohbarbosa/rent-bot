@@ -125,6 +125,7 @@ jobs:
 
       MAIL: true
       CRAWLER_BOT: true
+      CRAWLER_IDEALISTA: false
       AVAILABILITY_BOT: true
       DATA_MINING_BOT: true
 

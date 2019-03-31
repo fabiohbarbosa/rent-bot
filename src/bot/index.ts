@@ -55,7 +55,7 @@ class Bot {
     }, crawler.delay);
 
     setInterval(start, crawler.interval);
-    setInterval(startIdealista, crawler.interval * crawler.intervalIdealistaMultipler);
+    setInterval(startIdealista, crawler.interval * crawler.idealista.intervalMultipler);
 
     return this;
   }
