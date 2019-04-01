@@ -54,11 +54,14 @@ class AvailabilityBot {
       ]
     };
 
+    const isIdealistaEnabled = allProps.bots.crawler.idealista.enabled;
     // reduce times to fetch idealista data
     // if the schedule did a complete cycle now it's time to remove provider from projection to include the 'idealista' on search
-    if (idealistaCounterCycle === 0) {
+    if (idealistaCounterCycle === 0 && isIdealistaEnabled) {
       delete query['provider'];
       idealistaCounterCycle = props.intervalIdealistaCounter;
+    } else {
+      Log.warn(`${this.logPrefix} Skipping idealista because cycle is ${idealistaCounterCycle} and enabled is ${isIdealistaEnabled}`);
     }
 
     const sort = { isAvailabilityLastCheck: 1, availabilityLastCheck: 1 };
