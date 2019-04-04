@@ -78,7 +78,7 @@ spec:
           failureThreshold: 4
         resources:
           limits:
-            memory: 1024Mi
+            memory: 512Mi
           requests:
             memory: 256Mi
 
