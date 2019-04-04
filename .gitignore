@@ -1,9 +1,15 @@
 .DS_Store
-.vscode/*
-!.vscode/launch.json
 node_modules/
 logs/
 dist/
 sendgrid.env
 service.yml
 .env
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
