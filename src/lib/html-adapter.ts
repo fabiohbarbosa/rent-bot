@@ -20,30 +20,6 @@ const adapt = async(url, binary = false) => {
     return cheerio.load(data);
   } catch (err) {
     Log.debug(err);
-
-    // Save request error body as a HTML file to double check the error
-    if (err.response && err.response.toJSON) {
-      const tmp = await cheerio.load(err.response.toJSON().body);
-      const tmpFolder = 'logs';
-      const filename = `${tmpFolder}/${uuidv4()}.html`;
-
-      fs.mkdir(tmpFolder, { recursive: true }, errMkdir => {
-        if (errMkdir) {
-          Log.error(`Error to create logs folder for url ${url}`);
-          Log.error(errMkdir);
-          return;
-        }
-        fs.writeFile(filename, tmp.html(), errWrite => {
-          if (errWrite) {
-            Log.error(errWrite);
-            Log.error(`Error to save error page for ${url} as HTML`);
-            return;
-          }
-          Log.error(`The file error content was saved for ${url} as ${filename}!`);
-        });
-      });
-    }
-
     throw err;
   }
 };
