@@ -27,7 +27,7 @@ class ImovirtualMiner extends MinerProvider {
 
     const data = {
       energeticCertificate: this._getEnergeticCertificate($('li:contains("Certificado Energ")')),
-      price: this._getPrice($('article > header > div > div'), url)
+      price: this._getPrice($, url)
     };
 
     const isOnFilter = this._isOnFilter(data);
@@ -52,11 +52,11 @@ class ImovirtualMiner extends MinerProvider {
     return elements[0].lastChild.firstChild.data.toLowerCase();
   }
 
-  protected _getPrice(elements, url: string): number {
-    if (!elements || !elements[2] || !elements[2].firstChild) {
-      throw new Error(`Error to access price of ${url}`);
-    }
-    return priceFromArrayRightSymbol(elements[2].firstChild.data.split(' '));
+  protected _getPrice($, url: string): number {
+    const metadata = $($('article > header > div > div')[1])
+      .text().trim().split(' ');
+    metadata.pop();
+    return priceFromArrayRightSymbol(metadata);
   }
 
   private _isOnFilter(data: Property) {

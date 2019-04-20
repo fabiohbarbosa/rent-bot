@@ -36,9 +36,7 @@ class CrawlerBot {
         const property = { ...p, provider: providerName };
         this.handler.handle(filter.logPrefix, property);
       });
-    }).catch(err => {
-      Log.error(err.stack);
-    });
+    }).catch(err => Log.error(err));
   }
 
   private _buildProviderName() {

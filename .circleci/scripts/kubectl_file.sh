@@ -78,8 +78,8 @@ spec:
           failureThreshold: 4
         resources:
           limits:
-            memory: 1024Mi
-          requests:
             memory: 512Mi
+          requests:
+            memory: 256Mi
 
 EOF

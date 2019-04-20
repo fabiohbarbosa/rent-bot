@@ -37,7 +37,7 @@ class MinerBot {
         .handle(miner.logPrefix, property, response)
         .catch(err => `${this.logPrefix} Error to handle ${url}: ${err.message}`);
     }).catch(err => {
-      Log.error(`Error to mine ${url}: ${err.stack}`);
+      Log.error(`${this.logPrefix} Error to mine ${url}: ${err.stack}`);
       // check whether URL is unavailable
       new AvailabilityBot(this.db, this.cache).evaluate(property)
         .catch(err => Log.error(err));
@@ -61,6 +61,7 @@ class MinerBot {
   }
 
   private _fetchDatabaseEntries() {
+    /*
     const query = {
       provider: { $nin: [ 'idealista' ] },
       status: { $ne: 'UNAVAILABLE' },
@@ -73,7 +74,9 @@ class MinerBot {
       delete query.provider;
       idealistaCounterCycle = props.intervalIdealistaCounter;
     }
+    */
 
+    const query = { url: 'https://www.imovirtual.com/anuncio/t3-francos-IDXejF.html' };
     const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
     return batchProperties(this.db, query, sort, 100);
   }
