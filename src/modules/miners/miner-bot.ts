@@ -29,14 +29,16 @@ class MinerBot {
   }
 
   mine(property: Property): void {
-    const miner = MinerBotFactory.getInstance(property.provider, property.url);
+    const url = property.url;
+    const miner = MinerBotFactory.getInstance(property.provider, url);
 
-    miner.mine(property.url).then(response => {
+    miner.mine(url).then(response => {
       this.handler
         .handle(miner.logPrefix, property, response)
-        .catch(err => `${this.logPrefix} Error to handle ${property.url}: ${err.message}`);
+        .catch(err => `${this.logPrefix} Error to handle ${url}: ${err.message}`);
     }).catch(err => {
-      Log.error(err.stack);
+      Log.error(`Error to mine ${url}: ${err.stack}`);
+      // check whether URL is unavailable
       new AvailabilityBot(this.db, this.cache).evaluate(property)
         .catch(err => Log.error(err));
     });

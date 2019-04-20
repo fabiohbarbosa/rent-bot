@@ -31,8 +31,8 @@ class Crawler {
 
       return elements;
     } catch (err) {
-      Log.error(`${this.logPrefix} Error to crawling provider '${this.providerName}' with filter '${JSON.stringify(this.filters)}'`);
-      Log.debug(err.stack);
+      Log.error(`${this.logPrefix} Error to crawling provider '${this.providerName}''s url: '${this.url}'`);
+      Log.error(err.stack);
     }
   }
 }
