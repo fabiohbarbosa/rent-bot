@@ -21,7 +21,7 @@ class CustoJustoProvider extends CrawlerProvider {
       elements.push(...this._getElements($, this.url));
 
       for (let page = 2; page <= totalPages; page++) {
-        const nextUrl = this.url.replace('?', `?o=${page}?`);
+        const nextUrl = this.url.replace('?', `?o=${page}&`);
         $ = await adapt(nextUrl, true);
 
         elements.push(...this._getElements($, nextUrl, page));
