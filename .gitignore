@@ -13,3 +13,5 @@ service.yml
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+
+.idea

@@ -24,7 +24,7 @@ class MinerBot {
   private handler: MinerHandler;
 
   constructor(private db: Db, private cache: PropertyCache) {
-    this.logPrefix = '[miner]: ';
+    this.logPrefix = '[miner]:';
     this.handler = new MinerHandler(db, cache);
   }
 
@@ -61,7 +61,6 @@ class MinerBot {
   }
 
   private _fetchDatabaseEntries() {
-    /*
     const query = {
       provider: { $nin: [ 'idealista' ] },
       status: { $ne: 'UNAVAILABLE' },
@@ -74,9 +73,7 @@ class MinerBot {
       delete query.provider;
       idealistaCounterCycle = props.intervalIdealistaCounter;
     }
-    */
 
-    const query = { url: 'https://www.imovirtual.com/anuncio/t3-francos-IDXejF.html' };
     const sort = { isDataMiningLastCheck: 1, dataMiningLastCheck: 1 };
     return batchProperties(this.db, query, sort, 100);
   }

@@ -35,6 +35,8 @@ const boostrap = async() => {
 
   app.use(bodyParser.json());
 
+  app.use(cors());
+
   app.use('/api', healthcheck(router));
   app.use('/api', fix(router, db));
   app.use('/api', property(router, db, cache));
@@ -46,10 +48,6 @@ const boostrap = async() => {
 
   // wrong routes should be return 404 status code
   app.use('*', (req, res) => res.status(404).send());
-
-  app.use(cors({
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE']
-  }));
 
   // Configure / start the server
   server.maxConnections = props.server.maxConnections;

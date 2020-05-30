@@ -1,4 +1,4 @@
-// remove t0 and t1, because custojust has a bug in search by house
+// remove t0 and t1, because custojusto has a bug in search by house
 const regexes = [
   /\b(?:t0|t1|t2|kitchenette)\b/gi
 ];
@@ -10,24 +10,24 @@ const types = {
 
 const topologies = [
   { name: 't2', code: 5, enabled: false },
-  { name: 't3', code: 6, enabled: true },
-  { name: 't4', code: 7, enabled: true },
+  { name: 't3', code: 6, enabled: false },
+  { name: 't4', code: 7, enabled: false },
 ];
 
-const counties = [
-  { name: 'gondomar', enabled: true },
-  { name: 'maia', enabled: true },
-  { name: 'matosinhos', enabled: true },
-  { name: 'porto', enabled: true },
-  { name: 'valongo', enabled: true },
-  { name: 'vila-nova-de-gaia', enabled: true }
+const cities = [
+  { name: 'gondomar', enabled: false },
+  { name: 'maia', enabled: false },
+  { name: 'matosinhos', enabled: false },
+  { name: 'porto', enabled: false },
+  { name: 'valongo', enabled: false },
+  { name: 'vila-nova-de-gaia', enabled: false }
 ];
 
 const buildFilters = () => {
-  const filters = [];
-  counties.filter(c => c.enabled).forEach(c => {
+  const bFilters = [];
+  cities.filter(c => c.enabled).forEach(c => {
     topologies.filter(t => t.enabled).forEach(t => {
-      filters.push({
+      bFilters.push({
         enabled: types.house,
         type: 'house',
         topology: t.name,
@@ -35,7 +35,7 @@ const buildFilters = () => {
         url: `https://www.custojusto.pt/porto/${c.name}/moradias-arrendar?ps=4&pe=7&roe=${t.code}&ros=${t.code}`
       });
 
-      filters.push({
+      bFilters.push({
         enabled: types.apartment,
         type: 'apartment',
         topology: t.name,
@@ -44,7 +44,7 @@ const buildFilters = () => {
       });
     });
   });
-  return filters;
+  return bFilters;
 };
 
 const filters = buildFilters();

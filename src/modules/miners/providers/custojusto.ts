@@ -26,8 +26,8 @@ import Property, { PropertyTopology } from '@models/property';
     }
 
     const data = {
-      energeticCertificate: this._getEnergeticCertificate(elements),
-      topology: this._getTopology(elements),
+      energeticCertificate: this._getEnergeticCertificate(url, elements),
+      topology: this._getTopology(url, elements),
       price: this._parsePrice($)
     };
 
@@ -48,24 +48,24 @@ import Property, { PropertyTopology } from '@models/property';
     return price;
   }
 
-  private _isInvalidElement(el): boolean {
-    return !el || el.length !== 1 ||
-      !el[0].firstChild ||
-      !el[0].firstChild.firstChild ||
-      !el[0].firstChild.firstChild.data;
+  private _getEnergeticCertificate(url: string, elements) {
+    const el = elements.find('li:contains(\'Cert.\')');
+    if (!el || el.length === 0) {
+      return 'unknown';
+    }
+
+    const value = el.find('span').html().toLowerCase();
+    return value;
   }
 
-  private _getEnergeticCertificate(elements) {
-    const el = elements.find("li:contains('Cert.')");
-    if (this._isInvalidElement(el)) return 'unknown';
+  private _getTopology(url: string, elements): PropertyTopology {
+    const el = elements.find('li:contains(\'Tipologia\')');
+    if (!el || el.length === 0) {
+      return PropertyTopology.UNKNOWN;
+    }
 
-    return el[0].firstChild.firstChild.data.toLowerCase();
-  }
-
-  private _getTopology(elements): PropertyTopology {
-    const el = elements.find("li:contains('Tipologia')");
-    if (this._isInvalidElement(el)) PropertyTopology.UNKNOWN;
-    return el[0].firstChild.firstChild.data.toLowerCase();
+    const value = el.find('span > a').html().toLowerCase() || el.find('span').html().toLowerCase();
+    return value;
   }
 
   protected _isOnFilter(data: Property): boolean {

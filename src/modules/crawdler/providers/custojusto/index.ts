@@ -36,17 +36,19 @@ class CustoJustoProvider extends CrawlerProvider {
     Log.info(`${this.logPrefix}: Crawling page ${page} - url: ${url}`);
 
     const elements = [];
-    $('div#dalist > div.container_related > a').each((i, e) => {
+    $('div#dalist > div.container_related > div.row').each((i, e) => {
       const title = $(e).find('h2').text().trim();
       const price = this._parsePrice($, e);
 
       if (this._isMetadataInvalid(title, price)) return;
 
+      const attributes = $(e).find('a')[0].attribs;
+
       elements.push({
-        providerId: e.attribs['id'],
+        providerId: attributes['id'],
         title,
         subtitle: this._parseSubtitle($, e),
-        url: e.attribs['href'],
+        url: attributes['href'],
         price,
         photos: this._parsePhotos($, e),
         type: this.type,
@@ -80,7 +82,7 @@ class CustoJustoProvider extends CrawlerProvider {
   }
 
   private _parsePhotos($, e) {
-    const gallery = $(e).find('div.imglist > img');
+    const gallery = $(e).find('div > img');
     if (gallery && gallery[0] && gallery[0].attribs) {
       const img = gallery[0].attribs['src'] ? gallery[0].attribs['src'] : gallery[0].attribs['data-src'];
       if (img.includes('no-image.svg')) return [];

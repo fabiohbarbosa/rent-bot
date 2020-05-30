@@ -17,7 +17,7 @@ const defaultVars = {
       interval: 1 * 60 * 1000, // 1 minute
       idealista: {
         intervalMultipler: 30,
-        enabled: true
+        enabled: false
       },
       delay: 0 * 1000
     },
@@ -61,17 +61,18 @@ const localVars = {
   bots: {
     crawler: {
       ...defaultVars.bots.crawler,
-      enabled: false,
-      interval: 1 * 60 * 1000,
+      enabled: true,
+      interval: 5 * 60 * 1000, // 5 minutos
       delay: 0,
       idealista: {
         ...defaultVars.bots.crawler.idealista,
+        enabled: true,
         intervalMultipler: 1,
       }
     },
     dataMining: {
       ...defaultVars.bots.dataMining,
-      enabled: true,
+      enabled: false,
       interval: 0.5 * 60 * 1000,
       delay: 0,
       intervalIdealistaCounter: 5
@@ -128,20 +129,21 @@ const envVars = {
   scheduler: {
     mail: {
       ...defaultVars.scheduler.mail,
-      enabled: true
+      enabled: false
     }
   },
   logLevel: process.env.LOG_LEVEL,
 };
 
 const dataFilters = {
-  maxPrice: 850,
+  maxPrice: 800,
   onlyPhoto: true,
   energeticCertificates: [
     'a+', '+a', 'a-', '-a', 'a',
-    'b+', '+b', 'b-', '-b', 'b'
+    'b+', '+b', 'b-', '-b', 'b',
+    'c+', '+c', 'c-', '-c', 'c',
   ],
-  topologies: ['t3', 't4']
+  topologies: ['t2', 't3', 't4']
 };
 
 export { dataFilters };
